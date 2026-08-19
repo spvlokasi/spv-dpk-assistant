@@ -274,7 +274,7 @@ export const BranchList: React.FC<BranchListProps> = ({
             )}
 
             <div className="relative z-10">
-              {/* Header Badges: Code & Status at Left, Category at Top-Right */}
+              {/* Header Badges: Code & Status at Left, Urgency at Right */}
               <div className="flex items-center justify-between gap-1.5 mb-3">
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="px-2 py-0.5 rounded-md bg-slate-800/90 border border-slate-700/80 text-[11px] font-mono font-bold text-emerald-400 shadow-sm">
@@ -282,9 +282,7 @@ export const BranchList: React.FC<BranchListProps> = ({
                   </span>
                   <StatusBadge status={branch.status} />
                 </div>
-                <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-800/90 text-slate-200 border border-slate-700/80 shadow-sm">
-                  {formatCategoryName(branch.category)}
-                </span>
+                <UrgencyBadge urgency={branch.urgencyLevel} />
               </div>
 
               <h3 className="text-base font-bold text-white group-hover:text-emerald-400 transition-colors mb-1 drop-shadow-sm">
@@ -306,14 +304,18 @@ export const BranchList: React.FC<BranchListProps> = ({
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-850/85 border border-slate-800/90 backdrop-blur-sm mb-4">
+              {/* Diagnosis Box with Category */}
+              <div className="p-3 rounded-xl bg-slate-850/85 border border-slate-800/90 backdrop-blur-sm space-y-1.5 mb-4">
+                <div className="text-[11px] font-bold text-slate-200">
+                  {formatCategoryName(branch.category)}
+                </div>
                 <p className="text-[11px] text-slate-300 line-clamp-2 leading-relaxed">
                   {branch.diagnosisSummary || 'Belum ada diagnosa ringkasan.'}
                 </p>
               </div>
             </div>
 
-            {/* Target & Action Footer with Urgency Badge */}
+            {/* Target & Action Footer */}
             <div className="relative z-10">
               <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs mb-3">
                 <span className="text-slate-400">Target Sales:</span>
@@ -321,7 +323,7 @@ export const BranchList: React.FC<BranchListProps> = ({
               </div>
 
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 flex-wrap">
+                <div className="flex items-center gap-1.5">
                   <button
                     onClick={(e) => handleOpenEdit(branch, e)}
                     className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
@@ -336,7 +338,6 @@ export const BranchList: React.FC<BranchListProps> = ({
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
-                  <UrgencyBadge urgency={branch.urgencyLevel} />
                 </div>
 
                 <span className="text-xs font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">
