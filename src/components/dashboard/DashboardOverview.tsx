@@ -94,7 +94,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             <Store className="w-5 h-5 text-emerald-400" />
             Status Perbaikan Cabang Binaan
           </h3>
-          <span className="text-xs text-slate-400">Klik toko untuk detail & RCA</span>
+          <span className="text-xs text-slate-400">Klik toko untuk detail</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
