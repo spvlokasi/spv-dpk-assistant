@@ -107,29 +107,6 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         </div>
       </div>
 
-      {/* Critical Alert & Escalation Banner (If Any) */}
-      {(criticalBranches.length > 0 || pendingEscalations.length > 0) && (
-        <div className="bg-rose-950/40 border border-rose-800/60 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3.5">
-            <div className="p-2.5 rounded-xl bg-rose-900/60 border border-rose-700/60 text-rose-300">
-              <ShieldAlert className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-rose-200">Perhatian Khusus Diperlukan!</h4>
-              <p className="text-xs text-rose-300/80 mt-0.5">
-                Ada {criticalBranches.length} cabang berstatus kritis dan {pendingEscalations.length} tiket eskalasi menunggu keputusan Manajer Bisnis.
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => setActiveTab('escalations')}
-            className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
-          >
-            Lihat Tiket Eskalasi <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      )}
-
       {/* Main Grid: Branches Status & Recent Field Visits */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: Branch Turnaround Cards */}
