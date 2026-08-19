@@ -29,9 +29,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const menuItems = [
     {
       id: 'dashboard',
-      label: 'Dashboard Overview',
+      label: 'Dashboard',
       icon: LayoutDashboard,
-      desc: 'Ringkasan performa cabang'
+      desc: ''
     },
     {
       id: 'branches',
@@ -110,7 +110,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <div className={`text-xs font-semibold ${isActive ? 'text-emerald-200' : 'text-slate-200'}`}>
                     {item.label}
                   </div>
-                  <div className="text-[10px] text-slate-500 line-clamp-1">{item.desc}</div>
+                  {item.desc ? (
+                    <div className="text-[10px] text-slate-500 line-clamp-1">{item.desc}</div>
+                  ) : null}
                 </div>
               </div>
               {item.badge !== undefined && (
