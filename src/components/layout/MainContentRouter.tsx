@@ -178,6 +178,7 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
           performance={data.performance}
           graduations={data.graduations}
           escalations={data.escalations}
+          currentUser={currentUser}
         />
       );
 
