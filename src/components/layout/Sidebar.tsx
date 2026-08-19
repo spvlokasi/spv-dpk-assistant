@@ -7,7 +7,8 @@ import {
   TrendingUp, 
   GraduationCap, 
   FileText, 
-  AlertTriangle 
+  AlertTriangle,
+  Settings
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -78,6 +79,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badge: pendingEscalationCount > 0 ? `${pendingEscalationCount} Belum Disetujui` : undefined,
       badgeColor: 'bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse',
       desc: 'Pengajuan keputusan ke BM'
+    },
+    {
+      id: 'settings',
+      label: 'Pengaturan & Data',
+      icon: Settings,
+      desc: 'Database, cadangan & akun'
     }
   ];
 

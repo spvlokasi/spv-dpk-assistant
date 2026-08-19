@@ -24,6 +24,7 @@ import { PerformanceTracker } from './components/performance/PerformanceTracker'
 import { GraduationTracker } from './components/graduation/GraduationTracker';
 import { ExecutiveReportGenerator } from './components/report/ExecutiveReportGenerator';
 import { EscalationManager } from './components/escalation/EscalationManager';
+import { SettingsAndData } from './components/settings/SettingsAndData';
 
 export const App: React.FC = () => {
   // Auth State
@@ -173,11 +174,8 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      {/* Clean Navbar Header */}
+      {/* Clean & Minimalist Navbar Header */}
       <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onDataChange={loadData}
         currentUser={currentUser}
         onOpenProfileModal={() => setShowProfileModal(true)}
         onLogout={handleLogout}
@@ -185,7 +183,7 @@ export const App: React.FC = () => {
 
       {/* Main Body */}
       <div className="flex-1 flex max-w-7xl w-full mx-auto pb-20 md:pb-8">
-        {/* Desktop Sidebar with Escalation Pending Notification Badge */}
+        {/* Desktop Sidebar with Escalation Pending Notification Badge & Settings at Bottom */}
         <Sidebar
           activeTab={activeTab}
           setActiveTab={(tab) => {
@@ -299,6 +297,14 @@ export const App: React.FC = () => {
               escalations={escalations}
               onSaveEscalation={handleSaveEscalation}
               onDeleteEscalation={handleDeleteEscalation}
+            />
+          )}
+
+          {activeTab === 'settings' && (
+            <SettingsAndData
+              currentUser={currentUser}
+              onDataChange={loadData}
+              onOpenProfileModal={() => setShowProfileModal(true)}
             />
           )}
         </main>
