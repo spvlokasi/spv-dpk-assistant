@@ -264,14 +264,14 @@ export const BranchList: React.FC<BranchListProps> = ({
             onClick={() => onSelectBranch(branch.id)}
             className="group relative overflow-hidden bg-slate-900 border border-slate-800 hover:border-emerald-500/60 p-5 rounded-2xl transition-all cursor-pointer hover:shadow-2xl flex flex-col justify-between"
           >
-            {/* Background Store Photo (Translucent) */}
+            {/* Background Store Photo (Enhanced Brightness & Clarity) */}
             {branch.imageUrl && (
               <>
                 <div 
-                  className="absolute inset-0 bg-cover bg-center opacity-20 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none rounded-2xl"
+                  className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:opacity-55 transition-opacity duration-300 pointer-events-none rounded-2xl"
                   style={{ backgroundImage: `url(${branch.imageUrl})` }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/85 to-slate-900/60 pointer-events-none rounded-2xl" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/75 to-slate-950/40 pointer-events-none rounded-2xl" />
               </>
             )}
 
