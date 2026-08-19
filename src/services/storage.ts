@@ -55,11 +55,36 @@ function safeParse<T>(key: string, fallback: T): T {
 export const StorageService = {
   // Profile
   getProfile(): SpvProfile {
+    const fromAuth = safeParse<any>('spv_dpk_local_users', null);
+    if (fromAuth && fromAuth.fullName) {
+      return {
+        name: fromAuth.fullName,
+        department: fromAuth.department || 'Departemen Bisnis',
+        businessManager: fromAuth.businessManager || 'H. Bambang Irawan',
+        roleTitle: fromAuth.roleTitle || 'Supervisor DPK'
+      };
+    }
     return safeParse<SpvProfile>(KEYS.SPV_PROFILE, DEFAULT_PROFILE);
   },
   saveProfile(profile: SpvProfile) {
     try {
       localStorage.setItem(KEYS.SPV_PROFILE, JSON.stringify(profile));
+      const localUser = safeParse<any>('spv_dpk_local_users', null);
+      if (localUser) {
+        const updated = {
+          ...localUser,
+          fullName: profile.name,
+          roleTitle: profile.roleTitle,
+          department: profile.department,
+          businessManager: profile.businessManager
+        };
+        localStorage.setItem('spv_dpk_local_users', JSON.stringify(updated));
+        const sess = safeParse<any>('spv_dpk_current_user_session', null);
+        if (sess) {
+          sess.user = updated;
+          localStorage.setItem('spv_dpk_current_user_session', JSON.stringify(sess));
+        }
+      }
     } catch (e) {
       console.warn('saveProfile error:', e);
     }
@@ -475,7 +500,8 @@ export const StorageService = {
     if (!client) return false;
 
     try {
-      const [bRes, mRes, vRes, pRes, gRes, eRes] = await Promise.all([
+      const [uRes, bRes, mRes, vRes, pRes, gRes, eRes] = await Promise.all([
+        client.from('user_accounts').select('*'),
         client.from('branches').select('*'),
         client.from('action_milestones').select('*'),
         client.from('field_visits').select('*'),
@@ -483,6 +509,26 @@ export const StorageService = {
         client.from('branch_graduations').select('*'),
         client.from('escalation_tickets').select('*')
       ]);
+
+      if (uRes.data && uRes.data.length > 0) {
+        const u = uRes.data[0];
+        const cloudUser = {
+          id: u.id,
+          username: u.username,
+          password: u.password,
+          fullName: u.full_name,
+          roleTitle: u.role_title,
+          department: u.department,
+          businessManager: u.business_manager,
+          createdAt: u.created_at
+        };
+        localStorage.setItem('spv_dpk_local_users', JSON.stringify(cloudUser));
+        const sess = safeParse<any>('spv_dpk_current_user_session', null);
+        if (sess) {
+          sess.user = cloudUser;
+          localStorage.setItem('spv_dpk_current_user_session', JSON.stringify(sess));
+        }
+      }
 
       const persistentImages = this.getBranchImages();
 
