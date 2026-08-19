@@ -194,7 +194,7 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
                     {branch.name} ({branch.code})
                   </div>
                   <span className="font-semibold text-slate-600">
-                    SPV Area: {branch.spvArea} | KaTok: {branch.kepalaToko}
+                    SPV Area: {branch.spvArea} | KTB: {branch.kepalaToko}
                   </span>
                 </div>
 
@@ -227,7 +227,7 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
                     <span className="font-bold text-slate-800">Kunjungan Terakhir ({formatDateIndo(latestVisit.date)}):</span>
                     <p className="text-slate-600 mt-0.5">"{latestVisit.summaryConclusion}"</p>
                     <div className="text-[11px] text-emerald-700 font-semibold mt-1">
-                      Komitmen KaTok: {latestVisit.katokCommitment}
+                      Komitmen KTB: {latestVisit.katokCommitment}
                     </div>
                   </div>
                 )}

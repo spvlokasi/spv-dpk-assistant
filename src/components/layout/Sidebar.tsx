@@ -129,7 +129,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           Fokus Supervisor DPK
         </div>
         <p className="text-[11px] text-slate-400 leading-relaxed">
-          Prioritaskan kunjungan ke cabang berkategori <b>Kritis</b> & pastikan komitmen Kepala Toko tercapai setiap minggu.
+          Prioritaskan kunjungan ke cabang berkategori <b>Kritis</b> & pastikan komitmen KTB tercapai setiap minggu.
         </p>
       </div>
     </aside>

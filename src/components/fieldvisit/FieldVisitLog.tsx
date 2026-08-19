@@ -291,11 +291,11 @@ export const FieldVisitLog: React.FC<FieldVisitLogProps> = ({
                   <div className="bg-slate-850/60 p-3.5 rounded-xl border border-slate-800 space-y-1.5">
                     <div className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                       <User className="w-3.5 h-3.5 text-emerald-400" />
-                      Pembinaan Kepala Toko ({branch?.kepalaToko})
+                      Pembinaan KTB ({branch?.kepalaToko})
                     </div>
                     <p className="text-xs text-slate-300 leading-relaxed">{visit.katokCoachingTopic}</p>
                     <div className="text-[11px] text-emerald-400/90 font-medium pt-1 border-t border-slate-800">
-                      <strong>Komitmen KaTok:</strong> {visit.katokCommitment}
+                      <strong>Komitmen KTB:</strong> {visit.katokCommitment}
                     </div>
                   </div>
 
@@ -457,11 +457,11 @@ export const FieldVisitLog: React.FC<FieldVisitLogProps> = ({
 
                 <div className="sm:col-span-3">
                   <label className="block text-xs font-medium text-slate-300 mb-1">
-                    Topik Coaching Kepala Toko (Leadership, Stock Control, Sales)
+                    Topik Coaching KTB (Leadership, Stock Control, Sales)
                   </label>
                   <textarea
                     rows={2}
-                    placeholder="Poin-poin evaluasi dan bimbingan kepada Kepala Toko..."
+                    placeholder="Poin-poin evaluasi dan bimbingan kepada KTB..."
                     value={formData.katokCoachingTopic}
                     onChange={(e) => setFormData({ ...formData, katokCoachingTopic: e.target.value })}
                     className="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl p-3 focus:border-emerald-500 focus:outline-none"
@@ -470,11 +470,11 @@ export const FieldVisitLog: React.FC<FieldVisitLogProps> = ({
 
                 <div className="sm:col-span-3">
                   <label className="block text-xs font-medium text-emerald-400 mb-1">
-                    Komitmen Tindak Lanjut Kepala Toko
+                    Komitmen Tindak Lanjut KTB (Kepala Toko Basmalah)
                   </label>
                   <input
                     type="text"
-                    placeholder="Contoh: KaTok berkomitmen mengecek struk kasir tiap 2 jam..."
+                    placeholder="Contoh: KTB berkomitmen mengecek struk kasir tiap 2 jam..."
                     value={formData.katokCommitment}
                     onChange={(e) => setFormData({ ...formData, katokCommitment: e.target.value })}
                     className="w-full bg-slate-800 border border-slate-700 text-emerald-300 text-xs rounded-xl px-3.5 py-2.5 focus:border-emerald-500 focus:outline-none"

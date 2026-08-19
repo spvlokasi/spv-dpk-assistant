@@ -179,7 +179,7 @@ export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
             <div>
               <span className="font-bold text-slate-200">{currentBranch.name}</span>
               <span className="text-slate-500 mx-2">•</span>
-              <span className="text-slate-400">KaTok: <strong className="text-slate-300">{currentBranch.kepalaToko}</strong></span>
+              <span className="text-slate-400">KTB: <strong className="text-slate-300">{currentBranch.kepalaToko}</strong></span>
             </div>
           </div>
 
@@ -336,11 +336,11 @@ export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
                               onChange={(e) => handleUpdateTask(milestone, task.id, 'assignedTo', e.target.value)}
                               className="bg-slate-900 border border-slate-700 text-slate-300 text-[11px] rounded-lg px-2 py-1 focus:outline-none"
                             >
-                              <option value="Kepala Toko">👤 Kepala Toko</option>
+                              <option value="KTB">👤 KTB (Kepala Toko Basmalah)</option>
                               <option value="Kasir">💳 Kasir</option>
-                              <option value="Pramuniaga">📦 Pramuniaga</option>
-                              <option value="Kru Toko">👥 Semua Kru</option>
-                              <option value="SPV DPK">⭐ SPV DPK</option>
+                              <option value="Pramuniaga">📦 Pramuniaga / MD</option>
+                              <option value="SPV Area">👔 SPV Area</option>
+                              <option value="SPV DPK">🎯 SPV DPK</option>
                             </select>
 
                             <select

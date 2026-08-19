@@ -123,7 +123,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                         {branch.name}
                       </h4>
                       <div className="text-[11px] text-slate-400">
-                        KaTok: <span className="text-slate-300 font-medium">{branch.kepalaToko}</span> | SPV Area: {branch.spvArea}
+                        KTB: <span className="text-slate-300 font-medium">{branch.kepalaToko}</span> | SPV Area: {branch.spvArea}
                       </div>
                     </div>
                   </div>

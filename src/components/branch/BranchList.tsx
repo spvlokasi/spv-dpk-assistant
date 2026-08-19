@@ -247,7 +247,7 @@ export const BranchList: React.FC<BranchListProps> = ({
               <div className="text-xs text-slate-400 space-y-1 mb-4">
                 <div className="flex items-center gap-1.5">
                   <User className="w-3.5 h-3.5 text-slate-500" />
-                  <span>KaTok: <strong className="text-slate-300">{branch.kepalaToko}</strong></span>
+                  <span>KTB: <strong className="text-slate-300">{branch.kepalaToko}</strong></span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-slate-500" />
@@ -350,11 +350,11 @@ export const BranchList: React.FC<BranchListProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Kepala Toko (KaTok) *</label>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">Kepala Toko Basmalah (KTB) *</label>
                   <input
                     type="text"
                     required
-                    placeholder="Nama Kepala Toko"
+                    placeholder="Nama KTB (Kepala Toko Basmalah)"
                     value={formData.kepalaToko}
                     onChange={(e) => setFormData({ ...formData, kepalaToko: e.target.value })}
                     className="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl px-3.5 py-2.5 focus:border-emerald-500 focus:outline-none"

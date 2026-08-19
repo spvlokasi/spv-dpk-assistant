@@ -44,7 +44,7 @@ export const GraduationTracker: React.FC<GraduationTrackerProps> = ({
       { id: 'gc-2', title: 'Target Margin Profit Tercapai', targetDescription: 'Gross Margin >= target persentase', isMet: false },
       { id: 'gc-3', title: 'Efisiensi Biaya Operasional (Opex)', targetDescription: 'Opex di bawah batas plafon bulanan', isMet: false },
       { id: 'gc-4', title: 'Skor Audit Kepatuhan SOP & 5R', targetDescription: 'Nilai audit fisik dan kebersihan min. 85 poin', isMet: false },
-      { id: 'gc-5', title: 'Kemandirian Kepala Toko & Tim', targetDescription: 'KaTok mampu memimpin evaluasi dan briefing harian mandiri', isMet: false }
+      { id: 'gc-5', title: 'Kemandirian KTB (Kepala Toko Basmalah) & Tim', targetDescription: 'KTB mampu memimpin evaluasi dan briefing harian mandiri', isMet: false }
     ]
   };
 

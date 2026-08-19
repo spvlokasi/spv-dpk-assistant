@@ -123,7 +123,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
               <span className="flex items-center gap-1.5">
                 <User className="w-3.5 h-3.5 text-slate-500" />
-                Kepala Toko: <strong className="text-slate-200">{data.kepalaToko}</strong>
+                KTB: <strong className="text-slate-200">{data.kepalaToko}</strong>
               </span>
               <span className="flex items-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />

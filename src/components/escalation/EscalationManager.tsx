@@ -257,7 +257,7 @@ export const EscalationManager: React.FC<EscalationManagerProps> = ({
                     onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
                     className="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2.5 focus:border-emerald-500 focus:outline-none"
                   >
-                    <option value="sdm_rotasi">👥 Usulan Rotasi / Mutasi KaTok & Kru</option>
+                    <option value="sdm_rotasi">👥 Usulan Rotasi / Mutasi KTB & Kru</option>
                     <option value="renovasi_aset">🛠️ Perbaikan / Penggantian Aset Berat (Chiller/AC)</option>
                     <option value="diskon_khusus">🏷️ Usulan Program Promo / Diskon Cuci Gudang</option>
                     <option value="revisi_program">🔄 Usulan Penyesuaian Program Bisnis</option>
