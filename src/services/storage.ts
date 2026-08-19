@@ -18,6 +18,7 @@ import { getSupabaseClient } from './supabase';
 
 const KEYS = {
   BRANCHES: 'spv_dpk_branches',
+  BRANCH_IMAGES: 'spv_dpk_branch_images',
   MILESTONES: 'spv_dpk_milestones',
   VISITS: 'spv_dpk_visits',
   PERFORMANCE: 'spv_dpk_performance',
@@ -64,14 +65,37 @@ export const StorageService = {
     }
   },
 
+  // Branch Images Persistent Store
+  getBranchImages(): Record<string, string> {
+    return safeParse<Record<string, string>>(KEYS.BRANCH_IMAGES, {});
+  },
+  saveBranchImage(branchId: string, imageUrl: string) {
+    try {
+      const images = this.getBranchImages();
+      if (imageUrl) {
+        images[branchId] = imageUrl;
+      } else {
+        delete images[branchId];
+      }
+      localStorage.setItem(KEYS.BRANCH_IMAGES, JSON.stringify(images));
+    } catch (e) {
+      console.warn('saveBranchImage error:', e);
+    }
+  },
+
   // Branches
   getBranches(): Branch[] {
     const data = localStorage.getItem(KEYS.BRANCHES);
+    const images = this.getBranchImages();
     if (!data) {
       this.saveBranches(INITIAL_BRANCHES);
       return INITIAL_BRANCHES;
     }
-    return safeParse<Branch[]>(KEYS.BRANCHES, INITIAL_BRANCHES);
+    const list = safeParse<Branch[]>(KEYS.BRANCHES, INITIAL_BRANCHES);
+    return list.map(b => ({
+      ...b,
+      imageUrl: b.imageUrl || images[b.id] || (b.code === 'M3017' || b.name?.toLowerCase().includes('bugih') ? '/stores/bugih.jpg' : '')
+    }));
   },
   saveBranches(branches: Branch[]) {
     try {
@@ -92,6 +116,11 @@ export const StorageService = {
       branches.push(branch);
     }
     this.saveBranches(branches);
+
+    // Save image to dedicated persistent cache
+    if (branch.imageUrl) {
+      this.saveBranchImage(branch.id, branch.imageUrl);
+    }
 
     // Auto-Sync to Supabase Cloud
     const client = getSupabaseClient();
@@ -117,6 +146,7 @@ export const StorageService = {
           root_causes: branch.rootCauses || [],
           diagnosis_summary: branch.diagnosisSummary || '',
           recommended_strategy: branch.recommendedStrategy || '',
+          image_url: branch.imageUrl || '',
           updated_at: new Date().toISOString()
         });
       } catch (e) {
@@ -127,6 +157,7 @@ export const StorageService = {
   async deleteBranch(id: string) {
     const branches = this.getBranches().filter(b => b.id !== id);
     this.saveBranches(branches);
+    this.saveBranchImage(id, '');
 
     const client = getSupabaseClient();
     if (client) {
@@ -453,6 +484,8 @@ export const StorageService = {
         client.from('escalation_tickets').select('*')
       ]);
 
+      const persistentImages = this.getBranchImages();
+
       if (bRes.data && bRes.data.length > 0) {
         const branches: Branch[] = bRes.data.map((b: any) => ({
           id: b.id,
@@ -473,7 +506,8 @@ export const StorageService = {
           targetMaxOpexPerMonth: Number(b.target_max_opex_per_month) || 20000000,
           rootCauses: b.root_causes || [],
           diagnosisSummary: b.diagnosis_summary || '',
-          recommendedStrategy: b.recommended_strategy || ''
+          recommendedStrategy: b.recommended_strategy || '',
+          imageUrl: b.image_url || persistentImages[b.id] || (b.code === 'M3017' || b.name?.toLowerCase().includes('bugih') ? '/stores/bugih.jpg' : '')
         }));
         this.saveBranches(branches);
       }
@@ -568,6 +602,7 @@ export const StorageService = {
     const backup = {
       profile: this.getProfile(),
       branches: this.getBranches(),
+      branchImages: this.getBranchImages(),
       milestones: this.getMilestones(),
       visits: this.getVisits(),
       performance: this.getPerformance(),
@@ -581,6 +616,9 @@ export const StorageService = {
     try {
       const data = JSON.parse(jsonString);
       if (data.branches) this.saveBranches(data.branches);
+      if (data.branchImages) {
+        localStorage.setItem(KEYS.BRANCH_IMAGES, JSON.stringify(data.branchImages));
+      }
       if (data.milestones) this.saveMilestones(data.milestones);
       if (data.visits) this.saveVisits(data.visits);
       if (data.performance) this.savePerformance(data.performance);
@@ -596,6 +634,7 @@ export const StorageService = {
   resetToDefaults() {
     try {
       localStorage.removeItem(KEYS.BRANCHES);
+      localStorage.removeItem(KEYS.BRANCH_IMAGES);
       localStorage.removeItem(KEYS.MILESTONES);
       localStorage.removeItem(KEYS.VISITS);
       localStorage.removeItem(KEYS.PERFORMANCE);

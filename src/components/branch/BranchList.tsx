@@ -274,15 +274,12 @@ export const BranchList: React.FC<BranchListProps> = ({
             )}
 
             <div className="relative z-10">
-              {/* Header Badges: Code & Status at Left, Urgency at Right */}
-              <div className="flex items-center justify-between gap-1.5 mb-3">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="px-2 py-0.5 rounded-md bg-slate-800/90 border border-slate-700/80 text-[11px] font-mono font-bold text-emerald-400 shadow-sm">
-                    {branch.code}
-                  </span>
-                  <StatusBadge status={branch.status} />
-                </div>
-                <UrgencyBadge urgency={branch.urgencyLevel} />
+              {/* Header Badges: Code & Status */}
+              <div className="flex items-center gap-1.5 flex-wrap mb-3">
+                <span className="px-2 py-0.5 rounded-md bg-slate-800/90 border border-slate-700/80 text-[11px] font-mono font-bold text-emerald-400 shadow-sm">
+                  {branch.code}
+                </span>
+                <StatusBadge status={branch.status} />
               </div>
 
               <h3 className="text-base font-bold text-white group-hover:text-emerald-400 transition-colors mb-1 drop-shadow-sm">
@@ -340,9 +337,12 @@ export const BranchList: React.FC<BranchListProps> = ({
                   </button>
                 </div>
 
-                <span className="text-xs font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                  Detail →
-                </span>
+                <div className="flex items-center gap-2">
+                  <UrgencyBadge urgency={branch.urgencyLevel} />
+                  <span className="text-xs font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                    Detail →
+                  </span>
+                </div>
               </div>
             </div>
           </div>
