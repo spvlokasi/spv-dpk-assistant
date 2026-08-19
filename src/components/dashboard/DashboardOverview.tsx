@@ -58,42 +58,6 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Top Banner / Greeting */}
-      <div className="bg-gradient-to-r from-slate-850 via-slate-800 to-slate-900 border border-slate-700/80 rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
-        <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 mb-2">
-              <Flame className="w-3.5 h-3.5 text-amber-400" />
-              Sistem Pengawasan Khusus Toko Retail
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-              Selamat Bertugas, Supervisor DPK
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
-              Pantau diagnosa akar masalah toko, kawal eksekusi action plan Kepala Toko, dan dorong pemulihan kinerja agar cabang segera lulus dari status DPK.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2.5">
-            <button
-              onClick={onNewVisit}
-              className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-900/40 transition-all active:scale-95"
-            >
-              <ClipboardList className="w-4 h-4" />
-              + Catat Kunjungan
-            </button>
-            <button
-              onClick={onNewBranch}
-              className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium flex items-center gap-1.5 transition-all"
-            >
-              <Plus className="w-4 h-4 text-emerald-400" />
-              Tambah Cabang DPK
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* KPI Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-slate-850 bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
