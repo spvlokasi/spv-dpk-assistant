@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { 
-  Store, 
   Lock, 
   User, 
   Eye, 
@@ -44,10 +43,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-teal-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="w-full max-w-md space-y-6 relative z-10">
-        {/* Header Branding */}
+        {/* Header Branding with Official Logo */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 shadow-2xl shadow-emerald-950/80 border border-emerald-400/30">
-            <Store className="w-8 h-8 text-white" />
+          <div className="flex justify-center">
+            <div className="p-2 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-2xl shadow-emerald-950/60 backdrop-blur-md inline-block">
+              <img 
+                src="/logo.png" 
+                alt="Logo Basmalah" 
+                className="w-20 h-24 object-contain"
+              />
+            </div>
           </div>
 
           <div>

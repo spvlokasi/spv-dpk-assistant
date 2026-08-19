@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { 
-  Store, 
   Download, 
   Upload, 
   RefreshCw, 
@@ -132,17 +131,17 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center justify-between h-16">
           {/* Logo & Brand */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-950/50">
-              <Store className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-xl bg-slate-850 border border-slate-700/80 p-1 flex items-center justify-center shadow-lg shadow-emerald-950/50">
+              <img src="/logo.png" alt="Logo Basmalah" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-base font-bold text-white tracking-tight">SPV DPK Assistant</h1>
+                <h1 className="text-base font-bold text-white tracking-tight">SPV DPK</h1>
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                   v1.0
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">Sistem Pendampingan & Turnaround Toko Retail</p>
+              <p className="text-[11px] text-slate-400">Sistem Pendampingan & Turnaround Toko</p>
             </div>
           </div>
 
