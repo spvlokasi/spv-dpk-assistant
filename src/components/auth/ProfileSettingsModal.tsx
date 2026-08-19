@@ -59,6 +59,9 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
     if (res.success && res.user) {
       setStatusMsg({ type: 'success', text: 'Data profil identitas berhasil diperbarui!' });
       onProfileUpdated(res.user);
+      setTimeout(() => {
+        onClose();
+      }, 700);
     } else {
       setStatusMsg({ type: 'error', text: res.message });
     }
@@ -93,11 +96,14 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
     setIsLoading(false);
 
     if (res.success && res.user) {
-      setStatusMsg({ type: 'success', text: 'Username / Password baru berhasil disimpan ke Database!' });
+      setStatusMsg({ type: 'success', text: 'Username / Password baru berhasil disimpan!' });
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
       onProfileUpdated(res.user);
+      setTimeout(() => {
+        onClose();
+      }, 700);
     } else {
       setStatusMsg({ type: 'error', text: res.message });
     }
