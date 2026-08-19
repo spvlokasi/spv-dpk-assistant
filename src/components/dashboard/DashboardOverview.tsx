@@ -156,7 +156,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                 <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800/80">
                   <div>
                     <div className="flex items-center justify-between text-[11px] mb-1">
-                      <span className="text-slate-400">Target Sales Harian</span>
+                      <span className="text-slate-400">Target Laba Harian</span>
                       <span className="font-bold text-slate-200">
                         {latestPerf ? formatShortRupiah(latestPerf.salesActual) : '-'} / {formatShortRupiah(branch.targetSalesPerDay)} ({salesPct}%)
                       </span>

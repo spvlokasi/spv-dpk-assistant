@@ -165,7 +165,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
         {/* Target Parameters Setting */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
           <div className="bg-slate-850 p-3.5 rounded-xl border border-slate-800">
-            <label className="text-[11px] font-medium text-slate-400 block mb-1">Target Sales Harian</label>
+            <label className="text-[11px] font-medium text-slate-400 block mb-1">Target Laba Harian</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -195,7 +195,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
               type="number"
               value={data.targetMaxOpexPerMonth}
               onChange={(e) => setData({ ...data, targetMaxOpexPerMonth: Number(e.target.value) })}
-              className="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono font-bold text-sm rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-500"
+              className="w-full bg-slate-800 border border-slate-700 text-rose-400 font-mono font-bold text-sm rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-500"
             />
             <div className="text-[10px] text-slate-500 mt-1">{formatRupiah(data.targetMaxOpexPerMonth)}/bulan</div>
           </div>

@@ -318,7 +318,7 @@ export const BranchList: React.FC<BranchListProps> = ({
             {/* Target & Action Footer */}
             <div className="relative z-10">
               <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs mb-3">
-                <span className="text-slate-400">Target Sales:</span>
+                <span className="text-slate-400">Target Laba:</span>
                 <span className="font-bold text-emerald-400">{formatRupiah(branch.targetSalesPerDay)}/hari</span>
               </div>
 
