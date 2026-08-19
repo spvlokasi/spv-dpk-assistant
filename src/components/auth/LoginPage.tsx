@@ -46,13 +46,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         {/* Header Branding with Official Logo */}
         <div className="text-center space-y-3">
           <div className="flex justify-center">
-            <div className="p-2 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-2xl shadow-emerald-950/60 backdrop-blur-md inline-block">
-              <img 
-                src="/logo.png" 
-                alt="Logo Basmalah" 
-                className="w-20 h-24 object-contain"
-              />
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Logo Basmalah" 
+              className="h-28 w-auto max-w-[200px] object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-300"
+            />
           </div>
 
           <div>
