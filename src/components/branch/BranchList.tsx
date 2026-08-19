@@ -547,7 +547,7 @@ export const BranchList: React.FC<BranchListProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Target Omzet / Hari (Rp)</label>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">Target Laba / Hari (Rp)</label>
                   <input
                     type="number"
                     value={formData.targetSalesPerDay}
