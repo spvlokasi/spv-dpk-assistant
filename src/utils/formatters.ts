@@ -1,35 +1,38 @@
-export function formatRupiah(amount: number): string {
+export function formatRupiah(amount: number | null | undefined): string {
+  const val = Number(amount) || 0;
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
     maximumFractionDigits: 0
-  }).format(amount);
+  }).format(val);
 }
 
-export function formatShortRupiah(amount: number): string {
-  if (amount >= 1000000000) {
-    return `Rp ${(amount / 1000000000).toFixed(1)} M`;
+export function formatShortRupiah(amount: number | null | undefined): string {
+  const val = Number(amount) || 0;
+  if (val >= 1000000000) {
+    return `Rp ${(val / 1000000000).toFixed(1)} M`;
   }
-  if (amount >= 1000000) {
-    return `Rp ${(amount / 1000000).toFixed(1)} Jt`;
+  if (val >= 1000000) {
+    return `Rp ${(val / 1000000).toFixed(1)} Jt`;
   }
-  if (amount >= 1000) {
-    return `Rp ${(amount / 1000).toFixed(0)} Rb`;
+  if (val >= 1000) {
+    return `Rp ${(val / 1000).toFixed(0)} Rb`;
   }
-  return `Rp ${amount}`;
+  return `Rp ${val}`;
 }
 
-export function formatDateIndo(dateStr: string): string {
+export function formatDateIndo(dateStr: string | null | undefined): string {
   if (!dateStr) return '-';
   try {
     const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return String(dateStr);
     return new Intl.DateTimeFormat('id-ID', {
       day: 'numeric',
       month: 'short',
       year: 'numeric'
     }).format(d);
   } catch {
-    return dateStr;
+    return String(dateStr);
   }
 }
 
@@ -42,5 +45,5 @@ export function formatCategoryName(category: string): string {
     traffic_rendah: '🚶 Traffic Struk Rendah',
     disiplin_sdm: '👥 Kedisiplinan & SDM'
   };
-  return map[category] || category;
+  return map[category] || category || '-';
 }

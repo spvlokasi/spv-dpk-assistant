@@ -40,14 +40,28 @@ const DEFAULT_PROFILE: SpvProfile = {
   roleTitle: 'Supervisor DPK'
 };
 
+function safeParse<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw);
+  } catch (e) {
+    console.warn(`Storage parse error for ${key}:`, e);
+    return fallback;
+  }
+}
+
 export const StorageService = {
   // Profile
   getProfile(): SpvProfile {
-    const data = localStorage.getItem(KEYS.SPV_PROFILE);
-    return data ? JSON.parse(data) : DEFAULT_PROFILE;
+    return safeParse<SpvProfile>(KEYS.SPV_PROFILE, DEFAULT_PROFILE);
   },
   saveProfile(profile: SpvProfile) {
-    localStorage.setItem(KEYS.SPV_PROFILE, JSON.stringify(profile));
+    try {
+      localStorage.setItem(KEYS.SPV_PROFILE, JSON.stringify(profile));
+    } catch (e) {
+      console.warn('saveProfile error:', e);
+    }
   },
 
   // Branches
@@ -57,10 +71,14 @@ export const StorageService = {
       this.saveBranches(INITIAL_BRANCHES);
       return INITIAL_BRANCHES;
     }
-    return JSON.parse(data);
+    return safeParse<Branch[]>(KEYS.BRANCHES, INITIAL_BRANCHES);
   },
   saveBranches(branches: Branch[]) {
-    localStorage.setItem(KEYS.BRANCHES, JSON.stringify(branches));
+    try {
+      localStorage.setItem(KEYS.BRANCHES, JSON.stringify(branches));
+    } catch (e) {
+      console.warn('saveBranches error:', e);
+    }
   },
   getBranchById(id: string): Branch | undefined {
     return this.getBranches().find(b => b.id === id);
@@ -83,22 +101,22 @@ export const StorageService = {
           id: branch.id,
           code: branch.code,
           name: branch.name,
-          address: branch.address,
-          phone: branch.phone,
-          kepala_toko: branch.kepalaToko,
-          spv_area: branch.spvArea,
-          manajer_bisnis: branch.manajerBisnis,
+          address: branch.address || '',
+          phone: branch.phone || '',
+          kepala_toko: branch.kepalaToko || '',
+          spv_area: branch.spvArea || '',
+          manajer_bisnis: branch.manajerBisnis || 'H. Bambang Irawan',
           entry_date: branch.entryDate,
-          target_graduation_date: branch.targetGraduationDate,
+          target_graduation_date: branch.targetGraduationDate || '',
           category: branch.category,
           status: branch.status,
           urgency_level: branch.urgencyLevel,
-          target_sales_per_day: branch.targetSalesPerDay,
-          target_margin_pct: branch.targetMarginPct,
-          target_max_opex_per_month: branch.targetMaxOpexPerMonth,
-          root_causes: branch.rootCauses,
-          diagnosis_summary: branch.diagnosisSummary,
-          recommended_strategy: branch.recommendedStrategy,
+          target_sales_per_day: Number(branch.targetSalesPerDay) || 0,
+          target_margin_pct: Number(branch.targetMarginPct) || 0,
+          target_max_opex_per_month: Number(branch.targetMaxOpexPerMonth) || 0,
+          root_causes: branch.rootCauses || [],
+          diagnosis_summary: branch.diagnosisSummary || '',
+          recommended_strategy: branch.recommendedStrategy || '',
           updated_at: new Date().toISOString()
         });
       } catch (e) {
@@ -123,7 +141,7 @@ export const StorageService = {
   // Action Plan Milestones
   getMilestones(branchId?: string): ActionPlanMilestone[] {
     const data = localStorage.getItem(KEYS.MILESTONES);
-    const milestones: ActionPlanMilestone[] = data ? JSON.parse(data) : INITIAL_MILESTONES;
+    const milestones = data ? safeParse<ActionPlanMilestone[]>(KEYS.MILESTONES, INITIAL_MILESTONES) : INITIAL_MILESTONES;
     if (!data) this.saveMilestones(INITIAL_MILESTONES);
     if (branchId) {
       return milestones.filter(m => m.branchId === branchId);
@@ -131,7 +149,11 @@ export const StorageService = {
     return milestones;
   },
   saveMilestones(milestones: ActionPlanMilestone[]) {
-    localStorage.setItem(KEYS.MILESTONES, JSON.stringify(milestones));
+    try {
+      localStorage.setItem(KEYS.MILESTONES, JSON.stringify(milestones));
+    } catch (e) {
+      console.warn('saveMilestones error:', e);
+    }
   },
   async saveMilestone(milestone: ActionPlanMilestone) {
     const all = this.getMilestones();
@@ -152,9 +174,9 @@ export const StorageService = {
           branch_id: milestone.branchId,
           week_number: milestone.weekNumber,
           title: milestone.title,
-          target_metric: milestone.targetMetric,
+          target_metric: milestone.targetMetric || '',
           status: milestone.status,
-          tasks: milestone.tasks,
+          tasks: milestone.tasks || [],
           updated_at: new Date().toISOString()
         });
       } catch (e) {
@@ -179,7 +201,7 @@ export const StorageService = {
   // Field Visits
   getVisits(branchId?: string): FieldVisit[] {
     const data = localStorage.getItem(KEYS.VISITS);
-    const visits: FieldVisit[] = data ? JSON.parse(data) : INITIAL_FIELD_VISITS;
+    const visits = data ? safeParse<FieldVisit[]>(KEYS.VISITS, INITIAL_FIELD_VISITS) : INITIAL_FIELD_VISITS;
     if (!data) this.saveVisits(INITIAL_FIELD_VISITS);
     if (branchId) {
       return visits.filter(v => v.branchId === branchId);
@@ -187,7 +209,11 @@ export const StorageService = {
     return visits.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   },
   saveVisits(visits: FieldVisit[]) {
-    localStorage.setItem(KEYS.VISITS, JSON.stringify(visits));
+    try {
+      localStorage.setItem(KEYS.VISITS, JSON.stringify(visits));
+    } catch (e) {
+      console.warn('saveVisits error:', e);
+    }
   },
   async saveVisit(visit: FieldVisit) {
     const all = this.getVisits();
@@ -210,13 +236,13 @@ export const StorageService = {
           visit_time: visit.time,
           spv_name: visit.spvName,
           agenda: visit.agenda,
-          katok_coaching_topic: visit.katokCoachingTopic,
-          katok_commitment: visit.katokCommitment,
-          crew_coaching_topic: visit.crewCoachingTopic,
-          spv_area_coordination_note: visit.spvAreaCoordinationNote,
-          general_rating: visit.generalRating,
-          summary_conclusion: visit.summaryConclusion,
-          issues: visit.issues
+          katok_coaching_topic: visit.katokCoachingTopic || '',
+          katok_commitment: visit.katokCommitment || '',
+          crew_coaching_topic: visit.crewCoachingTopic || '',
+          spv_area_coordination_note: visit.spvAreaCoordinationNote || '',
+          general_rating: Number(visit.generalRating) || 3,
+          summary_conclusion: visit.summaryConclusion || '',
+          issues: visit.issues || []
         });
       } catch (e) {
         console.warn('Auto-sync visit failed:', e);
@@ -240,7 +266,7 @@ export const StorageService = {
   // Daily Performance
   getPerformance(branchId?: string): DailyPerformance[] {
     const data = localStorage.getItem(KEYS.PERFORMANCE);
-    const list: DailyPerformance[] = data ? JSON.parse(data) : INITIAL_PERFORMANCE;
+    const list = data ? safeParse<DailyPerformance[]>(KEYS.PERFORMANCE, INITIAL_PERFORMANCE) : INITIAL_PERFORMANCE;
     if (!data) this.savePerformance(INITIAL_PERFORMANCE);
     if (branchId) {
       return list.filter(p => p.branchId === branchId).sort((a, b) => a.date.localeCompare(b.date));
@@ -248,7 +274,11 @@ export const StorageService = {
     return list;
   },
   savePerformance(list: DailyPerformance[]) {
-    localStorage.setItem(KEYS.PERFORMANCE, JSON.stringify(list));
+    try {
+      localStorage.setItem(KEYS.PERFORMANCE, JSON.stringify(list));
+    } catch (e) {
+      console.warn('savePerformance error:', e);
+    }
   },
   async addPerformanceEntry(entry: DailyPerformance) {
     const all = this.getPerformance();
@@ -268,13 +298,13 @@ export const StorageService = {
           id: entry.id,
           branch_id: entry.branchId,
           record_date: entry.date,
-          sales_actual: entry.salesActual,
-          sales_target: entry.salesTarget,
-          margin_pct: entry.marginPct,
-          opex: entry.opex,
-          traffic_count: entry.trafficCount,
-          basket_size: entry.basketSize,
-          notes: entry.notes
+          sales_actual: Number(entry.salesActual) || 0,
+          sales_target: Number(entry.salesTarget) || 0,
+          margin_pct: Number(entry.marginPct) || 0,
+          opex: Number(entry.opex) || 0,
+          traffic_count: Number(entry.trafficCount) || 0,
+          basket_size: Number(entry.basketSize) || 0,
+          notes: entry.notes || ''
         });
       } catch (e) {
         console.warn('Auto-sync daily performance failed:', e);
@@ -302,13 +332,17 @@ export const StorageService = {
       this.saveGraduations(INITIAL_GRADUATIONS);
       return INITIAL_GRADUATIONS;
     }
-    return JSON.parse(data);
+    return safeParse<BranchGraduation[]>(KEYS.GRADUATIONS, INITIAL_GRADUATIONS);
   },
   getGraduationByBranch(branchId: string): BranchGraduation | undefined {
     return this.getGraduations().find(g => g.branchId === branchId);
   },
   saveGraduations(list: BranchGraduation[]) {
-    localStorage.setItem(KEYS.GRADUATIONS, JSON.stringify(list));
+    try {
+      localStorage.setItem(KEYS.GRADUATIONS, JSON.stringify(list));
+    } catch (e) {
+      console.warn('saveGraduations error:', e);
+    }
   },
   async saveGraduation(item: BranchGraduation) {
     const all = this.getGraduations();
@@ -326,12 +360,12 @@ export const StorageService = {
       try {
         await client.from('branch_graduations').upsert({
           branch_id: item.branchId,
-          consecutive_months_hit: item.consecutiveMonthsHit,
-          target_months_required: item.targetMonthsRequired,
-          checklists: item.checklists,
-          best_practice_learnings: item.bestPracticeLearnings,
-          graduation_date: item.graduationDate,
-          approved_by_manager: item.approvedByManager,
+          consecutive_months_hit: Number(item.consecutiveMonthsHit) || 0,
+          target_months_required: Number(item.targetMonthsRequired) || 3,
+          checklists: item.checklists || [],
+          best_practice_learnings: item.bestPracticeLearnings || '',
+          graduation_date: item.graduationDate || null,
+          approved_by_manager: Boolean(item.approvedByManager),
           updated_at: new Date().toISOString()
         });
       } catch (e) {
@@ -343,7 +377,7 @@ export const StorageService = {
   // Escalation Tickets
   getEscalations(branchId?: string): EscalationTicket[] {
     const data = localStorage.getItem(KEYS.ESCALATIONS);
-    const list: EscalationTicket[] = data ? JSON.parse(data) : INITIAL_ESCALATIONS;
+    const list = data ? safeParse<EscalationTicket[]>(KEYS.ESCALATIONS, INITIAL_ESCALATIONS) : INITIAL_ESCALATIONS;
     if (!data) this.saveEscalations(INITIAL_ESCALATIONS);
     if (branchId) {
       return list.filter(e => e.branchId === branchId);
@@ -351,7 +385,11 @@ export const StorageService = {
     return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   },
   saveEscalations(list: EscalationTicket[]) {
-    localStorage.setItem(KEYS.ESCALATIONS, JSON.stringify(list));
+    try {
+      localStorage.setItem(KEYS.ESCALATIONS, JSON.stringify(list));
+    } catch (e) {
+      console.warn('saveEscalations error:', e);
+    }
   },
   async saveEscalation(ticket: EscalationTicket) {
     const all = this.getEscalations();
@@ -376,9 +414,9 @@ export const StorageService = {
           category: ticket.category,
           urgency: ticket.urgency,
           description: ticket.description,
-          proposed_solution: ticket.proposedSolution,
+          proposed_solution: ticket.proposedSolution || '',
           status: ticket.status,
-          manager_feedback: ticket.managerFeedback,
+          manager_feedback: ticket.managerFeedback || '',
           updated_at: new Date().toISOString()
         });
       } catch (e) {
@@ -446,7 +484,7 @@ export const StorageService = {
           branchId: m.branch_id,
           weekNumber: m.week_number,
           title: m.title,
-          targetMetric: m.target_metric,
+          targetMetric: m.target_metric || '',
           status: m.status,
           tasks: m.tasks || []
         }));
@@ -465,7 +503,7 @@ export const StorageService = {
           katokCommitment: v.katok_commitment || '',
           crewCoachingTopic: v.crew_coaching_topic || '',
           spvAreaCoordinationNote: v.spv_area_coordination_note || '',
-          generalRating: v.general_rating || 3,
+          generalRating: Number(v.general_rating) || 3,
           summaryConclusion: v.summary_conclusion || '',
           issues: v.issues || []
         }));
@@ -491,8 +529,8 @@ export const StorageService = {
       if (gRes.data && gRes.data.length > 0) {
         const graduations: BranchGraduation[] = gRes.data.map((g: any) => ({
           branchId: g.branch_id,
-          consecutiveMonthsHit: g.consecutive_months_hit || 0,
-          targetMonthsRequired: g.target_months_required || 3,
+          consecutiveMonthsHit: Number(g.consecutive_months_hit) || 0,
+          targetMonthsRequired: Number(g.target_months_required) || 3,
           checklists: g.checklists || [],
           bestPracticeLearnings: g.best_practice_learnings || '',
           graduationDate: g.graduation_date,
@@ -556,12 +594,16 @@ export const StorageService = {
     }
   },
   resetToDefaults() {
-    localStorage.removeItem(KEYS.BRANCHES);
-    localStorage.removeItem(KEYS.MILESTONES);
-    localStorage.removeItem(KEYS.VISITS);
-    localStorage.removeItem(KEYS.PERFORMANCE);
-    localStorage.removeItem(KEYS.GRADUATIONS);
-    localStorage.removeItem(KEYS.ESCALATIONS);
-    localStorage.removeItem(KEYS.SPV_PROFILE);
+    try {
+      localStorage.removeItem(KEYS.BRANCHES);
+      localStorage.removeItem(KEYS.MILESTONES);
+      localStorage.removeItem(KEYS.VISITS);
+      localStorage.removeItem(KEYS.PERFORMANCE);
+      localStorage.removeItem(KEYS.GRADUATIONS);
+      localStorage.removeItem(KEYS.ESCALATIONS);
+      localStorage.removeItem(KEYS.SPV_PROFILE);
+    } catch (e) {
+      console.warn('resetToDefaults error:', e);
+    }
   }
 };
