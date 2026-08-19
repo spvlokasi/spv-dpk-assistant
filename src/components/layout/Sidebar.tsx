@@ -35,10 +35,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'branches',
-      label: 'Cabang & Diagnostik RCA',
+      label: 'Cabang & Diagnosa',
       icon: Store,
       badge: branchCount,
-      desc: 'Profil toko & akar masalah'
+      desc: ''
     },
     {
       id: 'actionplan',
