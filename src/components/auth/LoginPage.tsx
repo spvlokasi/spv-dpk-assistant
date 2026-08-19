@@ -6,13 +6,9 @@ import {
   Eye, 
   EyeOff, 
   ArrowRight, 
-  ShieldCheck, 
-  Flame, 
-  Sparkles,
-  AlertCircle,
-  CheckCircle2
+  AlertCircle
 } from 'lucide-react';
-import { AuthService, DEFAULT_USER } from '../../services/auth';
+import { AuthService } from '../../services/auth';
 import { UserAccount } from '../../types/auth';
 
 interface LoginPageProps {
@@ -41,20 +37,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     }
   };
 
-  const handleFillDefault = () => {
-    const local = AuthService.getLocalUser();
-    setUsername(local.username);
-    setPassword(local.password);
-    setErrorMsg(null);
-  };
-
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden font-sans">
       {/* Ambient background glows */}
       <div className="absolute -top-32 -left-32 w-96 h-96 bg-emerald-600/15 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-teal-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
-      <div className="w-full max-w-md space-y-8 relative z-10">
+      <div className="w-full max-w-md space-y-6 relative z-10">
         {/* Header Branding */}
         <div className="text-center space-y-3">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 shadow-2xl shadow-emerald-950/80 border border-emerald-400/30">
@@ -63,21 +52,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              SPV DPK Assistant
+              SPV DPK
             </h1>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1">
-              Sistem Manajemen Turnaround & Pengawasan Khusus Toko
-            </p>
-          </div>
-
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            Portal Masuk Supervisor Bisnis
           </div>
         </div>
 
         {/* Login Form Card */}
-        <div className="bg-slate-900/90 border border-slate-800 backdrop-blur-xl p-7 sm:p-8 rounded-3xl shadow-2xl space-y-6">
+        <div className="bg-slate-900/90 border border-slate-800 backdrop-blur-xl p-7 sm:p-8 rounded-3xl shadow-2xl space-y-5">
           {errorMsg && (
             <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs flex items-center gap-2 animate-shake">
               <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
@@ -132,25 +113,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 <span>Memverifikasi Akun...</span>
               ) : (
                 <>
-                  <span>Masuk ke Dashboard</span>
+                  <span>Login</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
           </form>
-
-          {/* Quick Default Credential Help */}
-          <div className="pt-4 border-t border-slate-800 text-center">
-            <div className="text-[11px] text-slate-400 mb-2">Akun Default Masuk:</div>
-            <button
-              type="button"
-              onClick={handleFillDefault}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-750 text-[11px] text-slate-300 border border-slate-700/80 transition-colors font-mono"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Username: <strong className="text-emerald-400">spvdpk</strong> | Pass: <strong className="text-emerald-400">spvdpk1745</strong></span>
-            </button>
-          </div>
         </div>
 
         {/* Footer info */}
