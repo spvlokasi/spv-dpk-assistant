@@ -11,7 +11,9 @@ import {
   CheckCircle2, 
   User, 
   ShieldCheck,
-  AlertTriangle
+  AlertTriangle,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { StorageService } from '../../services/storage';
 import { SupabaseService } from '../../services/supabase';
@@ -35,6 +37,7 @@ export const SettingsAndData: React.FC<SettingsAndDataProps> = ({
   const [cloudStatusMsg, setCloudStatusMsg] = useState<string | null>(null);
   const [isTesting, setIsTesting] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [showAdvancedConfig, setShowAdvancedConfig] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -68,6 +71,7 @@ export const SettingsAndData: React.FC<SettingsAndDataProps> = ({
     const res = await SupabaseService.syncLocalToCloud(payload);
     setIsSyncing(false);
     showToast(res.message);
+    onDataChange();
   };
 
   const handleExport = () => {
@@ -123,7 +127,7 @@ export const SettingsAndData: React.FC<SettingsAndDataProps> = ({
 
       {/* Grid Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Card 1: Cloud Database Supabase */}
+        {/* Card 1: Cloud Database Supabase (Streamlined & Clean) */}
         <div className="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-2xl shadow-xl space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-800">
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
@@ -134,72 +138,88 @@ export const SettingsAndData: React.FC<SettingsAndDataProps> = ({
               isCloudConnected ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'
             }`}>
               <span className={`w-2 h-2 rounded-full ${isCloudConnected ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`}></span>
-              {isCloudConnected ? 'Cloud Online' : 'Belum Terhubung'}
+              {isCloudConnected ? 'Auto-Sync Aktif' : 'Belum Terhubung'}
             </span>
           </div>
 
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Data tersimpan di server PostgreSQL Supabase secara otomatis dan tersinkron saat dibuka di laptop maupun smartphone.
-          </p>
-
-          <div className="space-y-3 text-xs">
-            <div>
-              <label className="block text-slate-300 font-medium mb-1 flex items-center gap-1.5">
-                <LinkIcon className="w-3.5 h-3.5 text-emerald-400" /> URL Project Supabase
-              </label>
-              <input
-                type="text"
-                value={supabaseUrl}
-                onChange={(e) => setSupabaseUrl(e.target.value)}
-                placeholder="https://xxxxxxxx.supabase.co"
-                className="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded-xl px-3 py-2.5 focus:border-emerald-500 focus:outline-none font-mono"
-              />
+          <div className="p-3.5 bg-emerald-950/20 border border-emerald-900/40 rounded-xl space-y-1.5">
+            <div className="text-xs font-semibold text-emerald-300 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              Sinkronisasi Otomatis Berjalan
             </div>
+            <p className="text-[11px] text-slate-300 leading-relaxed">
+              Setiap kali Anda menambah data cabang, input kunjungan, atau mencatat sales harian, data langsung otomatis tersimpan ke server cloud Supabase.
+            </p>
+          </div>
 
-            <div>
-              <label className="block text-slate-300 font-medium mb-1 flex items-center gap-1.5">
-                <Key className="w-3.5 h-3.5 text-amber-400" /> Anon Public Key
-              </label>
-              <textarea
-                rows={2}
-                value={supabaseKey}
-                onChange={(e) => setSupabaseKey(e.target.value)}
-                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                className="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded-xl p-2.5 focus:border-emerald-500 focus:outline-none font-mono"
-              />
-            </div>
+          <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
+            <button
+              type="button"
+              onClick={handleSyncToCloud}
+              disabled={isSyncing}
+              className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-950 transition-all flex items-center gap-1.5 disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+              {isSyncing ? 'Menyinkronkan...' : 'Sinkronkan Ulang Semua Data'}
+            </button>
 
-            {cloudStatusMsg && (
-              <div className={`p-3 rounded-xl border text-xs ${
-                isCloudConnected ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300' : 'bg-slate-800 border-slate-700 text-slate-300'
-              }`}>
-                {cloudStatusMsg}
+            <button
+              type="button"
+              onClick={() => setShowAdvancedConfig(!showAdvancedConfig)}
+              className="text-[11px] text-slate-400 hover:text-slate-200 flex items-center gap-1 p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+            >
+              <span>{showAdvancedConfig ? 'Tutup Pengaturan Lanjutan' : 'Ganti Database (Lanjutan)'}</span>
+              {showAdvancedConfig ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
+          </div>
+
+          {/* Collapsible Advanced Config */}
+          {showAdvancedConfig && (
+            <div className="pt-3 border-t border-slate-800 space-y-3 text-xs animate-in fade-in zoom-in-95">
+              <div>
+                <label className="block text-slate-300 font-medium mb-1 flex items-center gap-1.5">
+                  <LinkIcon className="w-3.5 h-3.5 text-emerald-400" /> URL Project Supabase
+                </label>
+                <input
+                  type="text"
+                  value={supabaseUrl}
+                  onChange={(e) => setSupabaseUrl(e.target.value)}
+                  placeholder="https://xxxxxxxx.supabase.co"
+                  className="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded-xl px-3 py-2 text-xs focus:border-emerald-500 focus:outline-none font-mono"
+                />
               </div>
-            )}
 
-            <div className="flex items-center gap-2 pt-2">
+              <div>
+                <label className="block text-slate-300 font-medium mb-1 flex items-center gap-1.5">
+                  <Key className="w-3.5 h-3.5 text-amber-400" /> Anon Public Key
+                </label>
+                <textarea
+                  rows={2}
+                  value={supabaseKey}
+                  onChange={(e) => setSupabaseKey(e.target.value)}
+                  placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  className="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded-xl p-2 text-xs focus:border-emerald-500 focus:outline-none font-mono"
+                />
+              </div>
+
+              {cloudStatusMsg && (
+                <div className={`p-2.5 rounded-xl border text-[11px] ${
+                  isCloudConnected ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300' : 'bg-slate-800 border-slate-700 text-slate-300'
+                }`}>
+                  {cloudStatusMsg}
+                </div>
+              )}
+
               <button
                 type="button"
                 onClick={handleSaveCloudConfig}
                 disabled={isTesting}
-                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-950 transition-all flex items-center gap-1.5"
+                className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-slate-700 transition-all flex items-center justify-center gap-1.5"
               >
-                {isTesting ? 'Menguji...' : 'Simpan & Tes Koneksi'}
+                {isTesting ? 'Menguji...' : 'Simpan Kredensial Baru & Uji Koneksi'}
               </button>
-
-              {isCloudConnected && (
-                <button
-                  type="button"
-                  onClick={handleSyncToCloud}
-                  disabled={isSyncing}
-                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-950 transition-all flex items-center gap-1.5"
-                >
-                  <Cloud className="w-4 h-4" />
-                  {isSyncing ? 'Mengunggah...' : 'Upload Data ke Cloud'}
-                </button>
-              )}
             </div>
-          </div>
+          )}
         </div>
 
         {/* Card 2: Cadangan Data (Backup & Restore JSON) */}
