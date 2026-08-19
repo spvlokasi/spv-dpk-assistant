@@ -15,13 +15,15 @@ interface SidebarProps {
   setActiveTab: (tab: string) => void;
   branchCount: number;
   openIssuesCount: number;
+  pendingEscalationCount: number;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
   activeTab, 
   setActiveTab, 
   branchCount,
-  openIssuesCount 
+  openIssuesCount,
+  pendingEscalationCount 
 }) => {
   const menuItems = [
     {
@@ -48,7 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Kunjungan & Coaching',
       icon: ClipboardCheck,
       badge: openIssuesCount > 0 ? `${openIssuesCount} Temuan` : undefined,
-      badgeColor: 'bg-amber-500/20 text-amber-300',
+      badgeColor: 'bg-amber-500/20 text-amber-300 border border-amber-500/30',
       desc: 'Log lapangan & pembinaan'
     },
     {
@@ -73,6 +75,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'escalations',
       label: 'Eskalasi Kendala Berat',
       icon: AlertTriangle,
+      badge: pendingEscalationCount > 0 ? `${pendingEscalationCount} Belum Disetujui` : undefined,
+      badgeColor: 'bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse',
       desc: 'Pengajuan keputusan ke BM'
     }
   ];

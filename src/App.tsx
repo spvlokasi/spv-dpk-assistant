@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StorageService } from './services/storage';
-import { AuthService, DEFAULT_USER } from './services/auth';
+import { AuthService } from './services/auth';
 import { 
   Branch, 
   ActionPlanMilestone, 
@@ -173,11 +173,10 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      {/* Navbar Header */}
+      {/* Clean Navbar Header */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        escalationCount={pendingEscalationsCount}
         onDataChange={loadData}
         currentUser={currentUser}
         onOpenProfileModal={() => setShowProfileModal(true)}
@@ -186,7 +185,7 @@ export const App: React.FC = () => {
 
       {/* Main Body */}
       <div className="flex-1 flex max-w-7xl w-full mx-auto pb-20 md:pb-8">
-        {/* Desktop Sidebar */}
+        {/* Desktop Sidebar with Escalation Pending Notification Badge */}
         <Sidebar
           activeTab={activeTab}
           setActiveTab={(tab) => {
@@ -195,6 +194,7 @@ export const App: React.FC = () => {
           }}
           branchCount={branches.length}
           openIssuesCount={openIssuesCount}
+          pendingEscalationCount={pendingEscalationsCount}
         />
 
         {/* Content Area */}

@@ -3,7 +3,6 @@ import {
   Download, 
   Upload, 
   RefreshCw, 
-  ShieldAlert, 
   UserCheck, 
   CheckCircle2,
   Database,
@@ -11,8 +10,7 @@ import {
   Key,
   Link as LinkIcon,
   Cloud,
-  LogOut,
-  User
+  LogOut
 } from 'lucide-react';
 import { StorageService } from '../../services/storage';
 import { SupabaseService } from '../../services/supabase';
@@ -21,7 +19,6 @@ import { UserAccount } from '../../types/auth';
 interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  escalationCount: number;
   onDataChange: () => void;
   currentUser: UserAccount;
   onOpenProfileModal: () => void;
@@ -31,7 +28,6 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ 
   activeTab, 
   setActiveTab, 
-  escalationCount,
   onDataChange,
   currentUser,
   onOpenProfileModal,
@@ -129,7 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 no-print">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo & Brand (Clean, no boxes, no subtexts) */}
+          {/* Logo & Brand (Clean & Minimalist) */}
           <div className="flex items-center gap-3">
             <img 
               src="/logo.png" 
@@ -141,57 +137,33 @@ export const Navbar: React.FC<NavbarProps> = ({
             </h1>
           </div>
 
-          {/* Quick Info & Action Bar */}
+          {/* Clean Right Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Cloud Supabase Status Button */}
-            <button
-              onClick={() => setShowCloudModal(true)}
-              className={`p-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-all ${
-                isCloudConnected
-                  ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/60 hover:bg-emerald-900/40'
-                  : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200'
-              }`}
-              title="Pengaturan Database Cloud Supabase"
-            >
-              <Database className={`w-4 h-4 ${isCloudConnected ? 'text-emerald-400' : 'text-slate-400'}`} />
-              <span className="hidden sm:inline">{isCloudConnected ? 'Cloud Online' : 'Setup Cloud'}</span>
-              <span className={`w-2 h-2 rounded-full ${isCloudConnected ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`}></span>
-            </button>
-
-            {/* Escalation Alert Shortcut */}
-            <button
-              onClick={() => setActiveTab('escalations')}
-              className={`relative p-2 rounded-xl text-sm flex items-center gap-1.5 transition-colors ${
-                activeTab === 'escalations' 
-                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' 
-                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-              }`}
-              title="Tiket Eskalasi ke Manajer Bisnis"
-            >
-              <ShieldAlert className="w-4 h-4 text-rose-400" />
-              <span className="hidden sm:inline text-xs font-medium">Eskalasi BM</span>
-              {escalationCount > 0 && (
-                <span className="w-5 h-5 rounded-full bg-rose-600 text-white text-[10px] font-bold flex items-center justify-center">
-                  {escalationCount}
-                </span>
-              )}
-            </button>
-
-            {/* Backup & Tools Menu */}
+            {/* Backup & Cloud Menu */}
             <div className="relative">
               <button
                 onClick={() => setShowBackupMenu(!showBackupMenu)}
-                className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium flex items-center gap-1.5 border border-slate-700"
+                className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium flex items-center gap-1.5 border border-slate-700 transition-colors"
               >
                 <Download className="w-4 h-4 text-slate-400" />
                 <span className="hidden md:inline">Cadangan</span>
               </button>
 
               {showBackupMenu && (
-                <div className="absolute right-0 mt-2 w-56 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                <div className="absolute right-0 mt-2 w-60 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
                   <div className="px-3 py-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
-                    Penyimpanan Lokal
+                    Penyimpanan & Database
                   </div>
+                  <button
+                    onClick={() => {
+                      setShowBackupMenu(false);
+                      setShowCloudModal(true);
+                    }}
+                    className="w-full px-4 py-2 text-left text-xs text-emerald-300 hover:bg-slate-800 flex items-center gap-2.5"
+                  >
+                    <Database className="w-3.5 h-3.5 text-emerald-400" />
+                    Pengaturan Database Supabase
+                  </button>
                   <button
                     onClick={handleExport}
                     className="w-full px-4 py-2 text-left text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-2.5"
