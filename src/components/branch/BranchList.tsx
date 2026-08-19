@@ -274,8 +274,8 @@ export const BranchList: React.FC<BranchListProps> = ({
             )}
 
             <div className="relative z-10">
-              {/* Header Badges: Code & Status */}
-              <div className="flex items-center gap-1.5 flex-wrap mb-3">
+              {/* Header Badges: Code at Left, Status Badge at Top-Right */}
+              <div className="flex items-center justify-between gap-1.5 mb-3">
                 <span className="px-2 py-0.5 rounded-md bg-slate-800/90 border border-slate-700/80 text-[11px] font-mono font-bold text-emerald-400 shadow-sm">
                   {branch.code}
                 </span>
