@@ -107,15 +107,28 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             const totalTasks = branchMilestones.flatMap(m => m.tasks).length;
             const taskPct = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
+            const imgUrl = branch.imageUrl || (branch.code === 'M3017' || branch.name.toLowerCase().includes('bugih') ? '/stores/bugih.jpg' : '');
+
             return (
               <div
                 key={branch.id}
                 onClick={() => onSelectBranch(branch.id)}
-                className="bg-slate-900 border border-slate-800 hover:border-emerald-500/50 p-5 rounded-2xl transition-all cursor-pointer hover:shadow-xl hover:shadow-emerald-950/20 group space-y-3"
+                className="group relative overflow-hidden bg-slate-900 border border-slate-800 hover:border-emerald-500/60 p-5 rounded-2xl transition-all cursor-pointer hover:shadow-xl hover:shadow-emerald-950/20 space-y-3"
               >
-                <div className="flex items-center justify-between gap-2">
+                {/* Translucent Store Photo */}
+                {imgUrl && (
+                  <>
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center opacity-15 group-hover:opacity-25 transition-opacity duration-300 pointer-events-none rounded-2xl"
+                      style={{ backgroundImage: `url(${imgUrl})` }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/90 to-slate-900/70 pointer-events-none rounded-2xl" />
+                  </>
+                )}
+
+                <div className="relative z-10 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-emerald-400 font-mono">
+                    <div className="w-9 h-9 rounded-xl bg-slate-800/90 border border-slate-700 flex items-center justify-center font-bold text-xs text-emerald-400 font-mono shadow-sm">
                       {branch.code}
                     </div>
                     <div>
@@ -134,13 +147,13 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                   </div>
                 </div>
 
-                <div className="text-xs text-slate-400 bg-slate-850 p-3 rounded-xl border border-slate-800/80">
-                  <span className="font-semibold text-slate-300">Kategori Masalah:</span> {formatCategoryName(branch.category)}
-                  <div className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">{branch.diagnosisSummary}</div>
+                <div className="relative z-10 text-xs text-slate-300 bg-slate-850/85 p-3 rounded-xl border border-slate-800/90 backdrop-blur-sm">
+                  <span className="font-semibold text-slate-200">Kategori Masalah:</span> {formatCategoryName(branch.category)}
+                  <div className="text-[11px] text-slate-300 line-clamp-1 mt-0.5">{branch.diagnosisSummary}</div>
                 </div>
 
                 {/* Progress Bars */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+                <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800/80">
                   <div>
                     <div className="flex items-center justify-between text-[11px] mb-1">
                       <span className="text-slate-400">Target Sales Harian</span>

@@ -36,6 +36,7 @@ export interface Branch {
   rootCauses: RootCauseFactor[];
   diagnosisSummary: string;
   recommendedStrategy: string;
+  imageUrl?: string;
 }
 
 export interface ActionPlanTask {
