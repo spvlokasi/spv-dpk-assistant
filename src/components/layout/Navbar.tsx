@@ -129,20 +129,16 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 no-print">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo & Brand */}
+          {/* Logo & Brand (Clean, no boxes, no subtexts) */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-slate-850 border border-slate-700/80 p-1 flex items-center justify-center shadow-lg shadow-emerald-950/50">
-              <img src="/logo.png" alt="Logo Basmalah" className="w-full h-full object-contain" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-base font-bold text-white tracking-tight">SPV DPK</h1>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  v1.0
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400">Sistem Pendampingan & Turnaround Toko</p>
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Logo Basmalah" 
+              className="h-10 w-auto object-contain" 
+            />
+            <h1 className="text-lg font-extrabold text-white tracking-tight">
+              SPV DPK
+            </h1>
           </div>
 
           {/* Quick Info & Action Bar */}
