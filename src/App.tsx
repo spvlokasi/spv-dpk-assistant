@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StorageService } from './services/storage';
+import { AuthService, DEFAULT_USER } from './services/auth';
 import { 
   Branch, 
   ActionPlanMilestone, 
@@ -8,6 +9,9 @@ import {
   BranchGraduation, 
   EscalationTicket 
 } from './types';
+import { UserAccount } from './types/auth';
+import { LoginPage } from './components/auth/LoginPage';
+import { ProfileSettingsModal } from './components/auth/ProfileSettingsModal';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
 import { MobileNav } from './components/layout/MobileNav';
@@ -22,10 +26,17 @@ import { ExecutiveReportGenerator } from './components/report/ExecutiveReportGen
 import { EscalationManager } from './components/escalation/EscalationManager';
 
 export const App: React.FC = () => {
+  // Auth State
+  const [currentUser, setCurrentUser] = useState<UserAccount | null>(() => {
+    const session = AuthService.getSession();
+    return session ? session.user : null;
+  });
+  const [showProfileModal, setShowProfileModal] = useState(false);
+
+  // App Navigation & Modals
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
 
-  // Modals state
   const [isAddingBranch, setIsAddingBranch] = useState(false);
   const [isAddingVisit, setIsAddingVisit] = useState(false);
 
@@ -48,10 +59,29 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (currentUser) {
+      loadData();
+    }
+  }, [currentUser]);
 
-  // Handlers for Branches
+  // Auth Handlers
+  const handleLoginSuccess = (user: UserAccount) => {
+    setCurrentUser(user);
+    loadData();
+  };
+
+  const handleLogout = () => {
+    if (window.confirm('Apakah Anda yakin ingin keluar dari sistem?')) {
+      AuthService.clearSession();
+      setCurrentUser(null);
+    }
+  };
+
+  const handleProfileUpdated = (updatedUser: UserAccount) => {
+    setCurrentUser(updatedUser);
+  };
+
+  // Branch Handlers
   const handleSelectBranch = (branchId: string) => {
     setSelectedBranchId(branchId);
     setActiveTab('branch_detail');
@@ -71,7 +101,7 @@ export const App: React.FC = () => {
     }
   };
 
-  // Handlers for Milestones
+  // Milestone Handlers
   const handleSaveMilestone = (milestone: ActionPlanMilestone) => {
     StorageService.saveMilestone(milestone);
     loadData();
@@ -82,7 +112,7 @@ export const App: React.FC = () => {
     loadData();
   };
 
-  // Handlers for Visits
+  // Visit Handlers
   const handleSaveVisit = (visit: FieldVisit) => {
     StorageService.saveVisit(visit);
     loadData();
@@ -93,7 +123,7 @@ export const App: React.FC = () => {
     loadData();
   };
 
-  // Handlers for Performance
+  // Performance Handlers
   const handleAddPerformance = (entry: DailyPerformance) => {
     StorageService.addPerformanceEntry(entry);
     loadData();
@@ -104,7 +134,7 @@ export const App: React.FC = () => {
     loadData();
   };
 
-  // Handlers for Graduations
+  // Graduation Handlers
   const handleSaveGraduation = (item: BranchGraduation) => {
     StorageService.saveGraduation(item);
     loadData();
@@ -119,7 +149,7 @@ export const App: React.FC = () => {
     }
   };
 
-  // Handlers for Escalations
+  // Escalation Handlers
   const handleSaveEscalation = (ticket: EscalationTicket) => {
     StorageService.saveEscalation(ticket);
     loadData();
@@ -129,6 +159,11 @@ export const App: React.FC = () => {
     StorageService.deleteEscalation(id);
     loadData();
   };
+
+  // If not logged in, render Login Screen
+  if (!currentUser) {
+    return <LoginPage onLoginSuccess={handleLoginSuccess} />;
+  }
 
   // Counts for Badges
   const openIssuesCount = visits.flatMap(v => v.issues).filter(i => !i.resolved).length;
@@ -144,6 +179,9 @@ export const App: React.FC = () => {
         setActiveTab={setActiveTab}
         escalationCount={pendingEscalationsCount}
         onDataChange={loadData}
+        currentUser={currentUser}
+        onOpenProfileModal={() => setShowProfileModal(true)}
+        onLogout={handleLogout}
       />
 
       {/* Main Body */}
@@ -265,6 +303,15 @@ export const App: React.FC = () => {
           )}
         </main>
       </div>
+
+      {/* Profile & Security Modal */}
+      {showProfileModal && (
+        <ProfileSettingsModal
+          currentUser={currentUser}
+          onClose={() => setShowProfileModal(false)}
+          onProfileUpdated={handleProfileUpdated}
+        />
+      )}
 
       {/* Mobile Bottom Navigation */}
       <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />

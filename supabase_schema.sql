@@ -3,6 +3,26 @@
 -- Salin dan jalankan seluruh script ini di "SQL Editor" Supabase
 -- ========================================================
 
+-- 0. Tabel Akun Pengguna & Autentikasi Supervisor
+CREATE TABLE IF NOT EXISTS public.user_accounts (
+    id TEXT PRIMARY KEY,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    full_name TEXT NOT NULL DEFAULT 'Supervisor DPK (Turnaround)',
+    role_title TEXT NOT NULL DEFAULT 'Supervisor DPK',
+    department TEXT NOT NULL DEFAULT 'Departemen Bisnis',
+    business_manager TEXT NOT NULL DEFAULT 'H. Bambang Irawan',
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Seed Default Admin User
+INSERT INTO public.user_accounts (id, username, password, full_name, role_title, department, business_manager)
+VALUES ('usr-admin-01', 'spvdpk', 'spvdpk1745', 'Supervisor DPK (Turnaround)', 'Supervisor DPK', 'Departemen Bisnis', 'H. Bambang Irawan')
+ON CONFLICT (id) DO UPDATE SET
+    username = EXCLUDED.username,
+    password = EXCLUDED.password;
+
 -- 1. Tabel Profil Supervisor / Pengguna
 CREATE TABLE IF NOT EXISTS public.spv_profiles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -119,6 +139,7 @@ CREATE TABLE IF NOT EXISTS public.escalation_tickets (
 -- ========================================================
 -- ENABLE ROW LEVEL SECURITY (RLS) & PUBLIC ACCESS POLICIES
 -- ========================================================
+ALTER TABLE public.user_accounts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.spv_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.branches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.action_milestones ENABLE ROW LEVEL SECURITY;
@@ -127,7 +148,7 @@ ALTER TABLE public.daily_performance ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.branch_graduations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.escalation_tickets ENABLE ROW LEVEL SECURITY;
 
--- Allow anonymous / public access for app usage with anon key
+CREATE POLICY "Allow public full access to user_accounts" ON public.user_accounts FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow public full access to spv_profiles" ON public.spv_profiles FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow public full access to branches" ON public.branches FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow public full access to action_milestones" ON public.action_milestones FOR ALL USING (true) WITH CHECK (true);
@@ -135,13 +156,3 @@ CREATE POLICY "Allow public full access to field_visits" ON public.field_visits 
 CREATE POLICY "Allow public full access to daily_performance" ON public.daily_performance FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow public full access to branch_graduations" ON public.branch_graduations FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow public full access to escalation_tickets" ON public.escalation_tickets FOR ALL USING (true) WITH CHECK (true);
-
--- ========================================================
--- SEED INITIAL MOCK DATA
--- ========================================================
-INSERT INTO public.branches (id, code, name, address, phone, kepala_toko, spv_area, category, status, urgency_level, target_sales_per_day, target_margin_pct, target_max_opex_per_month, diagnosis_summary, recommended_strategy)
-VALUES 
-('br-01', 'T-102', 'Cabang Basmalah Veteran Raya', 'Jl. Veteran No. 45, Sentra Kota', '0812-3456-7890', 'Ahmad Fauzi', 'Budi Santoso', 'sales_drop', 'dalam_progres', 'tinggi', 13500000, 15.5, 22000000, 'Sales anjlok 30% akibat persaingan kompetitor baru.', 'Implementasi direct selling & target struk up-selling kasir.'),
-('br-02', 'T-208', 'Cabang Basmalah Diponegoro', 'Jl. Diponegoro No. 88, Kawasan Pasar', '0813-9876-5432', 'Siti Rahmawati', 'Hendra Setiawan', 'margin_minus', 'siap_lulus', 'sedang', 16000000, 16.0, 24000000, 'Margin sebelumnya tipis karena dominasi grosir.', 'Tingkatkan display Private Label & produk margin tinggi.'),
-('br-03', 'T-315', 'Cabang Basmalah Merdeka Barat', 'Jl. Merdeka Barat No. 12, Area Perumahan', '0857-1122-3344', 'Rian Pratama', 'Budi Santoso', 'opex_bengkak', 'kritis', 'tinggi', 11000000, 15.0, 19000000, 'Beban listrik membengkak & NKL tinggi.', 'Eskalasi perbaikan chiller & pembenahan jadwal shift.')
-ON CONFLICT (id) DO NOTHING;

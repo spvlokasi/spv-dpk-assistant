@@ -1,36 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   Store, 
   Download, 
   Upload, 
   RefreshCw, 
   ShieldAlert, 
-  UserCheck,
+  UserCheck, 
   CheckCircle2,
-  Cloud,
-  CloudCheck,
-  CloudOff,
   Database,
   X,
-  ExternalLink,
   Key,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Cloud,
+  LogOut,
+  User
 } from 'lucide-react';
 import { StorageService } from '../../services/storage';
 import { SupabaseService } from '../../services/supabase';
+import { UserAccount } from '../../types/auth';
 
 interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   escalationCount: number;
   onDataChange: () => void;
+  currentUser: UserAccount;
+  onOpenProfileModal: () => void;
+  onLogout: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ 
   activeTab, 
   setActiveTab, 
   escalationCount,
-  onDataChange 
+  onDataChange,
+  currentUser,
+  onOpenProfileModal,
+  onLogout
 }) => {
   const [showBackupMenu, setShowBackupMenu] = useState(false);
   const [showCloudModal, setShowCloudModal] = useState(false);
@@ -215,15 +221,32 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </div>
 
-            {/* Profile Avatar Badge */}
-            <div className="hidden lg:flex items-center gap-2.5 pl-3 border-l border-slate-800">
-              <div className="w-8 h-8 rounded-full bg-emerald-700/40 border border-emerald-500/40 flex items-center justify-center">
-                <UserCheck className="w-4 h-4 text-emerald-400" />
-              </div>
-              <div className="text-left">
-                <div className="text-xs font-semibold text-slate-200">SPV DPK Bisnis</div>
-                <div className="text-[10px] text-emerald-400">Departemen Bisnis</div>
-              </div>
+            {/* Profile Avatar Badge with Dropdown & Click to Edit */}
+            <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-800">
+              <button
+                onClick={onOpenProfileModal}
+                className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-800 transition-colors text-left group"
+                title="Klik untuk Edit Profil, Username & Password"
+              >
+                <div className="w-8 h-8 rounded-full bg-emerald-700/40 border border-emerald-500/40 flex items-center justify-center group-hover:border-emerald-400 transition-colors">
+                  <UserCheck className="w-4 h-4 text-emerald-400" />
+                </div>
+                <div className="hidden lg:block">
+                  <div className="text-xs font-semibold text-slate-200 group-hover:text-emerald-300 transition-colors line-clamp-1">
+                    {currentUser.username}
+                  </div>
+                  <div className="text-[10px] text-emerald-400 line-clamp-1">{currentUser.roleTitle}</div>
+                </div>
+              </button>
+
+              {/* Logout Button */}
+              <button
+                onClick={onLogout}
+                className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors"
+                title="Keluar (Logout)"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
