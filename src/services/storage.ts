@@ -14,6 +14,7 @@ import {
   INITIAL_GRADUATIONS, 
   INITIAL_ESCALATIONS 
 } from './mockData';
+import { getSupabaseClient } from './supabase';
 
 const KEYS = {
   BRANCHES: 'spv_dpk_branches',
@@ -64,7 +65,7 @@ export const StorageService = {
   getBranchById(id: string): Branch | undefined {
     return this.getBranches().find(b => b.id === id);
   },
-  saveBranch(branch: Branch) {
+  async saveBranch(branch: Branch) {
     const branches = this.getBranches();
     const index = branches.findIndex(b => b.id === branch.id);
     if (index >= 0) {
@@ -73,10 +74,50 @@ export const StorageService = {
       branches.push(branch);
     }
     this.saveBranches(branches);
+
+    // Auto-Sync to Supabase Cloud
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('branches').upsert({
+          id: branch.id,
+          code: branch.code,
+          name: branch.name,
+          address: branch.address,
+          phone: branch.phone,
+          kepala_toko: branch.kepalaToko,
+          spv_area: branch.spvArea,
+          manajer_bisnis: branch.manajerBisnis,
+          entry_date: branch.entryDate,
+          target_graduation_date: branch.targetGraduationDate,
+          category: branch.category,
+          status: branch.status,
+          urgency_level: branch.urgencyLevel,
+          target_sales_per_day: branch.targetSalesPerDay,
+          target_margin_pct: branch.targetMarginPct,
+          target_max_opex_per_month: branch.targetMaxOpexPerMonth,
+          root_causes: branch.rootCauses,
+          diagnosis_summary: branch.diagnosisSummary,
+          recommended_strategy: branch.recommendedStrategy,
+          updated_at: new Date().toISOString()
+        });
+      } catch (e) {
+        console.warn('Auto-sync branch failed:', e);
+      }
+    }
   },
-  deleteBranch(id: string) {
+  async deleteBranch(id: string) {
     const branches = this.getBranches().filter(b => b.id !== id);
     this.saveBranches(branches);
+
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('branches').delete().eq('id', id);
+      } catch (e) {
+        console.warn('Auto-sync delete branch failed:', e);
+      }
+    }
   },
 
   // Action Plan Milestones
@@ -92,7 +133,7 @@ export const StorageService = {
   saveMilestones(milestones: ActionPlanMilestone[]) {
     localStorage.setItem(KEYS.MILESTONES, JSON.stringify(milestones));
   },
-  saveMilestone(milestone: ActionPlanMilestone) {
+  async saveMilestone(milestone: ActionPlanMilestone) {
     const all = this.getMilestones();
     const index = all.findIndex(m => m.id === milestone.id);
     if (index >= 0) {
@@ -101,10 +142,38 @@ export const StorageService = {
       all.push(milestone);
     }
     this.saveMilestones(all);
+
+    // Auto-Sync to Supabase Cloud
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('action_milestones').upsert({
+          id: milestone.id,
+          branch_id: milestone.branchId,
+          week_number: milestone.weekNumber,
+          title: milestone.title,
+          target_metric: milestone.targetMetric,
+          status: milestone.status,
+          tasks: milestone.tasks,
+          updated_at: new Date().toISOString()
+        });
+      } catch (e) {
+        console.warn('Auto-sync milestone failed:', e);
+      }
+    }
   },
-  deleteMilestone(id: string) {
+  async deleteMilestone(id: string) {
     const all = this.getMilestones().filter(m => m.id !== id);
     this.saveMilestones(all);
+
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('action_milestones').delete().eq('id', id);
+      } catch (e) {
+        console.warn('Auto-sync delete milestone failed:', e);
+      }
+    }
   },
 
   // Field Visits
@@ -120,7 +189,7 @@ export const StorageService = {
   saveVisits(visits: FieldVisit[]) {
     localStorage.setItem(KEYS.VISITS, JSON.stringify(visits));
   },
-  saveVisit(visit: FieldVisit) {
+  async saveVisit(visit: FieldVisit) {
     const all = this.getVisits();
     const index = all.findIndex(v => v.id === visit.id);
     if (index >= 0) {
@@ -129,10 +198,43 @@ export const StorageService = {
       all.unshift(visit);
     }
     this.saveVisits(all);
+
+    // Auto-Sync to Supabase Cloud
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('field_visits').upsert({
+          id: visit.id,
+          branch_id: visit.branchId,
+          visit_date: visit.date,
+          visit_time: visit.time,
+          spv_name: visit.spvName,
+          agenda: visit.agenda,
+          katok_coaching_topic: visit.katokCoachingTopic,
+          katok_commitment: visit.katokCommitment,
+          crew_coaching_topic: visit.crewCoachingTopic,
+          spv_area_coordination_note: visit.spvAreaCoordinationNote,
+          general_rating: visit.generalRating,
+          summary_conclusion: visit.summaryConclusion,
+          issues: visit.issues
+        });
+      } catch (e) {
+        console.warn('Auto-sync visit failed:', e);
+      }
+    }
   },
-  deleteVisit(id: string) {
+  async deleteVisit(id: string) {
     const all = this.getVisits().filter(v => v.id !== id);
     this.saveVisits(all);
+
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('field_visits').delete().eq('id', id);
+      } catch (e) {
+        console.warn('Auto-sync delete visit failed:', e);
+      }
+    }
   },
 
   // Daily Performance
@@ -148,7 +250,7 @@ export const StorageService = {
   savePerformance(list: DailyPerformance[]) {
     localStorage.setItem(KEYS.PERFORMANCE, JSON.stringify(list));
   },
-  addPerformanceEntry(entry: DailyPerformance) {
+  async addPerformanceEntry(entry: DailyPerformance) {
     const all = this.getPerformance();
     const index = all.findIndex(p => p.branchId === entry.branchId && p.date === entry.date);
     if (index >= 0) {
@@ -157,10 +259,40 @@ export const StorageService = {
       all.push(entry);
     }
     this.savePerformance(all);
+
+    // Auto-Sync to Supabase Cloud
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('daily_performance').upsert({
+          id: entry.id,
+          branch_id: entry.branchId,
+          record_date: entry.date,
+          sales_actual: entry.salesActual,
+          sales_target: entry.salesTarget,
+          margin_pct: entry.marginPct,
+          opex: entry.opex,
+          traffic_count: entry.trafficCount,
+          basket_size: entry.basketSize,
+          notes: entry.notes
+        });
+      } catch (e) {
+        console.warn('Auto-sync daily performance failed:', e);
+      }
+    }
   },
-  deletePerformanceEntry(id: string) {
+  async deletePerformanceEntry(id: string) {
     const all = this.getPerformance().filter(p => p.id !== id);
     this.savePerformance(all);
+
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('daily_performance').delete().eq('id', id);
+      } catch (e) {
+        console.warn('Auto-sync delete daily performance failed:', e);
+      }
+    }
   },
 
   // Graduation Tracker
@@ -178,7 +310,7 @@ export const StorageService = {
   saveGraduations(list: BranchGraduation[]) {
     localStorage.setItem(KEYS.GRADUATIONS, JSON.stringify(list));
   },
-  saveGraduation(item: BranchGraduation) {
+  async saveGraduation(item: BranchGraduation) {
     const all = this.getGraduations();
     const index = all.findIndex(g => g.branchId === item.branchId);
     if (index >= 0) {
@@ -187,6 +319,25 @@ export const StorageService = {
       all.push(item);
     }
     this.saveGraduations(all);
+
+    // Auto-Sync to Supabase Cloud
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('branch_graduations').upsert({
+          branch_id: item.branchId,
+          consecutive_months_hit: item.consecutiveMonthsHit,
+          target_months_required: item.targetMonthsRequired,
+          checklists: item.checklists,
+          best_practice_learnings: item.bestPracticeLearnings,
+          graduation_date: item.graduationDate,
+          approved_by_manager: item.approvedByManager,
+          updated_at: new Date().toISOString()
+        });
+      } catch (e) {
+        console.warn('Auto-sync graduation failed:', e);
+      }
+    }
   },
 
   // Escalation Tickets
@@ -202,7 +353,7 @@ export const StorageService = {
   saveEscalations(list: EscalationTicket[]) {
     localStorage.setItem(KEYS.ESCALATIONS, JSON.stringify(list));
   },
-  saveEscalation(ticket: EscalationTicket) {
+  async saveEscalation(ticket: EscalationTicket) {
     const all = this.getEscalations();
     const index = all.findIndex(e => e.id === ticket.id);
     if (index >= 0) {
@@ -211,10 +362,167 @@ export const StorageService = {
       all.unshift(ticket);
     }
     this.saveEscalations(all);
+
+    // Auto-Sync to Supabase Cloud
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('escalation_tickets').upsert({
+          id: ticket.id,
+          branch_id: ticket.branchId,
+          branch_name: ticket.branchName,
+          ticket_date: ticket.date,
+          title: ticket.title,
+          category: ticket.category,
+          urgency: ticket.urgency,
+          description: ticket.description,
+          proposed_solution: ticket.proposedSolution,
+          status: ticket.status,
+          manager_feedback: ticket.managerFeedback,
+          updated_at: new Date().toISOString()
+        });
+      } catch (e) {
+        console.warn('Auto-sync escalation failed:', e);
+      }
+    }
   },
-  deleteEscalation(id: string) {
+  async deleteEscalation(id: string) {
     const all = this.getEscalations().filter(e => e.id !== id);
     this.saveEscalations(all);
+
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('escalation_tickets').delete().eq('id', id);
+      } catch (e) {
+        console.warn('Auto-sync delete escalation failed:', e);
+      }
+    }
+  },
+
+  // Pull latest data from Supabase Cloud on Startup
+  async syncFromCloudOnStartup(): Promise<boolean> {
+    const client = getSupabaseClient();
+    if (!client) return false;
+
+    try {
+      const [bRes, mRes, vRes, pRes, gRes, eRes] = await Promise.all([
+        client.from('branches').select('*'),
+        client.from('action_milestones').select('*'),
+        client.from('field_visits').select('*'),
+        client.from('daily_performance').select('*'),
+        client.from('branch_graduations').select('*'),
+        client.from('escalation_tickets').select('*')
+      ]);
+
+      if (bRes.data && bRes.data.length > 0) {
+        const branches: Branch[] = bRes.data.map((b: any) => ({
+          id: b.id,
+          code: b.code,
+          name: b.name,
+          address: b.address || '',
+          phone: b.phone || '',
+          kepalaToko: b.kepala_toko || '',
+          spvArea: b.spv_area || '',
+          manajerBisnis: b.manajer_bisnis || 'H. Bambang Irawan',
+          entryDate: b.entry_date || new Date().toISOString().slice(0, 10),
+          targetGraduationDate: b.target_graduation_date || '',
+          category: b.category || 'sales_drop',
+          status: b.status || 'kritis',
+          urgencyLevel: b.urgency_level || 'tinggi',
+          targetSalesPerDay: Number(b.target_sales_per_day) || 12000000,
+          targetMarginPct: Number(b.target_margin_pct) || 15,
+          targetMaxOpexPerMonth: Number(b.target_max_opex_per_month) || 20000000,
+          rootCauses: b.root_causes || [],
+          diagnosisSummary: b.diagnosis_summary || '',
+          recommendedStrategy: b.recommended_strategy || ''
+        }));
+        this.saveBranches(branches);
+      }
+
+      if (mRes.data && mRes.data.length > 0) {
+        const milestones: ActionPlanMilestone[] = mRes.data.map((m: any) => ({
+          id: m.id,
+          branchId: m.branch_id,
+          weekNumber: m.week_number,
+          title: m.title,
+          targetMetric: m.target_metric,
+          status: m.status,
+          tasks: m.tasks || []
+        }));
+        this.saveMilestones(milestones);
+      }
+
+      if (vRes.data && vRes.data.length > 0) {
+        const visits: FieldVisit[] = vRes.data.map((v: any) => ({
+          id: v.id,
+          branchId: v.branch_id,
+          date: v.visit_date,
+          time: v.visit_time,
+          spvName: v.spv_name,
+          agenda: v.agenda,
+          katokCoachingTopic: v.katok_coaching_topic || '',
+          katokCommitment: v.katok_commitment || '',
+          crewCoachingTopic: v.crew_coaching_topic || '',
+          spvAreaCoordinationNote: v.spv_area_coordination_note || '',
+          generalRating: v.general_rating || 3,
+          summaryConclusion: v.summary_conclusion || '',
+          issues: v.issues || []
+        }));
+        this.saveVisits(visits);
+      }
+
+      if (pRes.data && pRes.data.length > 0) {
+        const performance: DailyPerformance[] = pRes.data.map((p: any) => ({
+          id: p.id,
+          branchId: p.branch_id,
+          date: p.record_date,
+          salesActual: Number(p.sales_actual) || 0,
+          salesTarget: Number(p.sales_target) || 0,
+          marginPct: Number(p.margin_pct) || 0,
+          opex: Number(p.opex) || 0,
+          trafficCount: Number(p.traffic_count) || 0,
+          basketSize: Number(p.basket_size) || 0,
+          notes: p.notes || ''
+        }));
+        this.savePerformance(performance);
+      }
+
+      if (gRes.data && gRes.data.length > 0) {
+        const graduations: BranchGraduation[] = gRes.data.map((g: any) => ({
+          branchId: g.branch_id,
+          consecutiveMonthsHit: g.consecutive_months_hit || 0,
+          targetMonthsRequired: g.target_months_required || 3,
+          checklists: g.checklists || [],
+          bestPracticeLearnings: g.best_practice_learnings || '',
+          graduationDate: g.graduation_date,
+          approvedByManager: Boolean(g.approved_by_manager)
+        }));
+        this.saveGraduations(graduations);
+      }
+
+      if (eRes.data && eRes.data.length > 0) {
+        const escalations: EscalationTicket[] = eRes.data.map((e: any) => ({
+          id: e.id,
+          branchId: e.branch_id,
+          branchName: e.branch_name,
+          date: e.ticket_date,
+          title: e.title,
+          category: e.category,
+          urgency: e.urgency,
+          description: e.description,
+          proposedSolution: e.proposed_solution || '',
+          status: e.status,
+          managerFeedback: e.manager_feedback || ''
+        }));
+        this.saveEscalations(escalations);
+      }
+
+      return true;
+    } catch (e) {
+      console.warn('Initial cloud pull skipped/failed:', e);
+      return false;
+    }
   },
 
   // Backup & Restore

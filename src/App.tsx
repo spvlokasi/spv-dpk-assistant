@@ -49,7 +49,7 @@ export const App: React.FC = () => {
   const [graduations, setGraduations] = useState<BranchGraduation[]>([]);
   const [escalations, setEscalations] = useState<EscalationTicket[]>([]);
 
-  // Load all data from storage
+  // Load all data from local storage
   const loadData = () => {
     setBranches(StorageService.getBranches());
     setMilestones(StorageService.getMilestones());
@@ -62,6 +62,12 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (currentUser) {
       loadData();
+      // Auto-pull fresh data from cloud on startup
+      StorageService.syncFromCloudOnStartup().then((updated) => {
+        if (updated) {
+          loadData();
+        }
+      });
     }
   }, [currentUser]);
 
@@ -88,13 +94,13 @@ export const App: React.FC = () => {
     setActiveTab('branch_detail');
   };
 
-  const handleSaveBranch = (branch: Branch) => {
-    StorageService.saveBranch(branch);
+  const handleSaveBranch = async (branch: Branch) => {
+    await StorageService.saveBranch(branch);
     loadData();
   };
 
-  const handleDeleteBranch = (branchId: string) => {
-    StorageService.deleteBranch(branchId);
+  const handleDeleteBranch = async (branchId: string) => {
+    await StorageService.deleteBranch(branchId);
     loadData();
     if (selectedBranchId === branchId) {
       setSelectedBranchId(null);
@@ -103,61 +109,61 @@ export const App: React.FC = () => {
   };
 
   // Milestone Handlers
-  const handleSaveMilestone = (milestone: ActionPlanMilestone) => {
-    StorageService.saveMilestone(milestone);
+  const handleSaveMilestone = async (milestone: ActionPlanMilestone) => {
+    await StorageService.saveMilestone(milestone);
     loadData();
   };
 
-  const handleDeleteMilestone = (id: string) => {
-    StorageService.deleteMilestone(id);
+  const handleDeleteMilestone = async (id: string) => {
+    await StorageService.deleteMilestone(id);
     loadData();
   };
 
   // Visit Handlers
-  const handleSaveVisit = (visit: FieldVisit) => {
-    StorageService.saveVisit(visit);
+  const handleSaveVisit = async (visit: FieldVisit) => {
+    await StorageService.saveVisit(visit);
     loadData();
   };
 
-  const handleDeleteVisit = (id: string) => {
-    StorageService.deleteVisit(id);
+  const handleDeleteVisit = async (id: string) => {
+    await StorageService.deleteVisit(id);
     loadData();
   };
 
   // Performance Handlers
-  const handleAddPerformance = (entry: DailyPerformance) => {
-    StorageService.addPerformanceEntry(entry);
+  const handleAddPerformance = async (entry: DailyPerformance) => {
+    await StorageService.addPerformanceEntry(entry);
     loadData();
   };
 
-  const handleDeletePerformance = (id: string) => {
-    StorageService.deletePerformanceEntry(id);
+  const handleDeletePerformance = async (id: string) => {
+    await StorageService.deletePerformanceEntry(id);
     loadData();
   };
 
   // Graduation Handlers
-  const handleSaveGraduation = (item: BranchGraduation) => {
-    StorageService.saveGraduation(item);
+  const handleSaveGraduation = async (item: BranchGraduation) => {
+    await StorageService.saveGraduation(item);
     loadData();
   };
 
-  const handleUpdateBranchStatus = (branchId: string, status: any) => {
+  const handleUpdateBranchStatus = async (branchId: string, status: any) => {
     const branch = StorageService.getBranchById(branchId);
     if (branch) {
       branch.status = status;
-      StorageService.saveBranch(branch);
+      await StorageService.saveBranch(branch);
       loadData();
     }
   };
 
   // Escalation Handlers
-  const handleSaveEscalation = (ticket: EscalationTicket) => {
-    StorageService.saveEscalation(ticket);
+  const handleSaveEscalation = async (ticket: EscalationTicket) => {
+    await StorageService.saveEscalation(ticket);
     loadData();
   };
 
-  const handleDeleteEscalation = (id: string) => {
-    StorageService.deleteEscalation(id);
+  const handleDeleteEscalation = async (id: string) => {
+    await StorageService.deleteEscalation(id);
     loadData();
   };
 
