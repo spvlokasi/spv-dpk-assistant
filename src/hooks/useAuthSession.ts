@@ -8,16 +8,16 @@ export const useAuthSession = () => {
     return session ? session.user : null;
   });
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleLoginSuccess = (user: UserAccount) => {
     setCurrentUser(user);
   };
 
   const handleLogout = () => {
-    if (window.confirm('Apakah Anda yakin ingin keluar dari sistem?')) {
-      AuthService.clearSession();
-      setCurrentUser(null);
-    }
+    AuthService.clearSession();
+    setCurrentUser(null);
+    setShowLogoutConfirm(false);
   };
 
   const handleProfileUpdated = (updatedUser: UserAccount) => {
@@ -28,6 +28,8 @@ export const useAuthSession = () => {
     currentUser,
     showProfileModal,
     setShowProfileModal,
+    showLogoutConfirm,
+    setShowLogoutConfirm,
     handleLoginSuccess,
     handleLogout,
     handleProfileUpdated
