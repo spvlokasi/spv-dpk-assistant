@@ -1,4 +1,4 @@
-export type DpkStatus = 'kritis' | 'dalam_progres' | 'siap_lulus' | 'lulus_dpk';
+export type DpkStatus = 'akut' | 'kritis' | 'dalam_progres' | 'existing' | 'cabang_baru' | 'siap_lulus' | 'lulus_dpk';
 
 export type DpkCategory = 
   | 'sales_drop'

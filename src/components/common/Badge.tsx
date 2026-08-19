@@ -11,6 +11,13 @@ interface BadgeProps {
 
 export const StatusBadge: React.FC<{ status: DpkStatus }> = ({ status }) => {
   switch (status) {
+    case 'akut':
+      return (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-600/30 text-rose-200 border border-rose-500/50 shadow-sm animate-pulse">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+          Akut
+        </span>
+      );
     case 'kritis':
       return (
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
@@ -23,6 +30,20 @@ export const StatusBadge: React.FC<{ status: DpkStatus }> = ({ status }) => {
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
           Dalam Progres
+        </span>
+      );
+    case 'existing':
+      return (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+          <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+          Existing
+        </span>
+      );
+    case 'cabang_baru':
+      return (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+          Cabang Baru
         </span>
       );
     case 'siap_lulus':

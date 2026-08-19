@@ -226,8 +226,11 @@ export const BranchList: React.FC<BranchListProps> = ({
             className="bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 flex-1 md:flex-initial"
           >
             <option value="all">Semua Status DPK</option>
+            <option value="akut">🔴 Akut</option>
             <option value="kritis">🔴 Kritis</option>
             <option value="dalam_progres">🟡 Dalam Progres</option>
+            <option value="existing">🏢 Existing</option>
+            <option value="cabang_baru">🆕 Cabang Baru</option>
             <option value="siap_lulus">🟢 Siap Lulus</option>
             <option value="lulus_dpk">🎓 Lulus DPK</option>
           </select>
@@ -493,8 +496,11 @@ export const BranchList: React.FC<BranchListProps> = ({
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
                     className="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2.5 focus:border-emerald-500 focus:outline-none"
                   >
+                    <option value="akut">🔴 Akut (Penanganan Darurat)</option>
                     <option value="kritis">🔴 Kritis (Intervensi Khusus)</option>
                     <option value="dalam_progres">🟡 Dalam Progres Perbaikan</option>
+                    <option value="existing">🏢 Existing (Toko Lama Binaan)</option>
+                    <option value="cabang_baru">🆕 Cabang Baru (Setup & Penetrasi)</option>
                     <option value="siap_lulus">🟢 Siap Lulus DPK</option>
                     <option value="lulus_dpk">🎓 Lulus DPK</option>
                   </select>
