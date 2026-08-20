@@ -431,50 +431,33 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
         </div>
       </div>
 
-      {/* Bedah Cabang Header & 1-Click SOP Sidogiri Preset Button */}
-      <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex-shrink-0">
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              Bedah Cabang & Diagnostik Akar Masalah (5M)
-            </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Evaluasi komprehensif 6 faktor internal & 4 faktor eksternal berdasarkan SOP PT. Sidogiri Mitra Utama
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={loadSidogiriPresetFactors}
-          className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-950 transition-all active:scale-95 whitespace-nowrap self-start sm:self-center"
-        >
-          <Sparkles className="w-4 h-4" />
-          Muat Standar Bedah Cabang Sidogiri
-        </button>
-      </div>
-
       {/* Main Grid: RCA Analysis & Strategy Plan */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: Root Cause Factors (Internal & External) */}
         <div className="lg:col-span-2 space-y-6">
           {/* Internal Factors */}
           <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
                 <h3 className="text-sm font-bold text-white">
                   Diagnosa Faktor Internal (SDM, SOP, Display, Kasir)
                 </h3>
               </div>
-              <button
-                onClick={() => addDefaultRcaFactor('internal')}
-                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-semibold flex items-center gap-1 border border-slate-700"
-              >
-                <Plus className="w-3.5 h-3.5" /> Tambah Faktor
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={loadSidogiriPresetFactors}
+                  className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold border border-emerald-500 transition-colors shadow-sm active:scale-95"
+                >
+                  Muat Standar
+                </button>
+                <button
+                  onClick={() => addDefaultRcaFactor('internal')}
+                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-semibold flex items-center gap-1 border border-slate-700"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Tambah Faktor
+                </button>
+              </div>
             </div>
 
             <div className="space-y-3">
