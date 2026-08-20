@@ -1,11 +1,11 @@
 import React from 'react';
 import { Sparkles } from 'lucide-react';
-import { BranchStatus } from '../../../types';
+import { DpkStatus } from '../../../types';
 
 interface RcaHealthScoreCardProps {
   avgScore: string;
-  status: BranchStatus;
-  onChangeStatus: (status: BranchStatus) => void;
+  status: DpkStatus;
+  onChangeStatus: (status: DpkStatus) => void;
 }
 
 export const RcaHealthScoreCard: React.FC<RcaHealthScoreCardProps> = ({
@@ -43,13 +43,14 @@ export const RcaHealthScoreCard: React.FC<RcaHealthScoreCardProps> = ({
         </label>
         <select
           value={status}
-          onChange={(e) => onChangeStatus(e.target.value as BranchStatus)}
+          onChange={(e) => onChangeStatus(e.target.value as DpkStatus)}
           className="w-full bg-slate-800 border border-slate-700 text-xs rounded-lg px-2.5 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 cursor-pointer"
         >
           <option value="kritis">🔴 Kritis (Belum Ada Perbaikan)</option>
           <option value="dalam_progres">🟡 Dalam Progres (Pendampingan)</option>
           <option value="siap_lulus">🟢 Siap Lulus (Hasil Membaik)</option>
-          <option value="lulus">🏆 Lulus (Turnaround Berhasil)</option>
+          <option value="lulus_dpk">🏆 Lulus (Turnaround Berhasil)</option>
+          <option value="existing">🔵 Existing (Pemantauan Rutin)</option>
         </select>
       </div>
     </div>
