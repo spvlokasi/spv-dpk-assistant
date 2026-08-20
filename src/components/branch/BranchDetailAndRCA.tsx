@@ -89,7 +89,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
           className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-emerald-400 transition-colors self-start"
         >
           <ArrowLeft className="w-4 h-4" />
-          Kembali ke Daftar Cabang DPK
+          Kembali
         </button>
 
         <div className="flex items-center gap-2">
