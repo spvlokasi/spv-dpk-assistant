@@ -103,11 +103,14 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
         <div className="border-b-2 border-slate-900 pb-4 mb-6">
           <div className="flex justify-between items-start">
             <div>
+              <div className="text-[11px] font-black text-emerald-800 tracking-widest uppercase mb-0.5">
+                PT. SIDOGIRI MITRA UTAMA — TOKOBASMALAH
+              </div>
               <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 uppercase">
-                Laporan Perkembangan Program Perbaikan Kinerja Cabang DPK
+                Laporan Transformasi 180 Hari Penanganan Cabang DPK
               </h1>
               <p className="text-xs font-bold text-slate-700 mt-1 uppercase tracking-wider">
-                {authorDept} — {authorRole}
+                Departemen Bisnis & Marketing — {authorRole}
               </p>
             </div>
             <div className="text-right text-xs text-slate-600">

@@ -50,12 +50,16 @@ export interface ActionPlanTask {
   notes?: string;
 }
 
+export type TurnaroundPhase = 'fase_1' | 'fase_2' | 'fase_3';
+
 export interface ActionPlanMilestone {
   id: string;
   branchId: string;
+  phase?: TurnaroundPhase; // fase_1 (BEP Bulan 1-3), fase_2 (Profit Bulan 4-6), fase_3 (Autopilot Bulan 7+)
+  monthNumber?: number; // 1 - 6
   title: string;
   weekNumber: number; // Minggu 1, 2, 3, dst.
-  targetMetric: string; // e.g. "Sales naik ke Rp 10.5 Jt/hari"
+  targetMetric: string; // e.g. "Target BEP: Tekan Opex & Stop Minus"
   status: 'pending' | 'in_progress' | 'achieved' | 'failed';
   tasks: ActionPlanTask[];
 }
