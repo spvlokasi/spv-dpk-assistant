@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Branch, RootCauseFactor, DiagnosisLog, DpkStatus } from '../../types';
 import { StorageService } from '../../services/storage';
 import { getSidogiriPresetFactors } from './rca/rcaPresets';
+import { generateSmartRetailAnalysis } from './rca/strategyKnowledgeBank';
 import { BranchHeaderProfile } from './rca/BranchHeaderProfile';
 import { BranchPeriodPicker } from './rca/BranchPeriodPicker';
 import { BranchFinancialTargets } from './rca/BranchFinancialTargets';
@@ -78,6 +79,23 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
   const handleLoadPreset = () => {
     const preset = getSidogiriPresetFactors();
     setData({ ...data, rootCauses: preset, status: getAutoStatus(preset, data.status) });
+  };
+
+  const handleAutoGenerateAnalysis = () => {
+    const res = generateSmartRetailAnalysis(data.name, data.rootCauses);
+    setData({
+      ...data,
+      diagnosisSummary: res.summary,
+      recommendedStrategy: res.strategy
+    });
+  };
+
+  const handleClearAnalysis = () => {
+    setData({
+      ...data,
+      diagnosisSummary: '',
+      recommendedStrategy: ''
+    });
   };
 
   const handleSave = async () => {
@@ -198,6 +216,8 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
             recommendedStrategy={data.recommendedStrategy}
             onChangeSummary={(val) => setData({ ...data, diagnosisSummary: val })}
             onChangeStrategy={(val) => setData({ ...data, recommendedStrategy: val })}
+            onGenerateAnalysis={handleAutoGenerateAnalysis}
+            onClearAnalysis={handleClearAnalysis}
           />
         </div>
       </div>
