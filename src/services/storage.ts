@@ -613,30 +613,37 @@ export const StorageService = {
       const persistentImages = this.getBranchImages();
 
       if (bRes.data && bRes.data.length > 0) {
-        const branches: Branch[] = bRes.data.map((b: any) => ({
-          id: b.id,
-          code: b.code,
-          name: b.name,
-          address: b.address || '',
-          phone: b.phone || '',
-          kepalaToko: b.kepala_toko || '',
-          spvArea: b.spv_area || '',
-          manajerBisnis: b.manajer_bisnis || 'H. Bambang Irawan',
-          entryDate: b.entry_date || new Date().toISOString().slice(0, 10),
-          targetGraduationDate: b.target_graduation_date || '',
-          category: b.category || 'sales_drop',
-          status: b.status || 'kritis',
-          urgencyLevel: b.urgency_level || 'tinggi',
-          targetSalesPerDay: Number(b.target_sales_per_day) || 12000000,
-          targetMarginPct: Number(b.target_margin_pct) || 15,
-          targetMaxOpexPerMonth: Number(b.target_max_opex_per_month) || 20000000,
-          rootCauses: b.root_causes || [],
-          diagnosisSummary: b.diagnosis_summary || '',
-          recommendedStrategy: b.recommended_strategy || '',
-          imageUrl: b.image_url || persistentImages[b.id] || (b.code === 'M3017' || b.name?.toLowerCase().includes('bugih') ? '/stores/bugih.jpg' : ''),
-          diagnosisStartDate: b.diagnosis_start_date || '',
-          diagnosisEndDate: b.diagnosis_end_date || ''
-        }));
+        const branches: Branch[] = bRes.data.map((b: any) => {
+          const rawRootCauses = b.root_causes || [];
+          const isLegacyDummy = Array.isArray(rawRootCauses) && rawRootCauses.some((r: any) => 
+            ['rc-1', 'rc-2', 'rc-3', 'rc-4', 'rc-21', 'rc-22', 'rc-23', 'rc-31', 'rc-32', 'rc-33'].includes(r.id)
+          );
+          const isOldDummyDate = b.diagnosis_start_date === '2026-08-01' || b.diagnosis_start_date === '2026-06-01' || b.diagnosis_start_date === '2026-05-15';
+          return {
+            id: b.id,
+            code: b.code,
+            name: b.name,
+            address: b.address || '',
+            phone: b.phone || '',
+            kepalaToko: b.kepala_toko || '',
+            spvArea: b.spv_area || '',
+            manajerBisnis: b.manajer_bisnis || 'H. Bambang Irawan',
+            entryDate: b.entry_date || new Date().toISOString().slice(0, 10),
+            targetGraduationDate: b.target_graduation_date || '',
+            category: b.category || 'sales_drop',
+            status: b.status || 'kritis',
+            urgencyLevel: b.urgency_level || 'tinggi',
+            targetSalesPerDay: Number(b.target_sales_per_day) || 12000000,
+            targetMarginPct: Number(b.target_margin_pct) || 15,
+            targetMaxOpexPerMonth: Number(b.target_max_opex_per_month) || 20000000,
+            rootCauses: isLegacyDummy ? [] : rawRootCauses,
+            diagnosisSummary: b.diagnosis_summary || '',
+            recommendedStrategy: b.recommended_strategy || '',
+            imageUrl: b.image_url || persistentImages[b.id] || (b.code === 'M3017' || b.name?.toLowerCase().includes('bugih') ? '/stores/bugih.jpg' : ''),
+            diagnosisStartDate: isOldDummyDate ? '' : (b.diagnosis_start_date || ''),
+            diagnosisEndDate: isOldDummyDate ? '' : (b.diagnosis_end_date || '')
+          };
+        });
         this.saveBranches(branches);
       }
 
