@@ -457,7 +457,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
                 <div className="py-7 px-4 text-center rounded-xl bg-slate-850/40 border border-dashed border-slate-800 space-y-1.5">
                   <p className="text-xs font-semibold text-slate-400">Belum ada faktor diagnosa internal</p>
                   <p className="text-[11px] text-slate-500">
-                    Klik <span className="text-emerald-400 font-semibold">"Muat Standar"</span> di bawah untuk memuat 6 SOP Sidogiri atau <span className="text-emerald-400 font-semibold">"+ Faktor"</span> untuk input manual.
+                    Klik <span className="text-emerald-400 font-semibold">"Muat Standar"</span> di bawah untuk memuat konsep atau <span className="text-emerald-400 font-semibold">"+ Faktor"</span> untuk input manual.
                   </p>
                 </div>
               ) : (
