@@ -437,27 +437,11 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
         <div className="lg:col-span-2 space-y-6">
           {/* Internal Factors */}
           <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-                <h3 className="text-sm font-bold text-white">
-                  Diagnosa Faktor Internal
-                </h3>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={loadSidogiriPresetFactors}
-                  className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold border border-emerald-500 transition-colors shadow-sm active:scale-95"
-                >
-                  Muat Standar
-                </button>
-                <button
-                  onClick={() => addDefaultRcaFactor('internal')}
-                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-semibold flex items-center gap-1 border border-slate-700"
-                >
-                  <Plus className="w-3.5 h-3.5" /> Faktor
-                </button>
-              </div>
+            <div className="flex items-center gap-2 pb-1 border-b border-slate-800/60">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+              <h3 className="text-sm font-bold text-white">
+                Diagnosa Faktor Internal
+              </h3>
             </div>
 
             <div className="space-y-3">
@@ -508,23 +492,38 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
                 </div>
               ))}
             </div>
+
+            {/* Bottom Action Footer for Internal Factors */}
+            <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                <span className="text-xs font-semibold text-slate-300">Diagnosa Faktor Internal</span>
+                <span className="text-[11px] text-slate-500">({internalFactors.length} faktor)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={loadSidogiriPresetFactors}
+                  className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold border border-emerald-500 transition-colors shadow-sm active:scale-95"
+                >
+                  Muat Standar
+                </button>
+                <button
+                  onClick={() => addDefaultRcaFactor('internal')}
+                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-semibold flex items-center gap-1 border border-slate-700 transition-colors active:scale-95"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Faktor
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* External Factors */}
           <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
-                <h3 className="text-sm font-bold text-white">
-                  Diagnosa Faktor Eksternal
-                </h3>
-              </div>
-              <button
-                onClick={() => addDefaultRcaFactor('eksternal')}
-                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-semibold flex items-center gap-1 border border-slate-700"
-              >
-                <Plus className="w-3.5 h-3.5" /> Faktor
-              </button>
+            <div className="flex items-center gap-2 pb-1 border-b border-slate-800/60">
+              <div className="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+              <h3 className="text-sm font-bold text-white">
+                Diagnosa Faktor Eksternal
+              </h3>
             </div>
 
             <div className="space-y-3">
@@ -573,6 +572,23 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
                   />
                 </div>
               ))}
+            </div>
+
+            {/* Bottom Action Footer for External Factors */}
+            <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                <span className="text-xs font-semibold text-slate-300">Diagnosa Faktor Eksternal</span>
+                <span className="text-[11px] text-slate-500">({externalFactors.length} faktor)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => addDefaultRcaFactor('eksternal')}
+                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-semibold flex items-center gap-1 border border-slate-700 transition-colors active:scale-95"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Faktor
+                </button>
+              </div>
             </div>
           </div>
         </div>
