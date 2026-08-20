@@ -1,5 +1,4 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
 import { DpkStatus } from '../../../types';
 
 interface RcaHealthScoreCardProps {
@@ -15,18 +14,23 @@ export const RcaHealthScoreCard: React.FC<RcaHealthScoreCardProps> = ({
 }) => {
   const numScore = Number(avgScore);
 
+  const getScoreColor = (score: number) => {
+    if (score <= 2.5) return 'text-rose-400';
+    if (score <= 3.8) return 'text-amber-400';
+    return 'text-emerald-400';
+  };
+
   return (
     <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-lg">
       <div className="flex items-center justify-between">
         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-          Skor Kesehatan Toko (RCA)
+          Total Nilai
         </h4>
-        <Sparkles className="w-4 h-4 text-emerald-400" />
       </div>
 
       <div className="text-center py-2">
-        <div className="text-4xl font-extrabold text-white font-mono">
-          {avgScore} <span className="text-sm font-normal text-slate-500">/ 5.0</span>
+        <div className={`text-2xl sm:text-3xl font-extrabold font-mono ${getScoreColor(numScore)}`}>
+          {avgScore} <span className="text-xs sm:text-sm font-normal text-slate-500">/ 5.0</span>
         </div>
         <div className="text-xs text-slate-400 mt-1">
           {numScore <= 2.5
@@ -39,7 +43,7 @@ export const RcaHealthScoreCard: React.FC<RcaHealthScoreCardProps> = ({
 
       <div className="border-t border-slate-800 pt-3">
         <label className="text-[11px] font-medium text-slate-400 block mb-1">
-          Ubah Status Pengawasan
+          Status Pengawasan
         </label>
         <select
           value={status}
