@@ -148,19 +148,24 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
             </div>
           </div>
 
-          {/* Row 2: Subtext Info (KTB, SPV Area, Address) */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
-            <span className="flex items-center gap-1.5">
+          {/* Row 2: Subtext Info (KTB, SPV Area, Address - 1 Single Horizontal Row) */}
+          <div className="flex items-center gap-x-3 sm:gap-x-4 text-xs text-slate-400 overflow-hidden">
+            <span className="flex items-center gap-1.5 flex-shrink-0">
               <User className="w-3.5 h-3.5 text-slate-500" />
               KTB: <strong className="text-slate-200">{data.kepalaToko}</strong>
             </span>
-            <span className="flex items-center gap-1.5">
+            <span className="text-slate-700 hidden sm:inline">•</span>
+            <span className="flex items-center gap-1.5 flex-shrink-0">
               <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
               SPV Area: <strong className="text-slate-200">{data.spvArea || '-'}</strong>
             </span>
-            <span className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-slate-500" />
-              {data.address || 'Alamat cabang belum diatur'}
+            <span className="text-slate-700 hidden sm:inline">•</span>
+            <span 
+              className="flex items-center gap-1.5 truncate min-w-0 cursor-default" 
+              title={data.address || 'Alamat cabang belum diatur'}
+            >
+              <MapPin className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
+              <span className="truncate text-slate-300">{data.address || 'Alamat cabang belum diatur'}</span>
             </span>
           </div>
         </div>
