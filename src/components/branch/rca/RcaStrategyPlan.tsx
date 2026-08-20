@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lightbulb, Sparkles, Trash2, AlertTriangle } from 'lucide-react';
+import { Lightbulb, Sparkles, Trash2 } from 'lucide-react';
 
 interface RcaStrategyPlanProps {
   diagnosisSummary: string;
@@ -84,13 +84,6 @@ export const RcaStrategyPlan: React.FC<RcaStrategyPlanProps> = ({
             className="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl p-3 focus:outline-none focus:border-emerald-500 transition-colors leading-relaxed placeholder:text-slate-500"
           />
         </div>
-      </div>
-
-      <div className="p-3 bg-emerald-950/30 border border-emerald-800/40 rounded-xl flex items-start gap-2.5">
-        <AlertTriangle className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-        <p className="text-[11px] text-emerald-300 leading-relaxed">
-          Setelah diagnosa disimpan, buka tab <strong>🎯 Aksi</strong> untuk menyusun jadwal roadmap perbaikan 180 hari bersama Kepala Toko.
-        </p>
       </div>
     </div>
   );
