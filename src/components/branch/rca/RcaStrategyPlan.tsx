@@ -68,7 +68,7 @@ export const RcaStrategyPlan: React.FC<RcaStrategyPlanProps> = ({
 
         <div>
           <label className="block text-[11px] font-medium text-slate-400 mb-1">
-            Rekomendasi Strategi Turnaround (180 Hari)
+            Rekomendasi Strategi
           </label>
           <textarea
             rows={4}
