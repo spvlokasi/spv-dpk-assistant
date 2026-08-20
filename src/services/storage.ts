@@ -1,5 +1,6 @@
 import { 
   Branch, 
+  DiagnosisLog,
   ActionPlanMilestone, 
   FieldVisit, 
   DailyPerformance, 
@@ -19,6 +20,7 @@ import { getSupabaseClient } from './supabase';
 const KEYS = {
   BRANCHES: 'spv_dpk_branches',
   BRANCH_IMAGES: 'spv_dpk_branch_images',
+  DIAGNOSIS_LOGS: 'spv_dpk_diagnosis_logs',
   MILESTONES: 'spv_dpk_milestones',
   VISITS: 'spv_dpk_visits',
   PERFORMANCE: 'spv_dpk_performance',
@@ -192,6 +194,72 @@ export const StorageService = {
         await client.from('branches').delete().eq('id', id);
       } catch (e) {
         console.warn('Auto-sync delete branch failed:', e);
+      }
+    }
+  },
+
+  // Diagnosis Logs (Riwayat Diagnosa Berkala)
+  getDiagnosisLogs(branchId?: string): DiagnosisLog[] {
+    const logs = safeParse<DiagnosisLog[]>(KEYS.DIAGNOSIS_LOGS, []);
+    if (branchId) {
+      return logs.filter(l => l.branchId === branchId).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    }
+    return logs.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  },
+  saveDiagnosisLogs(logs: DiagnosisLog[]) {
+    try {
+      localStorage.setItem(KEYS.DIAGNOSIS_LOGS, JSON.stringify(logs));
+    } catch (e) {
+      console.warn('saveDiagnosisLogs error:', e);
+    }
+  },
+  async saveDiagnosisLog(log: DiagnosisLog) {
+    const all = this.getDiagnosisLogs();
+    const index = all.findIndex(l => l.id === log.id || (l.branchId === log.branchId && l.periodStartDate === log.periodStartDate && l.periodEndDate === log.periodEndDate));
+    if (index >= 0) {
+      all[index] = { ...all[index], ...log };
+    } else {
+      all.unshift(log);
+    }
+    this.saveDiagnosisLogs(all);
+
+    // Auto-Sync to Supabase Cloud
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('diagnosis_logs').upsert({
+          id: log.id,
+          branch_id: log.branchId,
+          period_start_date: log.periodStartDate,
+          period_end_date: log.periodEndDate,
+          category: log.category,
+          status: log.status,
+          urgency_level: log.urgencyLevel,
+          target_sales_per_day: Number(log.targetSalesPerDay) || 0,
+          target_margin_pct: Number(log.targetMarginPct) || 0,
+          target_max_opex_per_month: Number(log.targetMaxOpexPerMonth) || 0,
+          root_causes: log.rootCauses || [],
+          diagnosis_summary: log.diagnosisSummary || '',
+          recommended_strategy: log.recommendedStrategy || '',
+          diagnosed_by: log.diagnosedBy || 'Supervisor DPK',
+          created_at: log.createdAt || new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+      } catch (e) {
+        console.warn('Auto-sync diagnosis_log failed:', e);
+      }
+    }
+  },
+  async deleteDiagnosisLog(id: string) {
+    const all = this.getDiagnosisLogs().filter(l => l.id !== id);
+    this.saveDiagnosisLogs(all);
+
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        await client.from('diagnosis_logs').delete().eq('id', id);
+      } catch (e) {
+        console.warn('Auto-sync delete diagnosis_log failed:', e);
       }
     }
   },
@@ -504,9 +572,10 @@ export const StorageService = {
     if (!client) return false;
 
     try {
-      const [uRes, bRes, mRes, vRes, pRes, gRes, eRes] = await Promise.all([
+      const [uRes, bRes, dlRes, mRes, vRes, pRes, gRes, eRes] = await Promise.all([
         client.from('user_accounts').select('*'),
         client.from('branches').select('*'),
+        client.from('diagnosis_logs').select('*'),
         client.from('action_milestones').select('*'),
         client.from('field_visits').select('*'),
         client.from('daily_performance').select('*'),
@@ -562,6 +631,27 @@ export const StorageService = {
           diagnosisEndDate: b.diagnosis_end_date || ''
         }));
         this.saveBranches(branches);
+      }
+
+      if (dlRes.data && dlRes.data.length > 0) {
+        const diagnosisLogs: DiagnosisLog[] = dlRes.data.map((dl: any) => ({
+          id: dl.id,
+          branchId: dl.branch_id,
+          periodStartDate: dl.period_start_date,
+          periodEndDate: dl.period_end_date,
+          category: dl.category || 'sales_drop',
+          status: dl.status || 'kritis',
+          urgencyLevel: dl.urgency_level || 'tinggi',
+          targetSalesPerDay: Number(dl.target_sales_per_day) || 12000000,
+          targetMarginPct: Number(dl.target_margin_pct) || 15,
+          targetMaxOpexPerMonth: Number(dl.target_max_opex_per_month) || 20000000,
+          rootCauses: dl.root_causes || [],
+          diagnosisSummary: dl.diagnosis_summary || '',
+          recommendedStrategy: dl.recommended_strategy || '',
+          diagnosedBy: dl.diagnosed_by || 'Supervisor DPK',
+          createdAt: dl.created_at || new Date().toISOString()
+        }));
+        this.saveDiagnosisLogs(diagnosisLogs);
       }
 
       if (mRes.data && mRes.data.length > 0) {

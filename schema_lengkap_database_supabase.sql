@@ -143,11 +143,33 @@ CREATE TABLE IF NOT EXISTS escalation_tickets (
 );
 
 
--- ====================================================================
--- HAK AKSES DAN POLICIES (ENABLE RLS AGAR APLIKASI BISA AKSES PENUH)
--- ====================================================================
+-- 8. TABEL RIWAYAT / LOG DIAGNOSA PER PERIODE (DIAGNOSIS LOGS)
+CREATE TABLE IF NOT EXISTS diagnosis_logs (
+  id TEXT PRIMARY KEY,
+  branch_id TEXT REFERENCES branches(id) ON DELETE CASCADE,
+  period_start_date TEXT NOT NULL,
+  period_end_date TEXT NOT NULL,
+  category TEXT NOT NULL,
+  status TEXT NOT NULL,
+  urgency_level TEXT NOT NULL,
+  target_sales_per_day NUMERIC DEFAULT 12000000,
+  target_margin_pct NUMERIC DEFAULT 15,
+  target_max_opex_per_month NUMERIC DEFAULT 20000000,
+  root_causes JSONB DEFAULT '[]'::jsonb,
+  diagnosis_summary TEXT DEFAULT '',
+  recommended_strategy TEXT DEFAULT '',
+  diagnosed_by TEXT DEFAULT 'Supervisor DPK',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+
+-- ==============================================================================
+-- KEAMANAN / ROW LEVEL SECURITY (RLS) POLICIES (FULL OPEN ACCESS FOR ANON ROLE)
+-- ==============================================================================
 ALTER TABLE user_accounts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE branches ENABLE ROW LEVEL SECURITY;
+ALTER TABLE diagnosis_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE action_milestones ENABLE ROW LEVEL SECURITY;
 ALTER TABLE field_visits ENABLE ROW LEVEL SECURITY;
 ALTER TABLE daily_performance ENABLE ROW LEVEL SECURITY;
@@ -164,6 +186,10 @@ BEGIN
   -- branches
   DROP POLICY IF EXISTS "Public access branches" ON branches;
   CREATE POLICY "Public access branches" ON branches FOR ALL USING (true) WITH CHECK (true);
+
+  -- diagnosis_logs
+  DROP POLICY IF EXISTS "Public access diagnosis_logs" ON diagnosis_logs;
+  CREATE POLICY "Public access diagnosis_logs" ON diagnosis_logs FOR ALL USING (true) WITH CHECK (true);
 
   -- action_milestones
   DROP POLICY IF EXISTS "Public access action_milestones" ON action_milestones;

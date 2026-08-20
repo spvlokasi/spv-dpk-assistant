@@ -41,6 +41,24 @@ export interface Branch {
   diagnosisEndDate?: string;   // YYYY-MM-DD
 }
 
+export interface DiagnosisLog {
+  id: string;
+  branchId: string;
+  periodStartDate: string;
+  periodEndDate: string;
+  category: DpkCategory;
+  status: DpkStatus;
+  urgencyLevel: 'tinggi' | 'sedang' | 'rendah';
+  targetSalesPerDay: number;
+  targetMarginPct: number;
+  targetMaxOpexPerMonth: number;
+  rootCauses: RootCauseFactor[];
+  diagnosisSummary: string;
+  recommendedStrategy: string;
+  diagnosedBy?: string;
+  createdAt: string;
+}
+
 export interface ActionPlanTask {
   id: string;
   title: string;
