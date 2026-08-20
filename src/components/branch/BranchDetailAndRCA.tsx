@@ -223,6 +223,23 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
   const internalFactors = data.rootCauses.filter(f => f.category === 'internal');
   const externalFactors = data.rootCauses.filter(f => f.category === 'eksternal');
 
+  // Helper to split brand prefix and branch name for responsive mobile display
+  const getBranchDisplayNames = (fullName: string) => {
+    const prefixMatch = fullName.match(/^(TokoBASMALAH|Cabang Basmalah|Basmalah)\s+(.+)$/i);
+    if (prefixMatch) {
+      return {
+        prefix: prefixMatch[1],
+        branchName: prefixMatch[2]
+      };
+    }
+    return {
+      prefix: '',
+      branchName: fullName
+    };
+  };
+
+  const { prefix, branchName } = getBranchDisplayNames(data.name);
+
   // Average score calculation
   const avgScore = data.rootCauses.length > 0
     ? (data.rootCauses.reduce((acc, curr) => acc + curr.score, 0) / data.rootCauses.length).toFixed(1)
@@ -235,15 +252,20 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
         <div className="space-y-2.5 pb-4 border-b border-slate-800">
           {/* Row 1: Title, Badges, and Navigation Buttons (Exact Same Row / Sejajar) */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-[11px] font-mono font-bold text-emerald-400">
+            <div className="flex items-center gap-1.5 sm:gap-2.5 flex-nowrap overflow-x-auto py-0.5 max-w-full">
+              <span className="px-2 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-[10px] sm:text-[11px] font-mono font-bold text-emerald-400 flex-shrink-0">
                 {data.code}
               </span>
-              <h2 className="text-sm font-bold text-white tracking-tight">{data.name}</h2>
-              <StatusBadge status={data.status} />
-              <UrgencyBadge urgency={data.urgencyLevel} />
+              <h2 className="text-xs sm:text-sm font-bold text-white tracking-tight whitespace-nowrap flex-shrink-0">
+                {prefix && <span className="hidden sm:inline">{prefix} </span>}
+                {branchName}
+              </h2>
+              <div className="flex items-center gap-1.5 flex-nowrap flex-shrink-0">
+                <StatusBadge status={data.status} />
+                <UrgencyBadge urgency={data.urgencyLevel} />
+              </div>
               {isSaved && (
-                <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-semibold animate-pulse ml-1">
+                <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] text-emerald-400 font-semibold animate-pulse ml-1 flex-shrink-0">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Tersimpan!
                 </span>
               )}
