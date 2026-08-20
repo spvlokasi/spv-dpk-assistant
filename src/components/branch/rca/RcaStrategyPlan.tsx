@@ -21,10 +21,13 @@ export const RcaStrategyPlan: React.FC<RcaStrategyPlanProps> = ({
   return (
     <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl space-y-4 shadow-lg">
       <div className="flex items-center justify-between gap-2 flex-nowrap pb-3 border-b border-slate-800">
-        <div className="flex items-center gap-1.5 min-w-0">
+        <div
+          className="flex items-center gap-1.5 min-w-0 cursor-help"
+          title="Rencana Strategi & Eksekusi Turnaround Toko (180 Hari)"
+        >
           <Lightbulb className="w-4 h-4 text-amber-400 flex-shrink-0" />
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 truncate">
-            Rencana Strategi & Eksekusi
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 whitespace-nowrap">
+            Strategi & Aksi
           </h4>
         </div>
 
@@ -34,7 +37,7 @@ export const RcaStrategyPlan: React.FC<RcaStrategyPlanProps> = ({
             type="button"
             onClick={onGenerateAnalysis}
             className="px-2.5 py-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 text-[11px] font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-sm whitespace-nowrap"
-            title="Analisis Otomatis Berdasarkan Faktor Diagnosa"
+            title="Klik untuk membuat analisis dan rekomendasi otomatis berdasarkan faktor diagnosa"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Otomatis ✨</span>
@@ -44,7 +47,7 @@ export const RcaStrategyPlan: React.FC<RcaStrategyPlanProps> = ({
               type="button"
               onClick={onClearAnalysis}
               className="p-1 rounded-lg bg-slate-800 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 border border-slate-700 transition-colors"
-              title="Kosongkan Teks"
+              title="Kosongkan Teks Ringkasan & Strategi"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </button>
