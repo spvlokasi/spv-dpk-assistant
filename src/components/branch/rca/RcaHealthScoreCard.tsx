@@ -67,9 +67,6 @@ export const RcaHealthScoreCard: React.FC<RcaHealthScoreCardProps> = ({
         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
           Total Nilai
         </h4>
-        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-emerald-400 font-semibold">
-          Auto ⚡
-        </span>
       </div>
 
       <div className="text-center py-2">
