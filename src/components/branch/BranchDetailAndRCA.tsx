@@ -441,7 +441,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
                 <h3 className="text-sm font-bold text-white">
-                  Diagnosa Faktor Internal (SDM, SOP, Display, Kasir)
+                  Diagnosa Faktor Internal
                 </h3>
               </div>
               <div className="flex items-center gap-2">
@@ -516,7 +516,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
                 <h3 className="text-sm font-bold text-white">
-                  Diagnosa Faktor Eksternal (Kompetitor, Akses, Pasar)
+                  Diagnosa Faktor Eksternal
                 </h3>
               </div>
               <button
