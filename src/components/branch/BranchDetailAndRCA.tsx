@@ -483,19 +483,50 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
                       </div>
                     </div>
 
-                    {/* Score Slider */}
-                    <div className="flex items-center gap-3">
-                      <span className="text-[10px] text-slate-500">1 (Kritis)</span>
-                      <input
-                        type="range"
-                        min="1"
-                        max="5"
-                        step="1"
-                        value={factor.score}
-                        onChange={(e) => handleUpdateFactor(factor.id, 'score', Number(e.target.value))}
-                        className="w-full accent-emerald-500 h-1.5 bg-slate-700 rounded-lg cursor-pointer"
-                      />
-                      <span className="text-[10px] text-slate-500">5 (Bagus)</span>
+                    {/* 5-Level Interactive Basmalah Logo Rating */}
+                    <div className="flex items-center justify-between gap-3 bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-800/80">
+                      <div className="flex items-center gap-1 sm:gap-1.5">
+                        <span className="text-[10px] text-slate-500 mr-1 font-medium hidden sm:inline">Penilaian:</span>
+                        {[1, 2, 3, 4, 5].map((starValue) => {
+                          const isActive = starValue <= factor.score;
+                          return (
+                            <button
+                              key={starValue}
+                              type="button"
+                              onClick={() => handleUpdateFactor(factor.id, 'score', starValue)}
+                              className="group relative p-0.5 transition-all duration-200 hover:scale-125 focus:outline-none"
+                              title={`Beri Nilai ${starValue} / 5`}
+                            >
+                              <div className={`w-6 h-6 rounded-lg p-0.5 flex items-center justify-center transition-all ${
+                                isActive 
+                                  ? 'bg-emerald-500/20 border border-emerald-500/40 shadow-sm shadow-emerald-500/20 scale-105' 
+                                  : 'bg-slate-800/40 border border-slate-800 opacity-40 hover:opacity-80'
+                              }`}>
+                                <img 
+                                  src="/logo.png" 
+                                  alt={`Skor ${starValue}`} 
+                                  className={`w-full h-full object-contain transition-all ${
+                                    isActive ? 'filter-none drop-shadow-[0_0_3px_rgba(16,185,129,0.8)]' : 'grayscale'
+                                  }`} 
+                                />
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Dynamic Score Label */}
+                      <div className="text-right">
+                        <span className={`text-[11px] font-semibold ${
+                          factor.score <= 2 ? 'text-rose-400' : factor.score === 3 ? 'text-amber-400' : 'text-emerald-400'
+                        }`}>
+                          {factor.score === 1 && '🔴 Kritis (1)'}
+                          {factor.score === 2 && '🟠 Kurang (2)'}
+                          {factor.score === 3 && '🟡 Standar (3)'}
+                          {factor.score === 4 && '🟢 Baik (4)'}
+                          {factor.score === 5 && '🌟 Ekselen (5)'}
+                        </span>
+                      </div>
                     </div>
 
                     <input
@@ -567,18 +598,50 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <span className="text-[10px] text-slate-500">1 (Berat)</span>
-                      <input
-                        type="range"
-                        min="1"
-                        max="5"
-                        step="1"
-                        value={factor.score}
-                        onChange={(e) => handleUpdateFactor(factor.id, 'score', Number(e.target.value))}
-                        className="w-full accent-amber-500 h-1.5 bg-slate-700 rounded-lg cursor-pointer"
-                      />
-                      <span className="text-[10px] text-slate-500">5 (Aman)</span>
+                    {/* 5-Level Interactive Basmalah Logo Rating for External */}
+                    <div className="flex items-center justify-between gap-3 bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-800/80">
+                      <div className="flex items-center gap-1 sm:gap-1.5">
+                        <span className="text-[10px] text-slate-500 mr-1 font-medium hidden sm:inline">Kondisi:</span>
+                        {[1, 2, 3, 4, 5].map((starValue) => {
+                          const isActive = starValue <= factor.score;
+                          return (
+                            <button
+                              key={starValue}
+                              type="button"
+                              onClick={() => handleUpdateFactor(factor.id, 'score', starValue)}
+                              className="group relative p-0.5 transition-all duration-200 hover:scale-125 focus:outline-none"
+                              title={`Beri Nilai Kondisi ${starValue} / 5`}
+                            >
+                              <div className={`w-6 h-6 rounded-lg p-0.5 flex items-center justify-center transition-all ${
+                                isActive 
+                                  ? 'bg-amber-500/20 border border-amber-500/40 shadow-sm shadow-amber-500/20 scale-105' 
+                                  : 'bg-slate-800/40 border border-slate-800 opacity-40 hover:opacity-80'
+                              }`}>
+                                <img 
+                                  src="/logo.png" 
+                                  alt={`Skor ${starValue}`} 
+                                  className={`w-full h-full object-contain transition-all ${
+                                    isActive ? 'filter-none drop-shadow-[0_0_3px_rgba(245,158,11,0.8)]' : 'grayscale'
+                                  }`} 
+                                />
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Dynamic Score Label */}
+                      <div className="text-right">
+                        <span className={`text-[11px] font-semibold ${
+                          factor.score <= 2 ? 'text-rose-400' : factor.score === 3 ? 'text-amber-400' : 'text-emerald-400'
+                        }`}>
+                          {factor.score === 1 && '🔴 Berat Sekali (1)'}
+                          {factor.score === 2 && '🟠 Menantang (2)'}
+                          {factor.score === 3 && '🟡 Cukup Stabil (3)'}
+                          {factor.score === 4 && '🟢 Mendukung (4)'}
+                          {factor.score === 5 && '🌟 Sangat Aman (5)'}
+                        </span>
+                      </div>
                     </div>
 
                     <input
