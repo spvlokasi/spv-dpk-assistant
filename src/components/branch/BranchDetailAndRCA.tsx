@@ -342,24 +342,22 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
             </div>
 
             <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap text-xs">
-              <div className="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-                <span className="text-[11px] text-slate-400 font-medium">Dari:</span>
+              <div className="flex items-center bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
                 <input
                   type="date"
                   value={data.diagnosisStartDate || ''}
                   onChange={(e) => setData({ ...data, diagnosisStartDate: e.target.value })}
-                  className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs"
+                  className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs cursor-pointer"
                 />
               </div>
               <span className="text-slate-500 font-bold text-xs">s/d</span>
-              <div className="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-                <span className="text-[11px] text-slate-400 font-medium">Sampai:</span>
+              <div className="flex items-center bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
                 <input
                   type="date"
                   min={data.diagnosisStartDate || undefined}
                   value={data.diagnosisEndDate || ''}
                   onChange={(e) => setData({ ...data, diagnosisEndDate: e.target.value })}
-                  className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs"
+                  className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs cursor-pointer"
                 />
               </div>
               {(data.diagnosisStartDate || data.diagnosisEndDate) && (
