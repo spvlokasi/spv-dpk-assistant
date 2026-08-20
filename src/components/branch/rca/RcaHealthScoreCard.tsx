@@ -4,21 +4,62 @@ import { DpkStatus } from '../../../types';
 interface RcaHealthScoreCardProps {
   avgScore: string;
   status: DpkStatus;
-  onChangeStatus: (status: DpkStatus) => void;
 }
 
 export const RcaHealthScoreCard: React.FC<RcaHealthScoreCardProps> = ({
   avgScore,
-  status,
-  onChangeStatus
+  status
 }) => {
   const numScore = Number(avgScore);
 
   const getScoreColor = (score: number) => {
+    if (score === 0) return 'text-slate-400';
     if (score <= 2.5) return 'text-rose-400';
     if (score <= 3.8) return 'text-amber-400';
     return 'text-emerald-400';
   };
+
+  const getStatusInfo = (st: DpkStatus) => {
+    switch (st) {
+      case 'kritis':
+        return {
+          icon: '🔴',
+          title: 'Kritis (Intervensi Khusus)',
+          desc: 'Nilai ≤ 2.5 • Dampingi 3x seminggu',
+          style: 'bg-rose-950/40 border-rose-800/60 text-rose-300'
+        };
+      case 'dalam_progres':
+        return {
+          icon: '🟡',
+          title: 'Dalam Progres (Pendampingan)',
+          desc: 'Nilai 2.6 - 3.8 • Kawal target laba',
+          style: 'bg-amber-950/40 border-amber-800/60 text-amber-300'
+        };
+      case 'siap_lulus':
+        return {
+          icon: '🟢',
+          title: 'Siap Lulus (Hasil Membaik)',
+          desc: 'Nilai > 3.8 • Siapkan sidang kelulusan',
+          style: 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300'
+        };
+      case 'lulus_dpk':
+        return {
+          icon: '🏆',
+          title: 'Lulus DPK (Turnaround Berhasil)',
+          desc: 'Toko mandiri dan stabil',
+          style: 'bg-blue-950/40 border-blue-800/60 text-blue-300'
+        };
+      default:
+        return {
+          icon: '🏢',
+          title: 'Existing (Pemantauan Rutin)',
+          desc: 'Monitoring berkala SOP toko',
+          style: 'bg-slate-800/60 border-slate-700 text-slate-300'
+        };
+    }
+  };
+
+  const statusInfo = getStatusInfo(status);
 
   return (
     <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-lg">
@@ -26,6 +67,9 @@ export const RcaHealthScoreCard: React.FC<RcaHealthScoreCardProps> = ({
         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
           Total Nilai
         </h4>
+        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-emerald-400 font-semibold">
+          Auto ⚡
+        </span>
       </div>
 
       <div className="text-center py-2">
@@ -33,7 +77,9 @@ export const RcaHealthScoreCard: React.FC<RcaHealthScoreCardProps> = ({
           {avgScore} <span className="text-xs sm:text-sm font-normal text-slate-500">/ 5.0</span>
         </div>
         <div className="text-xs text-slate-400 mt-1">
-          {numScore <= 2.5
+          {numScore === 0
+            ? 'Belum ada penilaian faktor'
+            : numScore <= 2.5
             ? '🔴 Toko Butuh Intervensi Darurat'
             : numScore <= 3.8
             ? '🟡 Pembenahan Bertahap'
@@ -41,21 +87,20 @@ export const RcaHealthScoreCard: React.FC<RcaHealthScoreCardProps> = ({
         </div>
       </div>
 
-      <div className="border-t border-slate-800 pt-3">
-        <label className="text-[11px] font-medium text-slate-400 block mb-1">
-          Status Pengawasan
-        </label>
-        <select
-          value={status}
-          onChange={(e) => onChangeStatus(e.target.value as DpkStatus)}
-          className="w-full bg-slate-800 border border-slate-700 text-xs rounded-lg px-2.5 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 cursor-pointer"
-        >
-          <option value="kritis">🔴 Kritis (Belum Ada Perbaikan)</option>
-          <option value="dalam_progres">🟡 Dalam Progres (Pendampingan)</option>
-          <option value="siap_lulus">🟢 Siap Lulus (Hasil Membaik)</option>
-          <option value="lulus_dpk">🏆 Lulus (Turnaround Berhasil)</option>
-          <option value="existing">🔵 Existing (Pemantauan Rutin)</option>
-        </select>
+      {/* Automatic Status Pengawasan */}
+      <div className="border-t border-slate-800 pt-3 space-y-2">
+        <div className="flex items-center justify-between text-[11px]">
+          <span className="font-medium text-slate-400">Status Pengawasan</span>
+          <span className="text-[10px] text-slate-500 font-mono">Dihitung Otomatis</span>
+        </div>
+
+        <div className={`p-3 rounded-xl border flex items-center gap-2.5 transition-all ${statusInfo.style}`}>
+          <span className="text-base flex-shrink-0">{statusInfo.icon}</span>
+          <div className="min-w-0 flex-1">
+            <div className="text-xs font-bold truncate">{statusInfo.title}</div>
+            <div className="text-[10px] opacity-80 mt-0.5">{statusInfo.desc}</div>
+          </div>
+        </div>
       </div>
     </div>
   );

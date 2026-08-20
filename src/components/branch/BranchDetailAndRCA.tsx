@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Branch, RootCauseFactor, DiagnosisLog } from '../../types';
+import { Branch, RootCauseFactor, DiagnosisLog, DpkStatus } from '../../types';
 import { StorageService } from '../../services/storage';
 import { getSidogiriPresetFactors } from './rca/rcaPresets';
 import { BranchHeaderProfile } from './rca/BranchHeaderProfile';
@@ -28,14 +28,26 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
   };
 
   const todayStr = getTodayStr();
+
+  const getAutoStatus = (factors: RootCauseFactor[], currentStatus: DpkStatus): DpkStatus => {
+    if (currentStatus === 'lulus_dpk') return 'lulus_dpk';
+    if (!factors || factors.length === 0) return currentStatus;
+    const avg = factors.reduce((acc, curr) => acc + curr.score, 0) / factors.length;
+    if (avg <= 2.5) return 'kritis';
+    if (avg <= 3.8) return 'dalam_progres';
+    return 'siap_lulus';
+  };
+
   const [data, setData] = useState<Branch>(() => {
     const isOldDummyDate = branch.diagnosisStartDate === '2026-08-01' || branch.diagnosisStartDate === '2026-06-01';
     const isOldDummyRootCauses = branch.rootCauses?.some(r => ['rc-1', 'rc-2', 'rc-3', 'rc-4', 'rc-21', 'rc-31'].includes(r.id));
+    const initialRootCauses = isOldDummyRootCauses ? [] : (branch.rootCauses || []);
     return {
       ...branch,
       diagnosisStartDate: (!branch.diagnosisStartDate || isOldDummyDate) ? todayStr : branch.diagnosisStartDate,
       diagnosisEndDate: (!branch.diagnosisEndDate || isOldDummyDate) ? todayStr : branch.diagnosisEndDate,
-      rootCauses: isOldDummyRootCauses ? [] : (branch.rootCauses || [])
+      rootCauses: initialRootCauses,
+      status: getAutoStatus(initialRootCauses, branch.status)
     };
   });
   const [isSaved, setIsSaved] = useState(false);
@@ -49,15 +61,23 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
       score: 3,
       note: ''
     };
-    setData({ ...data, rootCauses: [...data.rootCauses, newFactor] });
+    const updated = [...data.rootCauses, newFactor];
+    setData({ ...data, rootCauses: updated, status: getAutoStatus(updated, data.status) });
   };
 
   const handleUpdateFactor = (id: string, field: keyof RootCauseFactor, value: any) => {
-    setData({ ...data, rootCauses: data.rootCauses.map(f => f.id === id ? { ...f, [field]: value } : f) });
+    const updated = data.rootCauses.map(f => f.id === id ? { ...f, [field]: value } : f);
+    setData({ ...data, rootCauses: updated, status: getAutoStatus(updated, data.status) });
   };
 
   const handleDeleteFactor = (id: string) => {
-    setData({ ...data, rootCauses: data.rootCauses.filter(f => f.id !== id) });
+    const updated = data.rootCauses.filter(f => f.id !== id);
+    setData({ ...data, rootCauses: updated, status: getAutoStatus(updated, data.status) });
+  };
+
+  const handleLoadPreset = () => {
+    const preset = getSidogiriPresetFactors();
+    setData({ ...data, rootCauses: preset, status: getAutoStatus(preset, data.status) });
   };
 
   const handleSave = async () => {
@@ -155,7 +175,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
             onAddFactor={() => addDefaultRcaFactor('internal')}
             onUpdateFactor={handleUpdateFactor}
             onDeleteFactor={handleDeleteFactor}
-            onLoadPreset={() => setData({ ...data, rootCauses: getSidogiriPresetFactors() })}
+            onLoadPreset={handleLoadPreset}
           />
           <RcaFactorSection
             category="eksternal"
@@ -172,7 +192,6 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
           <RcaHealthScoreCard
             avgScore={avgScore}
             status={data.status}
-            onChangeStatus={(st) => setData({ ...data, status: st })}
           />
           <RcaStrategyPlan
             diagnosisSummary={data.diagnosisSummary}
