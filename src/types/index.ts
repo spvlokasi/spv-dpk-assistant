@@ -37,6 +37,8 @@ export interface Branch {
   diagnosisSummary: string;
   recommendedStrategy: string;
   imageUrl?: string;
+  diagnosisStartDate?: string; // YYYY-MM-DD
+  diagnosisEndDate?: string;   // YYYY-MM-DD
 }
 
 export interface ActionPlanTask {

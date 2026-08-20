@@ -45,13 +45,17 @@ CREATE TABLE IF NOT EXISTS branches (
   diagnosis_summary TEXT DEFAULT '',
   recommended_strategy TEXT DEFAULT '',
   image_url TEXT DEFAULT '',
+  diagnosis_start_date TEXT DEFAULT '',
+  diagnosis_end_date TEXT DEFAULT '',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Pastikan kolom image_url ada jika tabel sudah terlanjur dibuat sebelumnya
+-- Pastikan kolom baru ada jika tabel sudah terlanjur dibuat sebelumnya
 ALTER TABLE branches ADD COLUMN IF NOT EXISTS image_url TEXT DEFAULT '';
 ALTER TABLE branches ADD COLUMN IF NOT EXISTS target_sales_per_day NUMERIC DEFAULT 12000000;
+ALTER TABLE branches ADD COLUMN IF NOT EXISTS diagnosis_start_date TEXT DEFAULT '';
+ALTER TABLE branches ADD COLUMN IF NOT EXISTS diagnosis_end_date TEXT DEFAULT '';
 
 
 -- 3. TABEL PROGRAM AKSI & MILESTONE (ACTION MILESTONES)

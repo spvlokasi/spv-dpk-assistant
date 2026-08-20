@@ -172,6 +172,8 @@ export const StorageService = {
           diagnosis_summary: branch.diagnosisSummary || '',
           recommended_strategy: branch.recommendedStrategy || '',
           image_url: branch.imageUrl || '',
+          diagnosis_start_date: branch.diagnosisStartDate || '',
+          diagnosis_end_date: branch.diagnosisEndDate || '',
           updated_at: new Date().toISOString()
         });
       } catch (e) {
@@ -555,7 +557,9 @@ export const StorageService = {
           rootCauses: b.root_causes || [],
           diagnosisSummary: b.diagnosis_summary || '',
           recommendedStrategy: b.recommended_strategy || '',
-          imageUrl: b.image_url || persistentImages[b.id] || (b.code === 'M3017' || b.name?.toLowerCase().includes('bugih') ? '/stores/bugih.jpg' : '')
+          imageUrl: b.image_url || persistentImages[b.id] || (b.code === 'M3017' || b.name?.toLowerCase().includes('bugih') ? '/stores/bugih.jpg' : ''),
+          diagnosisStartDate: b.diagnosis_start_date || '',
+          diagnosisEndDate: b.diagnosis_end_date || ''
         }));
         this.saveBranches(branches);
       }

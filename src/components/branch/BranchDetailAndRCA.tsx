@@ -162,6 +162,39 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
           </div>
         </div>
 
+        {/* Periode Diagnosa & Audit (Date Range Manual) */}
+        <div className="mt-4 pt-4 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-850/50 p-3.5 rounded-xl border border-slate-800/80">
+          <div className="flex items-center gap-2.5">
+            <Calendar className="w-4 h-4 text-emerald-400" />
+            <div>
+              <div className="text-xs font-bold text-slate-200">Rentang Periode Diagnosa & Bedah Cabang</div>
+              <div className="text-[10px] text-slate-400">Atur tanggal mulai s/d selesai periode audit evaluasi toko ini</div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap text-xs">
+            <div className="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+              <span className="text-[11px] text-slate-400 font-medium">Dari:</span>
+              <input
+                type="date"
+                value={data.diagnosisStartDate || ''}
+                onChange={(e) => setData({ ...data, diagnosisStartDate: e.target.value })}
+                className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs"
+              />
+            </div>
+            <span className="text-slate-500 font-bold text-xs">s/d</span>
+            <div className="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+              <span className="text-[11px] text-slate-400 font-medium">Sampai:</span>
+              <input
+                type="date"
+                value={data.diagnosisEndDate || ''}
+                onChange={(e) => setData({ ...data, diagnosisEndDate: e.target.value })}
+                className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Target Parameters Setting */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
           <div className="bg-slate-850 p-3.5 rounded-xl border border-slate-800">
