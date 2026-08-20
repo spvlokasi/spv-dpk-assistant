@@ -19,21 +19,21 @@ export const RcaStrategyPlan: React.FC<RcaStrategyPlanProps> = ({
   onClearAnalysis
 }) => {
   return (
-    <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-lg">
-      <div className="flex items-center justify-between gap-2 flex-wrap pb-3 border-b border-slate-800">
-        <div className="flex items-center gap-2">
-          <Lightbulb className="w-4 h-4 text-amber-400" />
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+    <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl space-y-4 shadow-lg">
+      <div className="flex items-center justify-between gap-2 flex-nowrap pb-3 border-b border-slate-800">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <Lightbulb className="w-4 h-4 text-amber-400 flex-shrink-0" />
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 truncate">
             Rencana Strategi & Eksekusi
           </h4>
         </div>
 
-        {/* Action Buttons: Auto Generate & Clear */}
-        <div className="flex items-center gap-1.5">
+        {/* Action Buttons: Auto Generate & Clear (Strictly 1 Row) */}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           <button
             type="button"
             onClick={onGenerateAnalysis}
-            className="px-2.5 py-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 text-[11px] font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-sm"
+            className="px-2.5 py-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 text-[11px] font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-sm whitespace-nowrap"
             title="Analisis Otomatis Berdasarkan Faktor Diagnosa"
           >
             <Sparkles className="w-3.5 h-3.5" />
