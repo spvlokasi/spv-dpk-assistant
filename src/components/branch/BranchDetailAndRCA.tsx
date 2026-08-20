@@ -117,7 +117,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
               <span className="px-2.5 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-[11px] font-mono font-bold text-emerald-400">
                 {data.code}
               </span>
-              <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">{data.name}</h2>
+              <h2 className="text-sm font-bold text-white tracking-tight">{data.name}</h2>
               <StatusBadge status={data.status} />
               <UrgencyBadge urgency={data.urgencyLevel} />
             </div>
