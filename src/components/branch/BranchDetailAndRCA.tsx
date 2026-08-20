@@ -455,7 +455,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
                   onClick={() => addDefaultRcaFactor('internal')}
                   className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-semibold flex items-center gap-1 border border-slate-700"
                 >
-                  <Plus className="w-3.5 h-3.5" /> Tambah Faktor
+                  <Plus className="w-3.5 h-3.5" /> Faktor
                 </button>
               </div>
             </div>
@@ -523,7 +523,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
                 onClick={() => addDefaultRcaFactor('eksternal')}
                 className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-semibold flex items-center gap-1 border border-slate-700"
               >
-                <Plus className="w-3.5 h-3.5" /> Tambah Faktor
+                <Plus className="w-3.5 h-3.5" /> Faktor
               </button>
             </div>
 
