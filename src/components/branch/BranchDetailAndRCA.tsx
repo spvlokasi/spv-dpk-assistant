@@ -437,13 +437,6 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
         <div className="lg:col-span-2 space-y-6">
           {/* Internal Factors */}
           <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4">
-            <div className="flex items-center gap-2 pb-1 border-b border-slate-800/60">
-              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-              <h3 className="text-sm font-bold text-white">
-                Diagnosa Faktor Internal
-              </h3>
-            </div>
-
             <div className="space-y-3">
               {internalFactors.map((factor) => (
                 <div key={factor.id} className="bg-slate-850 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
@@ -519,13 +512,6 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
 
           {/* External Factors */}
           <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4">
-            <div className="flex items-center gap-2 pb-1 border-b border-slate-800/60">
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
-              <h3 className="text-sm font-bold text-white">
-                Diagnosa Faktor Eksternal
-              </h3>
-            </div>
-
             <div className="space-y-3">
               {externalFactors.map((factor) => (
                 <div key={factor.id} className="bg-slate-850 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
