@@ -110,9 +110,10 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
 
       {/* Header Profile Card */}
       <div className="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-2xl shadow-xl">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
-          <div>
-            <div className="flex items-center gap-2.5 flex-wrap mb-1.5">
+        <div className="space-y-2.5 pb-4 border-b border-slate-800">
+          {/* Row 1: Title, Badges, and Navigation Buttons (Exact Same Row / Sejajar) */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 flex-wrap">
               <span className="px-2.5 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-[11px] font-mono font-bold text-emerald-400">
                 {data.code}
               </span>
@@ -120,45 +121,47 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
               <StatusBadge status={data.status} />
               <UrgencyBadge urgency={data.urgencyLevel} />
             </div>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-slate-500" />
-                KTB: <strong className="text-slate-200">{data.kepalaToko}</strong>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
-                SPV Area: <strong className="text-slate-200">{data.spvArea || '-'}</strong>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                {data.address || 'Alamat cabang belum diatur'}
-              </span>
+
+            {/* Quick Action Navigation Buttons (Aligned with Badges) */}
+            <div className="flex items-center gap-1.5 flex-nowrap flex-shrink-0">
+              <button
+                onClick={() => onNavigateToTab('actionplan')}
+                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap"
+              >
+                <Target className="w-3.5 h-3.5 text-blue-400" />
+                Aksi
+              </button>
+              <button
+                onClick={() => onNavigateToTab('fieldvisit')}
+                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap"
+              >
+                <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                Kunjungan
+              </button>
+              <button
+                onClick={() => onNavigateToTab('performance')}
+                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap"
+              >
+                <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                Monitor
+              </button>
             </div>
           </div>
 
-          {/* Quick Action Navigation Buttons (Single Row / Sejajar) */}
-          <div className="flex items-center gap-1.5 flex-nowrap flex-shrink-0">
-            <button
-              onClick={() => onNavigateToTab('actionplan')}
-              className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap"
-            >
-              <Target className="w-3.5 h-3.5 text-blue-400" />
-              Aksi
-            </button>
-            <button
-              onClick={() => onNavigateToTab('fieldvisit')}
-              className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap"
-            >
-              <Calendar className="w-3.5 h-3.5 text-amber-400" />
-              Kunjungan
-            </button>
-            <button
-              onClick={() => onNavigateToTab('performance')}
-              className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap"
-            >
-              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-              Monitor
-            </button>
+          {/* Row 2: Subtext Info (KTB, SPV Area, Address) */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
+            <span className="flex items-center gap-1.5">
+              <User className="w-3.5 h-3.5 text-slate-500" />
+              KTB: <strong className="text-slate-200">{data.kepalaToko}</strong>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
+              SPV Area: <strong className="text-slate-200">{data.spvArea || '-'}</strong>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-slate-500" />
+              {data.address || 'Alamat cabang belum diatur'}
+            </span>
           </div>
         </div>
 
