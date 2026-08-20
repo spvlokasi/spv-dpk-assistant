@@ -54,12 +54,9 @@ export const RcaStrategyPlan: React.FC<RcaStrategyPlanProps> = ({
 
       <div className="space-y-3 text-xs">
         <div>
-          <div className="flex items-center justify-between mb-1">
-            <label className="text-[11px] font-medium text-slate-400">
-              Ringkasan Diagnosa Utama SPV
-            </label>
-            <span className="text-[10px] text-slate-500 font-mono">Bisa Diedit Manual</span>
-          </div>
+          <label className="block text-[11px] font-medium text-slate-400 mb-1">
+            Ringkasan Diagnosa
+          </label>
           <textarea
             rows={3}
             placeholder="Tuliskan kesimpulan akar masalah terbesar toko ini (atau klik 'Otomatis ✨')..."
@@ -70,12 +67,9 @@ export const RcaStrategyPlan: React.FC<RcaStrategyPlanProps> = ({
         </div>
 
         <div>
-          <div className="flex items-center justify-between mb-1">
-            <label className="text-[11px] font-medium text-slate-400">
-              Rekomendasi Strategi Turnaround (180 Hari)
-            </label>
-            <span className="text-[10px] text-slate-500 font-mono">Bisa Diedit Manual</span>
-          </div>
+          <label className="block text-[11px] font-medium text-slate-400 mb-1">
+            Rekomendasi Strategi Turnaround (180 Hari)
+          </label>
           <textarea
             rows={4}
             placeholder="Tuliskan instruksi prioritas perbaikan yang wajib dijalankan KTB & kru..."
