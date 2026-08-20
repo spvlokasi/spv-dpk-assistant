@@ -119,10 +119,17 @@ export const StorageService = {
       return INITIAL_BRANCHES;
     }
     const list = safeParse<Branch[]>(KEYS.BRANCHES, INITIAL_BRANCHES);
-    return list.map(b => ({
-      ...b,
-      imageUrl: b.imageUrl || images[b.id] || (b.code === 'M3017' || b.name?.toLowerCase().includes('bugih') ? '/stores/bugih.jpg' : '')
-    }));
+    return list.map(b => {
+      // Clean legacy dummy factors so stores always start fresh
+      const hasLegacyDummy = b.rootCauses?.some(r => 
+        ['rc-1', 'rc-2', 'rc-3', 'rc-4', 'rc-21', 'rc-22', 'rc-23', 'rc-31', 'rc-32', 'rc-33'].includes(r.id)
+      );
+      return {
+        ...b,
+        rootCauses: hasLegacyDummy ? [] : (b.rootCauses || []),
+        imageUrl: b.imageUrl || images[b.id] || (b.code === 'M3017' || b.name?.toLowerCase().includes('bugih') ? '/stores/bugih.jpg' : '')
+      };
+    });
   },
   saveBranches(branches: Branch[]) {
     try {

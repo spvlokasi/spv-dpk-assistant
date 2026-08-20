@@ -36,12 +36,27 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
   onSaveBranch,
   onNavigateToTab
 }) => {
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const [data, setData] = useState<Branch>(() => ({
-    ...branch,
-    diagnosisStartDate: branch.diagnosisStartDate || todayStr,
-    diagnosisEndDate: branch.diagnosisEndDate || todayStr
-  }));
+  const getTodayStr = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const todayStr = getTodayStr();
+  const [data, setData] = useState<Branch>(() => {
+    const isOldDummyDate = branch.diagnosisStartDate === '2026-08-01' || branch.diagnosisStartDate === '2026-06-01' || branch.diagnosisStartDate === '2026-05-15';
+    const isOldDummyRootCauses = branch.rootCauses?.some(r => 
+      ['rc-1', 'rc-2', 'rc-3', 'rc-4', 'rc-21', 'rc-22', 'rc-23', 'rc-31', 'rc-32', 'rc-33'].includes(r.id)
+    );
+    return {
+      ...branch,
+      diagnosisStartDate: (!branch.diagnosisStartDate || isOldDummyDate) ? todayStr : branch.diagnosisStartDate,
+      diagnosisEndDate: (!branch.diagnosisEndDate || isOldDummyDate) ? todayStr : branch.diagnosisEndDate,
+      rootCauses: isOldDummyRootCauses ? [] : (branch.rootCauses || [])
+    };
+  });
   const [isSaved, setIsSaved] = useState(false);
   const [diagnosisLogs, setDiagnosisLogs] = useState<DiagnosisLog[]>(() => StorageService.getDiagnosisLogs(branch.id));
 
@@ -337,6 +352,14 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
                   className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs"
                 />
               </div>
+              <button
+                type="button"
+                onClick={() => setData({ ...data, diagnosisStartDate: todayStr, diagnosisEndDate: todayStr })}
+                className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 hover:text-emerald-300 text-[11px] font-semibold transition-colors border border-slate-700 whitespace-nowrap"
+                title="Atur ke Tanggal Hari Ini"
+              >
+                Hari Ini
+              </button>
               {(data.diagnosisStartDate || data.diagnosisEndDate) && (
                 <button
                   type="button"
@@ -351,29 +374,30 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
           </div>
 
           {/* Riwayat Diagnosa Berkala / Arsip Log */}
-          {diagnosisLogs.length > 0 && (
-            <div className="pt-2.5 border-t border-slate-800/80 flex items-center justify-between gap-2 flex-wrap">
-              <div className="flex items-center gap-1.5 text-slate-400 text-[11px]">
-                <History className="w-3.5 h-3.5 text-blue-400" />
-                <span>Arsip Diagnosa Tersimpan: <strong className="text-blue-400">{diagnosisLogs.length} Periode</strong></span>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-[10px] text-slate-500">Muat arsip periode:</span>
-                <select
-                  onChange={(e) => handleSelectHistoryLog(e.target.value)}
-                  className="bg-slate-800 border border-slate-700 text-blue-300 rounded-lg px-2.5 py-1 text-[11px] font-medium focus:outline-none focus:border-blue-500 cursor-pointer"
-                  defaultValue=""
-                >
-                  <option value="" disabled>Pilih Arsip Periode Diagnosa...</option>
-                  {diagnosisLogs.map((log) => (
-                    <option key={log.id} value={log.id}>
-                      {log.periodStartDate ? new Date(log.periodStartDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '-'} s/d {log.periodEndDate ? new Date(log.periodEndDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'} ({log.status.toUpperCase()})
-                    </option>
-                  ))}
-                </select>
-              </div>
+          <div className="pt-2.5 border-t border-slate-800/80 flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 text-slate-400 text-[11px]">
+              <History className="w-3.5 h-3.5 text-blue-400" />
+              <span>Arsip Riwayat: <strong className={diagnosisLogs.length > 0 ? "text-blue-400 font-bold" : "text-slate-500"}>{diagnosisLogs.length} Periode Tersimpan</strong></span>
             </div>
-          )}
+            <div className="flex items-center gap-2 text-xs">
+              <span className="text-[10px] text-slate-500">Pilih riwayat:</span>
+              <select
+                onChange={(e) => handleSelectHistoryLog(e.target.value)}
+                className="bg-slate-800 border border-slate-700 text-blue-300 rounded-lg px-2.5 py-1 text-[11px] font-medium focus:outline-none focus:border-blue-500 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                defaultValue=""
+                disabled={diagnosisLogs.length === 0}
+              >
+                <option value="" disabled>
+                  {diagnosisLogs.length > 0 ? 'Pilih Arsip Periode Diagnosa...' : 'Belum Ada Arsip (Klik Simpan Diagnosa)'}
+                </option>
+                {diagnosisLogs.map((log) => (
+                  <option key={log.id} value={log.id}>
+                    {log.periodStartDate ? new Date(log.periodStartDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '-'} s/d {log.periodEndDate ? new Date(log.periodEndDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'} ({log.status.toUpperCase()})
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
 
         {/* Target Parameters Setting */}
