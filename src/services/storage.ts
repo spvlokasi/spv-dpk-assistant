@@ -228,6 +228,8 @@ export const StorageService = {
         await client.from('action_milestones').upsert({
           id: milestone.id,
           branch_id: milestone.branchId,
+          phase: milestone.phase || 'fase_1',
+          month_number: milestone.monthNumber || 1,
           week_number: milestone.weekNumber,
           title: milestone.title,
           target_metric: milestone.targetMetric || '',
@@ -562,6 +564,8 @@ export const StorageService = {
         const milestones: ActionPlanMilestone[] = mRes.data.map((m: any) => ({
           id: m.id,
           branchId: m.branch_id,
+          phase: m.phase || (m.week_number <= 3 ? 'fase_1' : m.week_number <= 6 ? 'fase_2' : 'fase_3'),
+          monthNumber: m.month_number || (m.week_number <= 3 ? 1 : m.week_number <= 6 ? 4 : 7),
           weekNumber: m.week_number,
           title: m.title,
           targetMetric: m.target_metric || '',

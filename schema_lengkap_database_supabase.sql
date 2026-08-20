@@ -58,6 +58,8 @@ ALTER TABLE branches ADD COLUMN IF NOT EXISTS target_sales_per_day NUMERIC DEFAU
 CREATE TABLE IF NOT EXISTS action_milestones (
   id TEXT PRIMARY KEY,
   branch_id TEXT REFERENCES branches(id) ON DELETE CASCADE,
+  phase TEXT DEFAULT 'fase_1',
+  month_number INTEGER DEFAULT 1,
   week_number INTEGER NOT NULL,
   title TEXT NOT NULL,
   target_metric TEXT DEFAULT '',
@@ -66,6 +68,9 @@ CREATE TABLE IF NOT EXISTS action_milestones (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+ALTER TABLE action_milestones ADD COLUMN IF NOT EXISTS phase TEXT DEFAULT 'fase_1';
+ALTER TABLE action_milestones ADD COLUMN IF NOT EXISTS month_number INTEGER DEFAULT 1;
 
 
 -- 4. TABEL LOG KUNJUNGAN & COACHING (FIELD VISITS)
