@@ -103,7 +103,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
             className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-950 transition-all active:scale-95"
           >
             <Save className="w-4 h-4" />
-            Simpan Diagnosa
+            Diagnosa
           </button>
         </div>
       </div>
