@@ -36,7 +36,12 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
   onSaveBranch,
   onNavigateToTab
 }) => {
-  const [data, setData] = useState<Branch>({ ...branch });
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const [data, setData] = useState<Branch>(() => ({
+    ...branch,
+    diagnosisStartDate: branch.diagnosisStartDate || todayStr,
+    diagnosisEndDate: branch.diagnosisEndDate || todayStr
+  }));
   const [isSaved, setIsSaved] = useState(false);
   const [diagnosisLogs, setDiagnosisLogs] = useState<DiagnosisLog[]>(() => StorageService.getDiagnosisLogs(branch.id));
 
@@ -424,52 +429,61 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
           {/* Internal Factors */}
           <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4">
             <div className="space-y-3">
-              {internalFactors.map((factor) => (
-                <div key={factor.id} className="bg-slate-850 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
-                  <div className="flex items-center justify-between gap-2">
+              {internalFactors.length === 0 ? (
+                <div className="py-7 px-4 text-center rounded-xl bg-slate-850/40 border border-dashed border-slate-800 space-y-1.5">
+                  <p className="text-xs font-semibold text-slate-400">Belum ada faktor diagnosa internal</p>
+                  <p className="text-[11px] text-slate-500">
+                    Klik <span className="text-emerald-400 font-semibold">"Muat Standar"</span> di bawah untuk memuat 6 SOP Sidogiri atau <span className="text-emerald-400 font-semibold">"+ Faktor"</span> untuk input manual.
+                  </p>
+                </div>
+              ) : (
+                internalFactors.map((factor) => (
+                  <div key={factor.id} className="bg-slate-850 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <input
+                        type="text"
+                        value={factor.title}
+                        onChange={(e) => handleUpdateFactor(factor.id, 'title', e.target.value)}
+                        className="bg-transparent text-xs font-semibold text-slate-200 focus:outline-none border-b border-transparent focus:border-emerald-500 w-full"
+                      />
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-emerald-400">
+                          Skor: {factor.score}/5
+                        </span>
+                        <button
+                          onClick={() => handleDeleteFactor(factor.id)}
+                          className="p-1 text-slate-500 hover:text-rose-400"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Score Slider */}
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] text-slate-500">1 (Kritis)</span>
+                      <input
+                        type="range"
+                        min="1"
+                        max="5"
+                        step="1"
+                        value={factor.score}
+                        onChange={(e) => handleUpdateFactor(factor.id, 'score', Number(e.target.value))}
+                        className="w-full accent-emerald-500 h-1.5 bg-slate-700 rounded-lg cursor-pointer"
+                      />
+                      <span className="text-[10px] text-slate-500">5 (Bagus)</span>
+                    </div>
+
                     <input
                       type="text"
-                      value={factor.title}
-                      onChange={(e) => handleUpdateFactor(factor.id, 'title', e.target.value)}
-                      className="bg-transparent text-xs font-semibold text-slate-200 focus:outline-none border-b border-transparent focus:border-emerald-500 w-full"
+                      placeholder="Catatan temuan spesifik (contoh: Kasir belum hafal promo tebus murah)..."
+                      value={factor.note}
+                      onChange={(e) => handleUpdateFactor(factor.id, 'note', e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-800 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-500"
                     />
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-emerald-400">
-                        Skor: {factor.score}/5
-                      </span>
-                      <button
-                        onClick={() => handleDeleteFactor(factor.id)}
-                        className="p-1 text-slate-500 hover:text-rose-400"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
                   </div>
-
-                  {/* Score Slider */}
-                  <div className="flex items-center gap-3">
-                    <span className="text-[10px] text-slate-500">1 (Kritis)</span>
-                    <input
-                      type="range"
-                      min="1"
-                      max="5"
-                      step="1"
-                      value={factor.score}
-                      onChange={(e) => handleUpdateFactor(factor.id, 'score', Number(e.target.value))}
-                      className="w-full accent-emerald-500 h-1.5 bg-slate-700 rounded-lg cursor-pointer"
-                    />
-                    <span className="text-[10px] text-slate-500">5 (Bagus)</span>
-                  </div>
-
-                  <input
-                    type="text"
-                    placeholder="Catatan temuan spesifik (contoh: Kasir belum hafal promo tebus murah)..."
-                    value={factor.note}
-                    onChange={(e) => handleUpdateFactor(factor.id, 'note', e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-500"
-                  />
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             {/* Bottom Action Footer for Internal Factors */}
@@ -499,51 +513,60 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
           {/* External Factors */}
           <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4">
             <div className="space-y-3">
-              {externalFactors.map((factor) => (
-                <div key={factor.id} className="bg-slate-850 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
-                  <div className="flex items-center justify-between gap-2">
+              {externalFactors.length === 0 ? (
+                <div className="py-7 px-4 text-center rounded-xl bg-slate-850/40 border border-dashed border-slate-800 space-y-1.5">
+                  <p className="text-xs font-semibold text-slate-400">Belum ada faktor diagnosa eksternal</p>
+                  <p className="text-[11px] text-slate-500">
+                    Klik <span className="text-amber-400 font-semibold">"+ Faktor"</span> di bawah untuk mencatat kondisi kompetitor atau pasar sekitar.
+                  </p>
+                </div>
+              ) : (
+                externalFactors.map((factor) => (
+                  <div key={factor.id} className="bg-slate-850 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <input
+                        type="text"
+                        value={factor.title}
+                        onChange={(e) => handleUpdateFactor(factor.id, 'title', e.target.value)}
+                        className="bg-transparent text-xs font-semibold text-slate-200 focus:outline-none border-b border-transparent focus:border-amber-500 w-full"
+                      />
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-amber-400">
+                          Skor: {factor.score}/5
+                        </span>
+                        <button
+                          onClick={() => handleDeleteFactor(factor.id)}
+                          className="p-1 text-slate-500 hover:text-rose-400"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] text-slate-500">1 (Berat)</span>
+                      <input
+                        type="range"
+                        min="1"
+                        max="5"
+                        step="1"
+                        value={factor.score}
+                        onChange={(e) => handleUpdateFactor(factor.id, 'score', Number(e.target.value))}
+                        className="w-full accent-amber-500 h-1.5 bg-slate-700 rounded-lg cursor-pointer"
+                      />
+                      <span className="text-[10px] text-slate-500">5 (Aman)</span>
+                    </div>
+
                     <input
                       type="text"
-                      value={factor.title}
-                      onChange={(e) => handleUpdateFactor(factor.id, 'title', e.target.value)}
-                      className="bg-transparent text-xs font-semibold text-slate-200 focus:outline-none border-b border-transparent focus:border-amber-500 w-full"
+                      placeholder="Catatan kondisi lingkungan (contoh: Muncul minimarket baru di seberang)..."
+                      value={factor.note}
+                      onChange={(e) => handleUpdateFactor(factor.id, 'note', e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-800 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-amber-500"
                     />
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-amber-400">
-                        Skor: {factor.score}/5
-                      </span>
-                      <button
-                        onClick={() => handleDeleteFactor(factor.id)}
-                        className="p-1 text-slate-500 hover:text-rose-400"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
                   </div>
-
-                  <div className="flex items-center gap-3">
-                    <span className="text-[10px] text-slate-500">1 (Berat)</span>
-                    <input
-                      type="range"
-                      min="1"
-                      max="5"
-                      step="1"
-                      value={factor.score}
-                      onChange={(e) => handleUpdateFactor(factor.id, 'score', Number(e.target.value))}
-                      className="w-full accent-amber-500 h-1.5 bg-slate-700 rounded-lg cursor-pointer"
-                    />
-                    <span className="text-[10px] text-slate-500">5 (Aman)</span>
-                  </div>
-
-                  <input
-                    type="text"
-                    placeholder="Catatan kondisi lingkungan (contoh: Muncul minimarket baru di seberang)..."
-                    value={factor.note}
-                    onChange={(e) => handleUpdateFactor(factor.id, 'note', e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             {/* Bottom Action Footer for External Factors */}
