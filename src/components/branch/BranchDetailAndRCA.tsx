@@ -210,23 +210,6 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Back button & Title */}
-      <div className="flex items-center justify-between gap-3">
-        <button
-          onClick={onBack}
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-emerald-400 transition-colors self-start"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Kembali
-        </button>
-
-        {isSaved && (
-          <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-semibold animate-pulse">
-            <CheckCircle2 className="w-4 h-4" /> Perubahan Tersimpan!
-          </span>
-        )}
-      </div>
-
       {/* Header Profile Card */}
       <div className="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-2xl shadow-xl">
         <div className="space-y-2.5 pb-4 border-b border-slate-800">
@@ -239,10 +222,22 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
               <h2 className="text-sm font-bold text-white tracking-tight">{data.name}</h2>
               <StatusBadge status={data.status} />
               <UrgencyBadge urgency={data.urgencyLevel} />
+              {isSaved && (
+                <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-semibold animate-pulse ml-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> Tersimpan!
+                </span>
+              )}
             </div>
 
             {/* Quick Action Navigation Buttons (Aligned with Badges) */}
             <div className="flex items-center gap-1.5 flex-nowrap flex-shrink-0">
+              <button
+                onClick={onBack}
+                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap active:scale-95"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-slate-400" />
+                Kembali
+              </button>
               <button
                 onClick={() => onNavigateToTab('actionplan')}
                 className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap"
