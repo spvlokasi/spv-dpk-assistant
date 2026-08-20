@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Branch, RootCauseFactor, DiagnosisLog } from '../../types';
 import { StorageService } from '../../services/storage';
+import { getSidogiriPresetFactors } from './rca/rcaPresets';
 import { BranchHeaderProfile } from './rca/BranchHeaderProfile';
 import { BranchPeriodPicker } from './rca/BranchPeriodPicker';
 import { BranchFinancialTargets } from './rca/BranchFinancialTargets';
@@ -28,8 +29,8 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
 
   const todayStr = getTodayStr();
   const [data, setData] = useState<Branch>(() => {
-    const isOldDummyDate = branch.diagnosisStartDate === '2026-08-01' || branch.diagnosisStartDate === '2026-06-01' || branch.diagnosisStartDate === '2026-05-15';
-    const isOldDummyRootCauses = branch.rootCauses?.some(r => ['rc-1', 'rc-2', 'rc-3', 'rc-4', 'rc-21', 'rc-22', 'rc-23', 'rc-31', 'rc-32', 'rc-33'].includes(r.id));
+    const isOldDummyDate = branch.diagnosisStartDate === '2026-08-01' || branch.diagnosisStartDate === '2026-06-01';
+    const isOldDummyRootCauses = branch.rootCauses?.some(r => ['rc-1', 'rc-2', 'rc-3', 'rc-4', 'rc-21', 'rc-31'].includes(r.id));
     return {
       ...branch,
       diagnosisStartDate: (!branch.diagnosisStartDate || isOldDummyDate) ? todayStr : branch.diagnosisStartDate,
@@ -40,7 +41,6 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
   const [isSaved, setIsSaved] = useState(false);
   const [diagnosisLogs, setDiagnosisLogs] = useState<DiagnosisLog[]>(() => StorageService.getDiagnosisLogs(branch.id));
 
-  // Quick RCA preset helper
   const addDefaultRcaFactor = (category: 'internal' | 'eksternal') => {
     const newFactor: RootCauseFactor = {
       id: `rc-${Date.now()}`,
@@ -50,26 +50,6 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
       note: ''
     };
     setData({ ...data, rootCauses: [...data.rootCauses, newFactor] });
-  };
-
-  const loadSidogiriPresetFactors = () => {
-    const sidogiriInternal: RootCauseFactor[] = [
-      { id: `rc-int-1-${Date.now()}`, category: 'internal', title: 'Efisiensi Listrik & Energi (Suhu AC 24-25°C, Neon Box, Rawat Freezer)', score: 3, note: 'Pastikan AC tidak <24°C, matikan 1 AC saat sepi, neon box 17.30-22.00, bersihkan kondensor freezer.' },
-      { id: `rc-int-2-${Date.now()}`, category: 'internal', title: 'Penertiban Stok Mati, Slow Moving & Zero Expired (FEFO & Mark-Down 10-20%)', score: 3, note: 'Audit 2 mingguan stok mati, beri diskon khusus kasir sebelum kadaluarsa untuk amankan margin.' },
-      { id: `rc-int-3-${Date.now()}`, category: 'internal', title: 'Kedisiplinan SOP Kasir: Up-selling & Suggestive Selling Promo', score: 3, note: 'Wajib tawarkan produk tebus murah, cross-selling kopi+gula, target minimal +Rp2.000 per struk.' },
-      { id: `rc-int-4-${Date.now()}`, category: 'internal', title: 'Ketersediaan Top 50 SKU Omzet (Zero Out-of-Stock)', score: 3, note: 'Barang fast-moving (air mineral, rokok, beras, minyak goreng) wajib selalu ada di rak display.' },
-      { id: `rc-int-5-${Date.now()}`, category: 'internal', title: 'Kedisiplinan SO Parsial Harian Kategori Rawan (Rokok, Susu, Kosmetik)', score: 3, note: 'Lakukan hitung fisik harian kategori rawan selisih/hilang sebelum pergantian shift kasir.' },
-      { id: `rc-int-6-${Date.now()}`, category: 'internal', title: 'Kemandirian & Kepemimpinan KTB (Briefing Pagi & Kawal Target Laba)', score: 3, note: 'KTB pimpin briefing pagi 10 menit, evaluasi target laba harian, dan pantau kepatuhan SOP crew.' }
-    ];
-
-    const sidogiriExternal: RootCauseFactor[] = [
-      { id: `rc-ext-1-${Date.now()}`, category: 'eksternal', title: 'Tekanan Kompetitor Sekitar & Selisih Promo Harga', score: 3, note: 'Pantau harga promo toko sebelah dan perkuat keunggulan pelayanan khas TokoBASMALAH.' },
-      { id: `rc-ext-2-${Date.now()}`, category: 'eksternal', title: 'Aksesibilitas, Kebersihan Parkir & Penerangan Depan Toko', score: 3, note: 'Parkiran lapang, bebas sampah, dan lampu penerangan terang agar konsumen nyaman singgah.' },
-      { id: `rc-ext-3-${Date.now()}`, category: 'eksternal', title: 'Potensi Canvassing Sembako ke Warung, UMKM & Komunitas Sekitar', score: 3, note: 'Jemput bola pesanan kartonan ke pesantren/warung sekitar toko untuk suntikan omzet harian.' },
-      { id: `rc-ext-4-${Date.now()}`, category: 'eksternal', title: 'Daya Beli Masyarakat & Karakteristik Pelanggan Lingkungan', score: 3, note: 'Sesuaikan varian ukuran produk (kemasan sachet/ekonomis) dengan profil warga sekitar.' }
-    ];
-
-    setData({ ...data, rootCauses: [...sidogiriInternal, ...sidogiriExternal] });
   };
 
   const handleUpdateFactor = (id: string, field: keyof RootCauseFactor, value: any) => {
@@ -83,9 +63,8 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
   const handleSave = async () => {
     onSaveBranch(data);
     if (data.diagnosisStartDate && data.diagnosisEndDate) {
-      const logId = `dlog-${data.id}-${data.diagnosisStartDate}-${data.diagnosisEndDate}`;
       await StorageService.saveDiagnosisLog({
-        id: logId,
+        id: `dlog-${data.id}-${data.diagnosisStartDate}-${data.diagnosisEndDate}`,
         branchId: data.id,
         periodStartDate: data.diagnosisStartDate,
         periodEndDate: data.diagnosisEndDate,
@@ -108,7 +87,6 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
   };
 
   const handleSelectHistoryLog = (logId: string) => {
-    if (!logId) return;
     const selected = diagnosisLogs.find(l => l.id === logId);
     if (selected) {
       setData({
@@ -177,7 +155,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
             onAddFactor={() => addDefaultRcaFactor('internal')}
             onUpdateFactor={handleUpdateFactor}
             onDeleteFactor={handleDeleteFactor}
-            onLoadPreset={loadSidogiriPresetFactors}
+            onLoadPreset={() => setData({ ...data, rootCauses: getSidogiriPresetFactors() })}
           />
           <RcaFactorSection
             category="eksternal"
