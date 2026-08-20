@@ -201,7 +201,10 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
         {/* Target Parameters Setting */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
           <div className="bg-slate-850 p-3.5 rounded-xl border border-slate-800">
-            <label className="text-[11px] font-medium text-slate-400 block mb-1">Target Laba Harian</label>
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <label className="text-[11px] font-medium text-slate-400">Target Laba Harian</label>
+              <span className="text-[11px] font-semibold text-emerald-400">{formatRupiah(data.targetSalesPerDay)}/hari</span>
+            </div>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -210,11 +213,13 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
                 className="w-full bg-slate-800 border border-slate-700 text-emerald-400 font-mono font-bold text-sm rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-500"
               />
             </div>
-            <div className="text-[10px] text-slate-500 mt-1">{formatRupiah(data.targetSalesPerDay)}/hari</div>
           </div>
 
           <div className="bg-slate-850 p-3.5 rounded-xl border border-slate-800">
-            <label className="text-[11px] font-medium text-slate-400 block mb-1">Target Margin Profit (%)</label>
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <label className="text-[11px] font-medium text-slate-400">Target Margin Profit (%)</label>
+              <span className="text-[10px] text-slate-500">Standar Target</span>
+            </div>
             <input
               type="number"
               step="0.1"
@@ -222,18 +227,19 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
               onChange={(e) => setData({ ...data, targetMarginPct: Number(e.target.value) })}
               className="w-full bg-slate-800 border border-slate-700 text-amber-400 font-mono font-bold text-sm rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-500"
             />
-            <div className="text-[10px] text-slate-500 mt-1">Standar target perbaikan margin</div>
           </div>
 
           <div className="bg-slate-850 p-3.5 rounded-xl border border-slate-800">
-            <label className="text-[11px] font-medium text-slate-400 block mb-1">Plafon Maksimal Opex Bulanan</label>
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <label className="text-[11px] font-medium text-slate-400">Target Biaya Bulanan</label>
+              <span className="text-[11px] font-semibold text-rose-400">{formatRupiah(data.targetMaxOpexPerMonth)}/bulan</span>
+            </div>
             <input
               type="number"
               value={data.targetMaxOpexPerMonth}
               onChange={(e) => setData({ ...data, targetMaxOpexPerMonth: Number(e.target.value) })}
               className="w-full bg-slate-800 border border-slate-700 text-rose-400 font-mono font-bold text-sm rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-500"
             />
-            <div className="text-[10px] text-slate-500 mt-1">{formatRupiah(data.targetMaxOpexPerMonth)}/bulan</div>
           </div>
         </div>
       </div>
