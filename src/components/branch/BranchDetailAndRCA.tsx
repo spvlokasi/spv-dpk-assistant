@@ -310,23 +310,11 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
             <div className="flex items-center gap-2.5">
               <Calendar className="w-4 h-4 text-emerald-400 flex-shrink-0" />
               <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-bold text-slate-200">Rentang Periode Diagnosa & Bedah Cabang</span>
-                  {data.diagnosisStartDate && !data.diagnosisEndDate && (
-                    <span className="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 animate-pulse">
-                      Pilih tanggal akhir
-                    </span>
-                  )}
-                  {data.diagnosisStartDate && data.diagnosisEndDate && (
-                    <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
-                      ✓ Lengkap
-                    </span>
-                  )}
-                </div>
+                <span className="text-xs font-bold text-slate-200">Rentang Periode Diagnosa Cabang</span>
                 <div className="text-[10px] text-slate-400 mt-0.5">
                   {data.diagnosisStartDate && data.diagnosisEndDate 
-                    ? `Periode aktif audit: ${new Date(data.diagnosisStartDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} s/d ${new Date(data.diagnosisEndDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}`
-                    : 'Atur tanggal mulai s/d selesai periode audit evaluasi toko ini'}
+                    ? `Periode audit: ${new Date(data.diagnosisStartDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} s/d ${new Date(data.diagnosisEndDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}`
+                    : 'Pilih tanggal mulai dan selesai periode diagnosa'}
                 </div>
               </div>
             </div>
@@ -352,14 +340,6 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
                   className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs"
                 />
               </div>
-              <button
-                type="button"
-                onClick={() => setData({ ...data, diagnosisStartDate: todayStr, diagnosisEndDate: todayStr })}
-                className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 hover:text-emerald-300 text-[11px] font-semibold transition-colors border border-slate-700 whitespace-nowrap"
-                title="Atur ke Tanggal Hari Ini"
-              >
-                Hari Ini
-              </button>
               {(data.diagnosisStartDate || data.diagnosisEndDate) && (
                 <button
                   type="button"
