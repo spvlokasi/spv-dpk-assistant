@@ -175,8 +175,24 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
           <div className="flex items-center gap-2.5">
             <Calendar className="w-4 h-4 text-emerald-400" />
             <div>
-              <div className="text-xs font-bold text-slate-200">Rentang Periode Diagnosa & Bedah Cabang</div>
-              <div className="text-[10px] text-slate-400">Atur tanggal mulai s/d selesai periode audit evaluasi toko ini</div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-200">Rentang Periode Diagnosa & Bedah Cabang</span>
+                {data.diagnosisStartDate && !data.diagnosisEndDate && (
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 animate-pulse">
+                    Pilih tanggal akhir
+                  </span>
+                )}
+                {data.diagnosisStartDate && data.diagnosisEndDate && (
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+                    ✓ Lengkap
+                  </span>
+                )}
+              </div>
+              <div className="text-[10px] text-slate-400">
+                {data.diagnosisStartDate && data.diagnosisEndDate 
+                  ? `Periode aktif audit: ${new Date(data.diagnosisStartDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} s/d ${new Date(data.diagnosisEndDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}`
+                  : 'Atur tanggal mulai s/d selesai periode audit evaluasi toko ini'}
+              </div>
             </div>
           </div>
 
@@ -195,11 +211,22 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
               <span className="text-[11px] text-slate-400 font-medium">Sampai:</span>
               <input
                 type="date"
+                min={data.diagnosisStartDate || undefined}
                 value={data.diagnosisEndDate || ''}
                 onChange={(e) => setData({ ...data, diagnosisEndDate: e.target.value })}
                 className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs"
               />
             </div>
+            {(data.diagnosisStartDate || data.diagnosisEndDate) && (
+              <button
+                type="button"
+                onClick={() => setData({ ...data, diagnosisStartDate: '', diagnosisEndDate: '' })}
+                className="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 text-[11px] transition-colors border border-slate-700"
+                title="Reset Tanggal"
+              >
+                ✕
+              </button>
+            )}
           </div>
         </div>
 
