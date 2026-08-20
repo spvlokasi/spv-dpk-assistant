@@ -55,6 +55,89 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
     });
   };
 
+  const loadSidogiriPresetFactors = () => {
+    const sidogiriInternal: RootCauseFactor[] = [
+      {
+        id: `rc-int-1-${Date.now()}`,
+        category: 'internal',
+        title: 'Efisiensi Listrik & Energi (Suhu AC 24-25°C, Neon Box, Rawat Freezer)',
+        score: 3,
+        note: 'Pastikan AC tidak <24°C, matikan 1 AC saat sepi, neon box 17.30-22.00, bersihkan kondensor freezer.'
+      },
+      {
+        id: `rc-int-2-${Date.now()}`,
+        category: 'internal',
+        title: 'Penertiban Stok Mati, Slow Moving & Zero Expired (FEFO & Mark-Down 10-20%)',
+        score: 2,
+        note: 'Audit dead stock tiap 2 minggu, barang H-30/H-60 jual cepat via bundling/mark-down di meja kasir.'
+      },
+      {
+        id: `rc-int-3-${Date.now()}`,
+        category: 'internal',
+        title: 'Kinerja Kasir: Up-Selling, Add-On Sales & Suggestive Selling (+Rp2.000)',
+        score: 2,
+        note: 'Tawarkan produk komplementer (kopi+gula) & suggestive selling tebus murah minimal +Rp2.000/struk.'
+      },
+      {
+        id: `rc-int-4-${Date.now()}`,
+        category: 'internal',
+        title: 'Ketersediaan Barang (Zero Out-of-Stock Top 50 SKU Omzet)',
+        score: 3,
+        note: 'Barang fast-moving (air mineral, rokok, beras, minyak goreng) wajib selalu ada di rak display.'
+      },
+      {
+        id: `rc-int-5-${Date.now()}`,
+        category: 'internal',
+        title: 'Kedisiplinan SO Parsial Harian Kategori Rawan (Rokok, Susu, Kosmetik)',
+        score: 3,
+        note: 'Lakukan hitung fisik harian kategori rawan selisih/hilang sebelum pergantian shift kasir.'
+      },
+      {
+        id: `rc-int-6-${Date.now()}`,
+        category: 'internal',
+        title: 'Kemandirian & Kepemimpinan KTB (Briefing Pagi & Kawal Target Laba)',
+        score: 3,
+        note: 'KTB pimpin briefing pagi 10 menit, evaluasi target laba harian, dan pantau kepatuhan SOP crew.'
+      }
+    ];
+
+    const sidogiriExternal: RootCauseFactor[] = [
+      {
+        id: `rc-ext-1-${Date.now()}`,
+        category: 'eksternal',
+        title: 'Tekanan Kompetitor Sekitar & Selisih Promo Harga',
+        score: 3,
+        note: 'Pantau harga promo toko sebelah dan perkuat keunggulan pelayanan khas TokoBASMALAH.'
+      },
+      {
+        id: `rc-ext-2-${Date.now()}`,
+        category: 'eksternal',
+        title: 'Aksesibilitas, Kebersihan Parkir & Penerangan Depan Toko',
+        score: 4,
+        note: 'Halaman parkir bersih, tidak terhalang pedagang liar, dan lampu penerangan toko terang malam hari.'
+      },
+      {
+        id: `rc-ext-3-${Date.now()}`,
+        category: 'eksternal',
+        title: 'Potensi Canvassing Sembako ke Warung, UMKM & Komunitas Sekitar',
+        score: 3,
+        note: 'Kunjungan sales jemput bola ke warung kelontong sekitar, tawarkan grosir sembako (gula, minyak, beras).'
+      },
+      {
+        id: `rc-ext-4-${Date.now()}`,
+        category: 'eksternal',
+        title: 'Daya Beli Masyarakat & Karakteristik Pelanggan Lingkungan',
+        score: 3,
+        note: 'Sesuaikan varian kemasan produk dengan daya beli warga lokal (misal: kemasan ekonomis/renceng).'
+      }
+    ];
+
+    setData({
+      ...data,
+      rootCauses: [...sidogiriInternal, ...sidogiriExternal]
+    });
+  };
+
   const handleUpdateFactor = (id: string, field: keyof RootCauseFactor, value: any) => {
     setData({
       ...data,
@@ -346,6 +429,31 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
             />
           </div>
         </div>
+      </div>
+
+      {/* Bedah Cabang Header & 1-Click SOP Sidogiri Preset Button */}
+      <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex-shrink-0">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              Bedah Cabang & Diagnostik Akar Masalah (5M)
+            </h3>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Evaluasi komprehensif 6 faktor internal & 4 faktor eksternal berdasarkan SOP PT. Sidogiri Mitra Utama
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={loadSidogiriPresetFactors}
+          className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-950 transition-all active:scale-95 whitespace-nowrap self-start sm:self-center"
+        >
+          <Sparkles className="w-4 h-4" />
+          Muat Standar Bedah Cabang Sidogiri
+        </button>
       </div>
 
       {/* Main Grid: RCA Analysis & Strategy Plan */}
