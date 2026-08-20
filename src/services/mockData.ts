@@ -18,14 +18,9 @@ export const INITIAL_BRANCHES: Branch[] = [
     targetSalesPerDay: 13500000,
     targetMarginPct: 15.5,
     targetMaxOpexPerMonth: 22000000,
-    rootCauses: [
-      { id: 'rc-1', category: 'internal', title: 'Kedisiplinan SOP Kasir & Up-selling Promo', score: 2, note: 'Kasir jarang tawarkan produk PWP dan tebus murah' },
-      { id: 'rc-2', category: 'internal', title: 'Kekosongan Barang Fast Moving (OOS)', score: 2, note: 'Susu UHT & minyak goreng sering kosong display' },
-      { id: 'rc-3', category: 'eksternal', title: 'Kompetitor Baru di Seberang Jalan', score: 3, note: 'Ada minimarket baru buka 2 bulan lalu dengan promo agresif' },
-      { id: 'rc-4', category: 'internal', title: 'Kerapian Display & Kebersihan Toko (5R)', score: 3, note: 'Rak lorong 2 sering berdebu dan facing out kurang rapi' }
-    ],
-    diagnosisSummary: 'Sales anjlok 30% akibat persaingan kompetitor baru serta kelemahan internal pada penawaran promo kasir dan kekosongan barang terlaris di rak.',
-    recommendedStrategy: 'Implementasi program "Gerebek Warga & Direct Selling", wajibkan target struk up-selling per kasir min. 45%, dan percepat cycle replenishment stok DC.'
+    rootCauses: [],
+    diagnosisSummary: '',
+    recommendedStrategy: ''
   },
   {
     id: 'br-02',
@@ -44,13 +39,9 @@ export const INITIAL_BRANCHES: Branch[] = [
     targetSalesPerDay: 16000000,
     targetMarginPct: 16.0,
     targetMaxOpexPerMonth: 24000000,
-    rootCauses: [
-      { id: 'rc-21', category: 'internal', title: 'Komposisi Display Produk High Margin', score: 4, note: 'Sudah diatur ulang di rak eye-level depan' },
-      { id: 'rc-22', category: 'internal', title: 'Pengendalian Barang Rusak & BAP Expired', score: 4, note: 'FEFO berjalan ketat dan retur DC lancar' },
-      { id: 'rc-23', category: 'eksternal', title: 'Karakteristik Pembeli Grosir Murah', score: 3, note: 'Banyak warung beli rokok & gula margin tipis' }
-    ],
-    diagnosisSummary: 'Sebelumnya margin tipis karena 60% omzet didominasi rokok/sembako minim margin. Setelah 2 bulan pendampingan re-display produk Private Label & personal care, margin naik signifikan.',
-    recommendedStrategy: 'Pertahankan monitoring rasio non-food & private label, persiapkan sidang evaluasi kelulusan dari DPK akhir bulan ini.'
+    rootCauses: [],
+    diagnosisSummary: '',
+    recommendedStrategy: ''
   },
   {
     id: 'br-03',
@@ -69,13 +60,9 @@ export const INITIAL_BRANCHES: Branch[] = [
     targetSalesPerDay: 11000000,
     targetMarginPct: 15.0,
     targetMaxOpexPerMonth: 19000000,
-    rootCauses: [
-      { id: 'rc-31', category: 'internal', title: 'Beban Biaya Listrik & AC Toko', score: 1, note: 'AC bocor dan chiller 3 pintu tidak efisien daya' },
-      { id: 'rc-32', category: 'internal', title: 'Lembur Karyawan Tidak Terkontrol', score: 2, note: 'Jadwal shift berantakan, lembur pembongkaran DC larut malam' },
-      { id: 'rc-33', category: 'internal', title: 'Loss/NKL Susut Barang Tinggi', score: 2, note: 'Titik buta CCTV di lorong belakang rawan pencurian' }
-    ],
-    diagnosisSummary: 'Rugi operasional karena biaya listrik melonjak 40% dan lembur tidak terkendali, diperparah NKL audit fisik barang minus 1.2% dari sales.',
-    recommendedStrategy: 'Eskalasi perbaikan teknis chiller/AC ke Manajer Bisnis, terapkan SOP ketat shift kerja, dan ubah posisi cermin cembung & CCTV sudut rak.'
+    rootCauses: [],
+    diagnosisSummary: '',
+    recommendedStrategy: ''
   }
 ];
 
