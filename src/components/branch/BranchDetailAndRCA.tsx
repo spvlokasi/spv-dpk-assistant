@@ -211,7 +211,7 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
   return (
     <div className="space-y-6">
       {/* Back button & Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3">
         <button
           onClick={onBack}
           className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-emerald-400 transition-colors self-start"
@@ -220,20 +220,11 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
           Kembali
         </button>
 
-        <div className="flex items-center gap-2">
-          {isSaved && (
-            <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-semibold animate-pulse">
-              <CheckCircle2 className="w-4 h-4" /> Perubahan Tersimpan!
-            </span>
-          )}
-          <button
-            onClick={handleSave}
-            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-950 transition-all active:scale-95"
-          >
-            <Save className="w-4 h-4" />
-            Diagnosa
-          </button>
-        </div>
+        {isSaved && (
+          <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-semibold animate-pulse">
+            <CheckCircle2 className="w-4 h-4" /> Perubahan Tersimpan!
+          </span>
+        )}
       </div>
 
       {/* Header Profile Card */}
@@ -573,6 +564,13 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
                   className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-semibold flex items-center gap-1 border border-slate-700 transition-colors active:scale-95"
                 >
                   <Plus className="w-3.5 h-3.5" /> Faktor
+                </button>
+                <button
+                  onClick={handleSave}
+                  className="px-3.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-950 transition-all active:scale-95"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  Diagnosa
                 </button>
               </div>
             </div>
