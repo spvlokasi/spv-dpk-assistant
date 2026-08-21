@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClipboardCheck, Plus, Search } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { Branch } from '../../types';
 
 interface FieldVisitHeaderProps {
@@ -24,34 +24,9 @@ export const FieldVisitHeader: React.FC<FieldVisitHeaderProps> = ({
   onOpenAddModal
 }) => {
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-      <div className="space-y-1">
-        <div className="flex items-center gap-2.5">
-          <ClipboardCheck className="w-6 h-6 text-emerald-400" />
-          <h2 className="text-xl font-bold text-white tracking-tight">
-            Log Kunjungan & Coaching Lapangan
-          </h2>
-        </div>
-        <div className="flex items-center gap-3 text-xs text-slate-400">
-          <span>Total: <strong className="text-slate-200">{totalVisits} Kunjungan</strong></span>
-          <span>•</span>
-          <span>Temuan Belum Selesai: <strong className="text-amber-400">{openIssuesCount} Isu</strong></span>
-        </div>
-      </div>
-
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl">
+      {/* Left: Filter, Search, & Counter */}
       <div className="flex items-center gap-2.5 flex-wrap">
-        {/* Search Input */}
-        <div className="relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Cari agenda / KTB..."
-            className="pl-9 pr-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 w-44 sm:w-56"
-          />
-        </div>
-
         {/* Branch Filter Dropdown */}
         <select
           value={filterBranchId}
@@ -66,16 +41,35 @@ export const FieldVisitHeader: React.FC<FieldVisitHeaderProps> = ({
           ))}
         </select>
 
-        {/* Add Visit Button */}
-        <button
-          type="button"
-          onClick={onOpenAddModal}
-          className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-950 transition-all active:scale-95 flex-shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          <span>+ Catat Kunjungan</span>
-        </button>
+        {/* Search Input */}
+        <div className="relative">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Cari agenda / KTB..."
+            className="pl-9 pr-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 w-44 sm:w-56"
+          />
+        </div>
+
+        {/* Quick Stats Indicator */}
+        <div className="flex items-center gap-2 text-xs text-slate-400 pl-1 hidden md:flex">
+          <span>Total: <strong className="text-slate-200">{totalVisits}</strong></span>
+          <span>•</span>
+          <span>Temuan Belum Selesai: <strong className="text-amber-400">{openIssuesCount}</strong></span>
+        </div>
       </div>
+
+      {/* Right: Add Visit Button */}
+      <button
+        type="button"
+        onClick={onOpenAddModal}
+        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md shadow-emerald-950 transition-all active:scale-95 flex-shrink-0"
+      >
+        <Plus className="w-4 h-4" />
+        <span>+ Catat Kunjungan</span>
+      </button>
     </div>
   );
 };

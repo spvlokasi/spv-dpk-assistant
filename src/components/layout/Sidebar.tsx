@@ -52,25 +52,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: ClipboardCheck,
       badge: openIssuesCount > 0 ? `${openIssuesCount} Temuan` : undefined,
       badgeColor: 'bg-amber-500/20 text-amber-300 border border-amber-500/30',
-      desc: 'Log lapangan & pembinaan'
+      desc: ''
     },
     {
       id: 'performance',
       label: 'Monitoring Kinerja',
       icon: TrendingUp,
-      desc: 'Grafik Sales, Margin & Opex'
+      desc: ''
     },
     {
       id: 'graduation',
       label: 'Status Kelulusan DPK',
       icon: GraduationCap,
-      desc: 'Target exit DPK & Best Practice'
+      desc: ''
     },
     {
       id: 'reports',
       label: 'Laporan Manajer Bisnis',
       icon: FileText,
-      desc: 'Rekap eksekutif siap cetak'
+      desc: ''
     },
     {
       id: 'escalations',
@@ -78,13 +78,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: AlertTriangle,
       badge: pendingEscalationCount > 0 ? `${pendingEscalationCount} Belum Disetujui` : undefined,
       badgeColor: 'bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse',
-      desc: 'Pengajuan keputusan ke BM'
+      desc: ''
     },
     {
       id: 'settings',
       label: 'Pengaturan & Data',
       icon: Settings,
-      desc: 'Database, cadangan & akun'
+      desc: ''
     }
   ];
 
