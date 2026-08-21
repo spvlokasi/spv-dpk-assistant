@@ -129,6 +129,7 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
         <ActionPlanManager
           branches={data.branches}
           milestones={data.milestones}
+          performance={data.performance}
           selectedBranchId={selectedBranchId || undefined}
           onSaveMilestone={handlers.handleSaveMilestone}
           onDeleteMilestone={handlers.handleDeleteMilestone}
