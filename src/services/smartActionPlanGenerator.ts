@@ -15,7 +15,7 @@ export const generateSmartActionPlan = (
   const targetOpex = branch.targetMaxOpexPerMonth || 54000000;
 
   const actualSales = latestPerf ? latestPerf.salesActual : targetSales * 0.7;
-  const actualMargin = latestPerf ? latestPerf.marginActualPct : Math.max(targetMargin - 4, 8);
+  const actualMargin = latestPerf ? latestPerf.marginPct : Math.max(targetMargin - 4, 8);
 
   const weakRootCauses = branch.rootCauses ? branch.rootCauses.filter(f => f.score <= 2) : [];
   const moderateRootCauses = branch.rootCauses ? branch.rootCauses.filter(f => f.score === 3) : [];

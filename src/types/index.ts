@@ -63,7 +63,7 @@ export interface ActionPlanTask {
   id: string;
   title: string;
   assignedTo: string; // misal: 'Kepala Toko', 'Kasir', 'Pramuniaga', 'SPV DPK'
-  frequency: 'harian' | 'mingguan' | 'sekali';
+  frequency: 'harian' | 'mingguan' | 'bulanan' | 'sekali';
   dueDate?: string;
   completed: boolean;
   verifiedBySpv: boolean;
