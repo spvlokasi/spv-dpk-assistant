@@ -160,23 +160,8 @@ export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
   return (
     <div className="space-y-6">
       {/* Header & Branch Switcher */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider">
-              PT. Sidogiri Mitra Utama
-            </span>
-          </div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2.5 mt-1">
-            <Target className="w-6 h-6 text-emerald-400" />
-            Program Aksi Perbaikan (Transformasi 180 Hari)
-          </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Panduan roadmap tugas mingguan per fase (Penyelamatan BEP ➡️ Pertumbuhan Profit ➡️ Autopilot).
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-end gap-3">
+        <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap w-full sm:w-auto justify-between sm:justify-end">
           <select
             value={activeBranchId}
             onChange={(e) => setActiveBranchId(e.target.value)}
