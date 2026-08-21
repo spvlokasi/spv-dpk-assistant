@@ -1,5 +1,5 @@
 import { Branch, DailyPerformance, ActionPlanMilestone } from '../types';
-import { generateSmartStrategyAnalysis } from '../components/branch/rca/strategyKnowledgeBank';
+import { generateSmartRetailAnalysis } from '../components/branch/rca/strategyKnowledgeBank';
 import { generateSmartActionPlan } from './smartActionPlanGenerator';
 import { formatShortRupiah } from '../utils/formatters';
 
@@ -16,7 +16,8 @@ export const generateGeminiDiagnosisAndStrategy = async (
 ): Promise<GeminiDiagnosisResponse> => {
   // If no API Key is provided, fallback seamlessly to internal Knowledge Bank
   if (!GEMINI_API_KEY || GEMINI_API_KEY.trim() === '') {
-    return generateSmartStrategyAnalysis(branch.rootCauses || []);
+    const local = generateSmartRetailAnalysis(branch.name, branch.rootCauses || []);
+    return { diagnosisSummary: local.summary, recommendedStrategy: local.strategy };
   }
 
   const weakFactors = branch.rootCauses ? branch.rootCauses.filter((f) => f.score <= 2) : [];
@@ -73,13 +74,13 @@ Berikan output HANYA dalam format JSON valid tanpa markdown formatting tambahan 
 
     if (!response.ok) {
       console.warn('Gemini API returned error status:', response.status, 'Falling back to Knowledge Bank.');
-      return generateSmartStrategyAnalysis(branch.rootCauses || []);
+      const local = generateSmartRetailAnalysis(branch.name, branch.rootCauses || []);
+      return { diagnosisSummary: local.summary, recommendedStrategy: local.strategy };
     }
 
     const data = await response.json();
     const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
     
-    // Parse JSON
     const parsed = JSON.parse(rawText);
     if (parsed.diagnosisSummary && parsed.recommendedStrategy) {
       return {
@@ -88,10 +89,12 @@ Berikan output HANYA dalam format JSON valid tanpa markdown formatting tambahan 
       };
     }
 
-    return generateSmartStrategyAnalysis(branch.rootCauses || []);
+    const local = generateSmartRetailAnalysis(branch.name, branch.rootCauses || []);
+    return { diagnosisSummary: local.summary, recommendedStrategy: local.strategy };
   } catch (err) {
     console.warn('Failed to call Gemini AI, using local Knowledge Bank fallback:', err);
-    return generateSmartStrategyAnalysis(branch.rootCauses || []);
+    const local = generateSmartRetailAnalysis(branch.name, branch.rootCauses || []);
+    return { diagnosisSummary: local.summary, recommendedStrategy: local.strategy };
   }
 };
 
@@ -105,8 +108,6 @@ export const generateGeminiActionPlan = async (
   }
 
   const weakFactors = branch.rootCauses ? branch.rootCauses.filter((f) => f.score <= 2) : [];
-  const branchPerf = performanceHistory.filter((p) => p.branchId === branch.id);
-  const latestPerf = branchPerf.length > 0 ? branchPerf[branchPerf.length - 1] : null;
 
   const prompt = `Anda adalah SPV Senior Retail TokoBASMALAH (PT. Sidogiri Mitra Utama).
 Buatlah Roadmap Rencana Aksi Turnaround 180 Hari untuk toko:
