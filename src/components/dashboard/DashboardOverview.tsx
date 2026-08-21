@@ -155,53 +155,59 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                   <StatusBadge status={branch.status} />
                 </div>
 
-                {/* Dynamic Root Cause Diagnosis Box */}
-                {hasDiagnosed ? (
-                  <div className="relative z-10 text-xs text-slate-300 bg-slate-850/85 p-3 rounded-xl border border-slate-800/90 backdrop-blur-sm space-y-1">
-                    <div className="text-[11px] font-bold text-amber-400 truncate">
-                      ⚠️ Akar Masalah: {issueKeywords}
+                {/* Dynamic Root Cause Diagnosis Box (Uniform Minimum Height) */}
+                <div className="min-h-[60px] flex flex-col justify-center">
+                  {hasDiagnosed ? (
+                    <div className="relative z-10 text-xs text-slate-300 bg-slate-850/85 p-2.5 sm:p-3 rounded-xl border border-slate-800/90 backdrop-blur-sm space-y-1">
+                      <div className="text-[11px] font-bold text-amber-400 truncate">
+                        ⚠️ Akar Masalah: {issueKeywords}
+                      </div>
+                      <div className="text-[11px] text-slate-300 line-clamp-1">
+                        {branch.diagnosisSummary || 'Faktor telah dinilai, siap susun strategi perbaikan.'}
+                      </div>
                     </div>
-                    <div className="text-[11px] text-slate-300 line-clamp-1">
-                      {branch.diagnosisSummary || 'Faktor telah dinilai, siap susun strategi perbaikan.'}
+                  ) : (
+                    <div className="relative z-10 text-xs text-slate-400 bg-slate-850/50 p-2.5 sm:p-3 rounded-xl border border-dashed border-slate-800 backdrop-blur-sm text-center">
+                      <span className="text-[11px] font-semibold text-slate-400">Belum ada diagnosa</span>
                     </div>
-                  </div>
-                ) : (
-                  <div className="relative z-10 text-xs text-slate-400 bg-slate-850/50 p-2.5 rounded-xl border border-dashed border-slate-800 backdrop-blur-sm text-center">
-                    <span className="text-[11px] font-semibold text-slate-400">Belum ada diagnosa</span>
-                  </div>
-                )}
+                  )}
+                </div>
 
-                {/* Progress Bars */}
-                <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800/80">
-                  <div>
-                    <div className="flex items-center justify-between text-[11px] mb-1">
-                      <span className="text-slate-400">Target Laba Harian</span>
-                      <span className="font-bold text-slate-200">
-                        {latestPerf ? formatShortRupiah(latestPerf.salesActual) : '-'} / {formatShortRupiah(branch.targetSalesPerDay)} ({salesPct}%)
+                {/* Parallel Full-Width Progress Bars (Neat, Balanced & Aligned) */}
+                <div className="relative z-10 space-y-2.5 pt-2.5 border-t border-slate-800/80">
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-slate-400 font-medium">Target Laba Harian</span>
+                      <span className="font-bold text-slate-200 font-mono">
+                        {latestPerf ? formatShortRupiah(latestPerf.salesActual) : '-'} <span className="text-slate-500 font-normal">/</span> {formatShortRupiah(branch.targetSalesPerDay)}{' '}
+                        <strong className={salesPct >= 100 ? 'text-emerald-400' : salesPct >= 80 ? 'text-amber-400' : 'text-rose-400'}>
+                          ({salesPct}%)
+                        </strong>
                       </span>
                     </div>
                     <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
                       <div
-                        className={`h-full transition-all duration-500 ${
+                        className={`h-full rounded-full transition-all duration-500 ${
                           salesPct >= 100 ? 'bg-emerald-500' : salesPct >= 80 ? 'bg-amber-500' : 'bg-rose-500'
                         }`}
                         style={{ width: `${Math.min(salesPct, 100)}%` }}
-                      ></div>
+                      />
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex items-center justify-between text-[11px] mb-1">
-                      <span className="text-slate-400">Eksekusi Action Plan</span>
-                      <span className="font-bold text-slate-200">
-                        {completedTasks}/{totalTasks} Tugas ({taskPct}%)
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-slate-400 font-medium">Eksekusi Action Plan</span>
+                      <span className="font-bold text-slate-200 font-mono">
+                        {completedTasks}/{totalTasks} Tugas{' '}
+                        <strong className="text-blue-400">({taskPct}%)</strong>
                       </span>
                     </div>
                     <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-blue-500 transition-all duration-500"
+                        className="h-full bg-blue-500 rounded-full transition-all duration-500"
                         style={{ width: `${taskPct}%` }}
-                      ></div>
+                      />
                     </div>
                   </div>
                 </div>
