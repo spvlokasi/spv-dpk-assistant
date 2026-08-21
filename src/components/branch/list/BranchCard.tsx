@@ -1,8 +1,8 @@
 import React from 'react';
-import { User, MapPin, Calendar, Edit2, Trash2 } from 'lucide-react';
+import { User, MapPin, Calendar, Edit2, Trash2, AlertCircle } from 'lucide-react';
 import { Branch } from '../../../types';
-import { StatusBadge, UrgencyBadge } from '../../common/Badge';
-import { formatRupiah, formatDateIndo, formatCategoryName } from '../../../utils/formatters';
+import { StatusBadge } from '../../common/Badge';
+import { formatRupiah, formatDateIndo } from '../../../utils/formatters';
 
 interface BranchCardProps {
   branch: Branch;
@@ -17,6 +17,17 @@ export const BranchCard: React.FC<BranchCardProps> = ({
   onEdit,
   onDelete
 }) => {
+  // Dynamic Root Cause issue detection from actual RCA audit data
+  const hasDiagnosed = branch.rootCauses && branch.rootCauses.length > 0;
+  const criticalFactors = hasDiagnosed ? branch.rootCauses.filter(f => f.score <= 2) : [];
+  const moderateFactors = hasDiagnosed ? branch.rootCauses.filter(f => f.score === 3) : [];
+
+  const issueKeywords = criticalFactors.length > 0
+    ? criticalFactors.map(f => f.title.split('(')[0].replace(/^(Efisiensi|Penertiban|Kedisiplinan|Kemandirian|Ketersediaan)\s+/i, '').trim()).slice(0, 2).join(' & ')
+    : moderateFactors.length > 0
+    ? moderateFactors.map(f => f.title.split('(')[0].replace(/^(Efisiensi|Penertiban|Kedisiplinan|Kemandirian|Ketersediaan)\s+/i, '').trim()).slice(0, 2).join(' & ')
+    : 'Kondisi Menuju Stabil';
+
   return (
     <div
       onClick={onSelect}
@@ -61,15 +72,23 @@ export const BranchCard: React.FC<BranchCardProps> = ({
           </div>
         </div>
 
-        {/* Diagnosis Box with Category */}
-        <div className="p-3 rounded-xl bg-slate-850/85 border border-slate-800/90 backdrop-blur-sm space-y-1.5 mb-4">
-          <div className="text-[11px] font-bold text-slate-200">
-            {formatCategoryName(branch.category)}
+        {/* Dynamic Root Cause Diagnosis Box */}
+        {hasDiagnosed ? (
+          <div className="p-3 rounded-xl bg-slate-850/85 border border-slate-800/90 backdrop-blur-sm space-y-1.5 mb-4">
+            <div className="text-[11px] font-bold text-amber-400 flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 text-amber-400" />
+              <span className="truncate">Akar Masalah: {issueKeywords}</span>
+            </div>
+            <p className="text-[11px] text-slate-300 line-clamp-2 leading-relaxed">
+              {branch.diagnosisSummary || 'Faktor telah dinilai, siap susun strategi perbaikan.'}
+            </p>
           </div>
-          <p className="text-[11px] text-slate-300 line-clamp-2 leading-relaxed">
-            {branch.diagnosisSummary || 'Belum ada diagnosa ringkasan.'}
-          </p>
-        </div>
+        ) : (
+          <div className="p-3 rounded-xl bg-slate-850/50 border border-dashed border-slate-800 backdrop-blur-sm space-y-1 mb-4 text-center">
+            <div className="text-[11px] font-semibold text-slate-400">Belum ada diagnosa RCA</div>
+            <p className="text-[10px] text-slate-500">Klik kartu untuk mulai audit lapangan</p>
+          </div>
+        )}
       </div>
 
       {/* Target & Action Footer */}
@@ -97,9 +116,9 @@ export const BranchCard: React.FC<BranchCardProps> = ({
             </button>
           </div>
 
-            <span className="text-xs font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">
-              Detail →
-            </span>
+          <span className="text-xs font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">
+            Detail →
+          </span>
         </div>
       </div>
     </div>

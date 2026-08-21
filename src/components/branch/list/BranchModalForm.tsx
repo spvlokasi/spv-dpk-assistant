@@ -209,21 +209,6 @@ export const BranchModalForm: React.FC<BranchModalFormProps> = ({
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Kategori Masalah Utama</label>
-              <select
-                value={formData.category}
-                onChange={(e) => onFormDataChange({ ...formData, category: e.target.value as DpkCategory })}
-                className="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2.5 focus:border-emerald-500 focus:outline-none"
-              >
-                <option value="sales_drop">📉 Sales Drop (Omzet Turun Drastis)</option>
-                <option value="margin_minus">🔻 Margin Minus/Rendah (Laba Tergerus)</option>
-                <option value="opex_bengkak">⚡ Opex Bengkak (Biaya Operasional Boros)</option>
-                <option value="shrinkage_tinggi">📦 Shrinkage/NKL Tinggi (Barang Hilang)</option>
-                <option value="traffic_rendah">🚶 Traffic Rendah (Struk Sedikit)</option>
-                <option value="disiplin_sdm">👥 Disiplin SDM (SOP Tidak Dijalankan)</option>
-              </select>
-            </div>
           </div>
 
           <div>
