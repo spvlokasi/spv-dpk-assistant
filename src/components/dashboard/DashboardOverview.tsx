@@ -90,9 +90,9 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       {/* Main Full-Width: Branch Turnaround Cards */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
+          <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
             <Store className="w-5 h-5 text-emerald-400" />
-            Status Perbaikan Cabang Binaan
+            Status Cabang
           </h3>
           <span className="text-xs text-slate-400">Klik toko untuk detail</span>
         </div>
@@ -108,6 +108,17 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             const taskPct = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
             const imgUrl = branch.imageUrl || (branch.code === 'M3017' || branch.name.toLowerCase().includes('bugih') ? '/stores/bugih.jpg' : '');
+
+            // Dynamic Root Cause detection from actual RCA audit
+            const hasDiagnosed = branch.rootCauses && branch.rootCauses.length > 0;
+            const criticalFactors = hasDiagnosed ? branch.rootCauses.filter(f => f.score <= 2) : [];
+            const moderateFactors = hasDiagnosed ? branch.rootCauses.filter(f => f.score === 3) : [];
+
+            const issueKeywords = criticalFactors.length > 0
+              ? criticalFactors.map(f => f.title.split('(')[0].replace(/^(Efisiensi|Penertiban|Kedisiplinan|Kemandirian|Ketersediaan)\s+/i, '').trim()).slice(0, 2).join(' & ')
+              : moderateFactors.length > 0
+              ? moderateFactors.map(f => f.title.split('(')[0].replace(/^(Efisiensi|Penertiban|Kedisiplinan|Kemandirian|Ketersediaan)\s+/i, '').trim()).slice(0, 2).join(' & ')
+              : 'Kondisi Menuju Stabil';
 
             return (
               <div
@@ -144,10 +155,21 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                   <StatusBadge status={branch.status} />
                 </div>
 
-                <div className="relative z-10 text-xs text-slate-300 bg-slate-850/85 p-3 rounded-xl border border-slate-800/90 backdrop-blur-sm">
-                  <span className="font-semibold text-slate-200">Kategori Masalah:</span> {formatCategoryName(branch.category)}
-                  <div className="text-[11px] text-slate-300 line-clamp-1 mt-0.5">{branch.diagnosisSummary}</div>
-                </div>
+                {/* Dynamic Root Cause Diagnosis Box */}
+                {hasDiagnosed ? (
+                  <div className="relative z-10 text-xs text-slate-300 bg-slate-850/85 p-3 rounded-xl border border-slate-800/90 backdrop-blur-sm space-y-1">
+                    <div className="text-[11px] font-bold text-amber-400 truncate">
+                      ⚠️ Akar Masalah: {issueKeywords}
+                    </div>
+                    <div className="text-[11px] text-slate-300 line-clamp-1">
+                      {branch.diagnosisSummary || 'Faktor telah dinilai, siap susun strategi perbaikan.'}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative z-10 text-xs text-slate-400 bg-slate-850/50 p-2.5 rounded-xl border border-dashed border-slate-800 backdrop-blur-sm text-center">
+                    <span className="text-[11px] font-semibold text-slate-400">Belum ada diagnosa</span>
+                  </div>
+                )}
 
                 {/* Progress Bars */}
                 <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800/80">
