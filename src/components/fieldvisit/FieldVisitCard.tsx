@@ -49,21 +49,7 @@ export const FieldVisitCard: React.FC<FieldVisitCardProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-between sm:justify-end gap-3">
-          {/* Star Rating */}
-          <div className="flex items-center gap-1 bg-slate-850 px-2.5 py-1 rounded-xl border border-slate-800">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                className={`w-3.5 h-3.5 ${
-                  star <= visit.generalRating
-                    ? 'text-amber-400 fill-amber-400'
-                    : 'text-slate-700'
-                }`}
-              />
-            ))}
-          </div>
-
+        <div className="flex items-center justify-between sm:justify-end gap-2">
           <div className="flex items-center gap-1">
             <button
               type="button"

@@ -191,29 +191,6 @@ export const FieldVisitFormModal: React.FC<FieldVisitFormModalProps> = ({
               />
             </div>
 
-            {/* Star Rating Selection */}
-            <div className="flex items-center justify-between bg-slate-850 p-3 rounded-xl border border-slate-800">
-              <span className="text-slate-300 font-semibold">Rating Kondisi Toko:</span>
-              <div className="flex items-center gap-1.5">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    type="button"
-                    key={star}
-                    onClick={() => setFormData({ ...formData, generalRating: star })}
-                    className="p-1"
-                  >
-                    <Star
-                      className={`w-5 h-5 ${
-                        star <= formData.generalRating
-                          ? 'text-amber-400 fill-amber-400'
-                          : 'text-slate-600'
-                      }`}
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Issue Section Form */}
             <div className="bg-slate-850/80 p-3.5 rounded-xl border border-slate-800 space-y-3">
               <span className="text-xs font-bold text-slate-300 block">
