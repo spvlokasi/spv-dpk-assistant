@@ -172,14 +172,11 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
           onSelectHistoryLog={handleSelectHistoryLog}
         />
 
-        {/* Financial Targets */}
+        {/* Financial Targets 1-Row Summary Badge Bar */}
         <BranchFinancialTargets
           targetSalesPerDay={data.targetSalesPerDay}
           targetMarginPct={data.targetMarginPct}
           targetMaxOpexPerMonth={data.targetMaxOpexPerMonth}
-          onChangeTargetSales={(val) => setData({ ...data, targetSalesPerDay: val })}
-          onChangeTargetMargin={(val) => setData({ ...data, targetMarginPct: val })}
-          onChangeTargetOpex={(val) => setData({ ...data, targetMaxOpexPerMonth: val })}
         />
       </div>
 

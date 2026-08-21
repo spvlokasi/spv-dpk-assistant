@@ -1,12 +1,10 @@
 import React from 'react';
+import { Target } from 'lucide-react';
 
 interface BranchFinancialTargetsProps {
   targetSalesPerDay: number;
   targetMarginPct: number;
   targetMaxOpexPerMonth: number;
-  onChangeTargetSales: (val: number) => void;
-  onChangeTargetMargin: (val: number) => void;
-  onChangeTargetOpex: (val: number) => void;
 }
 
 const formatRupiah = (val: number) => {
@@ -16,51 +14,30 @@ const formatRupiah = (val: number) => {
 export const BranchFinancialTargets: React.FC<BranchFinancialTargetsProps> = ({
   targetSalesPerDay,
   targetMarginPct,
-  targetMaxOpexPerMonth,
-  onChangeTargetSales,
-  onChangeTargetMargin,
-  onChangeTargetOpex
+  targetMaxOpexPerMonth
 }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
-      <div className="bg-slate-850 p-3.5 rounded-xl border border-slate-800">
-        <div className="flex items-center justify-between gap-2 mb-1.5">
-          <label className="text-[11px] font-medium text-slate-400">Target Laba Harian</label>
-          <span className="text-[11px] font-semibold text-emerald-400">{formatRupiah(targetSalesPerDay)}/hari</span>
-        </div>
-        <input
-          type="number"
-          value={targetSalesPerDay}
-          onChange={(e) => onChangeTargetSales(Number(e.target.value))}
-          className="w-full bg-slate-800 border border-slate-700 text-emerald-400 font-mono font-bold text-sm rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-500"
-        />
+    <div className="pt-3 border-t border-slate-800 flex items-center justify-between gap-2 sm:gap-3 flex-wrap text-xs bg-slate-850/40 p-2.5 rounded-xl border border-slate-800/60">
+      <div className="flex items-center gap-1.5 text-slate-400 font-semibold text-[11px]">
+        <Target className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+        <span>Target Finansial:</span>
       </div>
 
-      <div className="bg-slate-850 p-3.5 rounded-xl border border-slate-800">
-        <div className="flex items-center justify-between gap-2 mb-1.5">
-          <label className="text-[11px] font-medium text-slate-400">Target Margin Profit (%)</label>
-          <span className="text-[11px] font-semibold text-blue-400">Standar Target</span>
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap text-[11px]">
+        <div className="flex items-center gap-1 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/70">
+          <span className="text-slate-400">Laba Harian:</span>
+          <strong className="text-emerald-400 font-mono font-bold">{formatRupiah(targetSalesPerDay)}</strong>
         </div>
-        <input
-          type="number"
-          step="0.1"
-          value={targetMarginPct}
-          onChange={(e) => onChangeTargetMargin(Number(e.target.value))}
-          className="w-full bg-slate-800 border border-slate-700 text-blue-400 font-mono font-bold text-sm rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-500"
-        />
-      </div>
 
-      <div className="bg-slate-850 p-3.5 rounded-xl border border-slate-800">
-        <div className="flex items-center justify-between gap-2 mb-1.5">
-          <label className="text-[11px] font-medium text-slate-400">Target Biaya Bulanan</label>
-          <span className="text-[11px] font-semibold text-rose-400">{formatRupiah(targetMaxOpexPerMonth)}/bulan</span>
+        <div className="flex items-center gap-1 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/70">
+          <span className="text-slate-400">Margin:</span>
+          <strong className="text-blue-400 font-mono font-bold">{targetMarginPct}%</strong>
         </div>
-        <input
-          type="number"
-          value={targetMaxOpexPerMonth}
-          onChange={(e) => onChangeTargetOpex(Number(e.target.value))}
-          className="w-full bg-slate-800 border border-slate-700 text-rose-400 font-mono font-bold text-sm rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-500"
-        />
+
+        <div className="flex items-center gap-1 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/70">
+          <span className="text-slate-400">Batas Biaya:</span>
+          <strong className="text-rose-400 font-mono font-bold">{formatRupiah(targetMaxOpexPerMonth)}/bln</strong>
+        </div>
       </div>
     </div>
   );
