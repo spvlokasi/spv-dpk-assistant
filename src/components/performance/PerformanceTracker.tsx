@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Branch, DailyPerformance } from '../../types';
 import { PerformanceHeaderBar } from './PerformanceHeaderBar';
-import { PerformanceChartSection } from './PerformanceChartSection';
 import { PerformanceDataTable } from './PerformanceDataTable';
 import { PerformanceInputModal } from './PerformanceInputModal';
 
@@ -55,11 +54,6 @@ export const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
         avgBasket={avgBasket}
         targetSalesPerDay={currentBranch?.targetSalesPerDay || 1500000}
         onOpenAddModal={() => setShowModal(true)}
-      />
-
-      <PerformanceChartSection
-        branchPerf={branchPerf}
-        targetSalesPerDay={currentBranch?.targetSalesPerDay || 1500000}
       />
 
       <PerformanceDataTable
