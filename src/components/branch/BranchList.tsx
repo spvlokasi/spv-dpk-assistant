@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Branch, DpkCategory, DpkStatus } from '../../types';
+import { Branch } from '../../types';
 import { useToast } from '../../context/ToastContext';
 import { BranchSearchBar } from './list/BranchSearchBar';
 import { BranchCard } from './list/BranchCard';
@@ -14,13 +14,13 @@ interface BranchListProps {
   onCloseNewModal?: () => void;
 }
 
-const DEFAULT_FORM_DATA: Partial<Branch> = {
+const DEFAULT_FORM: Partial<Branch> = {
   code: '', name: '', address: '', phone: '', kepalaToko: '', spvArea: '',
-  manajerBisnis: 'H. Bambang Irawan',
+  manajerBisnis: 'Rusli Hitami',
   entryDate: new Date().toISOString().slice(0, 10),
   targetGraduationDate: new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10),
-  category: 'sales_drop', status: 'kritis', urgencyLevel: 'tinggi',
-  targetSalesPerDay: 12000000, targetMarginPct: 15.0, targetMaxOpexPerMonth: 20000000,
+  status: 'kritis', urgencyLevel: 'tinggi',
+  targetSalesPerDay: 1500000, targetMarginPct: 15.0, targetMaxOpexPerMonth: 20000000,
   diagnosisSummary: '', recommendedStrategy: '', imageUrl: '', rootCauses: []
 };
 
@@ -34,15 +34,14 @@ export const BranchList: React.FC<BranchListProps> = ({
 }) => {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [filterCategory, setFilterCategory] = useState<string>('all');
   const { showToast } = useToast();
-  const [showModal, setShowModal] = useState(isAddingNew || false);
+  const [showModal, setShowModal] = useState(isAddingNew);
   const [editingBranch, setEditingBranch] = useState<Branch | null>(null);
-  const [formData, setFormData] = useState<Partial<Branch>>(DEFAULT_FORM_DATA);
+  const [formData, setFormData] = useState<Partial<Branch>>(DEFAULT_FORM);
 
   const handleOpenAdd = () => {
     setEditingBranch(null);
-    setFormData({ ...DEFAULT_FORM_DATA, code: `T-${Math.floor(100 + Math.random() * 900)}` });
+    setFormData({ ...DEFAULT_FORM, code: `M-${Math.floor(1000 + Math.random() * 9000)}` });
     setShowModal(true);
   };
 
@@ -55,7 +54,7 @@ export const BranchList: React.FC<BranchListProps> = ({
 
   const handleDelete = (branchId: string, branchName: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (window.confirm(`Apakah Anda yakin ingin menghapus data cabang "${branchName}"?`)) {
+    if (window.confirm(`Hapus data cabang "${branchName}"?`)) {
       onDeleteBranch(branchId);
       showToast(`Data cabang ${branchName} berhasil dihapus`, 'warning');
     }
@@ -64,39 +63,38 @@ export const BranchList: React.FC<BranchListProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.code || !formData.kepalaToko) {
-      showToast('Mohon isi nama cabang, kode cabang, dan nama KTB!', 'warning');
+      showToast('Isi nama cabang, kode cabang, dan nama KTB!', 'warning');
       return;
     }
-
     const branchToSave: Branch = {
-      ...DEFAULT_FORM_DATA,
+      ...DEFAULT_FORM,
       ...formData,
       id: editingBranch ? editingBranch.id : `br-${Date.now()}`,
       code: formData.code!.trim().toUpperCase(),
       name: formData.name!.trim(),
       kepalaToko: formData.kepalaToko!.trim(),
-      targetSalesPerDay: Number(formData.targetSalesPerDay) || 12000000,
+      targetSalesPerDay: Number(formData.targetSalesPerDay) || 1500000,
       targetMarginPct: Number(formData.targetMarginPct) || 15.0,
       targetMaxOpexPerMonth: Number(formData.targetMaxOpexPerMonth) || 20000000
     } as Branch;
 
     onSaveBranch(branchToSave);
-    showToast(editingBranch ? 'Perubahan cabang berhasil disimpan!' : 'Cabang baru berhasil didaftarkan!', 'success');
+    showToast(editingBranch ? 'Perubahan cabang disimpan!' : 'Cabang baru didaftarkan!', 'success');
     setShowModal(false);
     if (onCloseNewModal) onCloseNewModal();
   };
 
   const filteredBranches = branches.map((b) => (!b.imageUrl && (b.code === 'M3017' || b.name.toLowerCase().includes('bugih')) ? { ...b, imageUrl: '/stores/bugih.jpg' } : b)).filter((b) => {
     const matchSearch = b.name.toLowerCase().includes(search.toLowerCase()) || b.code.toLowerCase().includes(search.toLowerCase()) || b.kepalaToko.toLowerCase().includes(search.toLowerCase());
-    return matchSearch && (filterStatus === 'all' || b.status === filterStatus) && (filterCategory === 'all' || b.category === filterCategory);
+    return matchSearch && (filterStatus === 'all' || b.status === filterStatus);
   });
 
   return (
     <div className="space-y-4">
-      <BranchSearchBar search={search} filterStatus={filterStatus} filterCategory={filterCategory} onSearchChange={setSearch} onStatusChange={setFilterStatus} onCategoryChange={setFilterCategory} onOpenAdd={handleOpenAdd} />
+      <BranchSearchBar search={search} filterStatus={filterStatus} onSearchChange={setSearch} onStatusChange={setFilterStatus} onOpenAdd={handleOpenAdd} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredBranches.map((branch) => (
-          <BranchCard key={branch.id} branch={branch} onSelect={() => onSelectBranch(branch.id)} onEdit={(e) => handleOpenEdit(branch, e)} onDelete={(e) => handleDelete(branch.id, branch.name, e)} />
+        {filteredBranches.map((b) => (
+          <BranchCard key={b.id} branch={b} onSelect={() => onSelectBranch(b.id)} onEdit={(e) => handleOpenEdit(b, e)} onDelete={(e) => handleDelete(b.id, b.name, e)} />
         ))}
       </div>
       <BranchModalForm show={showModal} editingBranch={editingBranch} formData={formData} onClose={() => { setShowModal(false); if (onCloseNewModal) onCloseNewModal(); }} onFormDataChange={setFormData} onSubmit={handleSubmit} />
