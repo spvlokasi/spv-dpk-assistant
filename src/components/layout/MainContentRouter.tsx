@@ -1,5 +1,5 @@
 import React from 'react';
-import { Branch, ActionPlanMilestone, FieldVisit, DailyPerformance, BranchGraduation, EscalationTicket } from '../../types';
+import { Branch, ActionPlanMilestone, FieldVisit, DailyPerformance, EscalationTicket } from '../../types';
 import { UserAccount } from '../../types/auth';
 import { DashboardOverview } from '../dashboard/DashboardOverview';
 import { BranchList } from '../branch/BranchList';
@@ -7,7 +7,6 @@ import { BranchDetailAndRCA } from '../branch/BranchDetailAndRCA';
 import { ActionPlanManager } from '../actionplan/ActionPlanManager';
 import { FieldVisitLog } from '../fieldvisit/FieldVisitLog';
 import { PerformanceTracker } from '../performance/PerformanceTracker';
-import { GraduationTracker } from '../graduation/GraduationTracker';
 import { ExecutiveReportGenerator } from '../report/ExecutiveReportGenerator';
 import { EscalationManager } from '../escalation/EscalationManager';
 import { SettingsAndData } from '../settings/SettingsAndData';
@@ -27,7 +26,7 @@ interface MainContentRouterProps {
     milestones: ActionPlanMilestone[];
     visits: FieldVisit[];
     performance: DailyPerformance[];
-    graduations: BranchGraduation[];
+    graduations: any[];
     escalations: EscalationTicket[];
   };
   handlers: any;
@@ -65,8 +64,6 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
       return <FieldVisitLog branches={data.branches} visits={data.visits} selectedBranchId={selectedBranchId || undefined} onSaveVisit={handlers.handleSaveVisit} onDeleteVisit={handlers.handleDeleteVisit} isOpenNewModal={isAddingVisit} onCloseNewModal={() => setIsAddingVisit(false)} />;
     case 'performance':
       return <PerformanceTracker branches={data.branches} performance={data.performance} selectedBranchId={selectedBranchId || undefined} onAddPerformance={handlers.handleAddPerformance} onDeletePerformance={handlers.handleDeletePerformance} />;
-    case 'graduation':
-      return <GraduationTracker branches={data.branches} graduations={data.graduations} onSaveGraduation={handlers.handleSaveGraduation} onUpdateBranchStatus={handlers.handleUpdateBranchStatus} />;
     case 'reports':
       return <ExecutiveReportGenerator branches={data.branches} visits={data.visits} milestones={data.milestones} performance={data.performance} graduations={data.graduations} escalations={data.escalations} currentUser={currentUser} />;
     case 'escalations':

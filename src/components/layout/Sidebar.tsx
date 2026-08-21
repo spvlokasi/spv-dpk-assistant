@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Store, Target, ClipboardCheck, TrendingUp, GraduationCap, FileText, AlertTriangle, Settings } from 'lucide-react';
+import { LayoutDashboard, Store, Target, ClipboardCheck, TrendingUp, FileText, AlertTriangle, Settings } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -16,7 +16,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, branc
     { id: 'actionplan', label: 'Aksi Perbaikan', icon: Target },
     { id: 'fieldvisit', label: 'Kunjungan & Coaching', icon: ClipboardCheck, badge: openIssuesCount || undefined, badgeColor: 'bg-amber-950/80 text-amber-300 border border-amber-700/60' },
     { id: 'performance', label: 'Monitoring Kinerja', icon: TrendingUp },
-    { id: 'graduation', label: 'Status Kelulusan DPK', icon: GraduationCap },
     { id: 'reports', label: 'Laporan Manajer Bisnis', icon: FileText },
     { id: 'escalations', label: 'Eskalasi Kendala Berat', icon: AlertTriangle, badge: pendingEscalationCount || undefined, badgeColor: 'bg-rose-950/80 text-rose-300 border border-rose-700/60' },
     { id: 'settings', label: 'Pengaturan & Data', icon: Settings }
