@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowLeft, Target, Calendar, TrendingUp, CheckCircle2, User, Shield, MapPin } from 'lucide-react';
 import { Branch } from '../../../types';
-import { StatusBadge, UrgencyBadge } from '../../common/Badge';
+import { StatusBadge } from '../../common/Badge';
 
 interface BranchHeaderProfileProps {
   data: Branch;
@@ -38,10 +38,7 @@ export const BranchHeaderProfile: React.FC<BranchHeaderProfileProps> = ({
             {prefix && <span className="hidden sm:inline">{prefix} </span>}
             {branchName}
           </h2>
-          <div className="flex items-center gap-1.5 flex-nowrap flex-shrink-0">
-            <StatusBadge status={data.status} />
-            <UrgencyBadge urgency={data.urgencyLevel} />
-          </div>
+          <StatusBadge status={data.status} />
           {isSaved && (
             <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] text-emerald-400 font-semibold animate-pulse ml-1 flex-shrink-0">
               <CheckCircle2 className="w-3.5 h-3.5" /> Tersimpan!
