@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, CheckCircle2, XCircle, AlertTriangle, Trash2, Edit, MessageSquare } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, Trash2, Edit, MessageSquare } from 'lucide-react';
 import { EscalationTicket } from '../../types';
 import { formatDateIndo } from '../../utils/formatters';
 
@@ -30,11 +30,11 @@ export const EscalationTicketCard: React.FC<EscalationTicketCardProps> = ({
             Ditolak
           </span>
         );
-      case 'proses':
+      case 'ditinjau':
         return (
           <span className="px-2 py-0.5 rounded-md bg-blue-950/60 border border-blue-800 text-blue-400 text-[10px] font-bold flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            Sedang Diproses
+            Sedang Ditinjau
           </span>
         );
       default:

@@ -1,7 +1,6 @@
 import React from 'react';
 import { DailyPerformance } from '../../types';
 import { SimpleLineChart } from '../common/SimpleChart';
-import { formatShortRupiah } from '../../utils/formatters';
 
 interface PerformanceChartSectionProps {
   branchPerf: DailyPerformance[];
@@ -12,11 +11,16 @@ export const PerformanceChartSection: React.FC<PerformanceChartSectionProps> = (
   branchPerf,
   targetSalesPerDay
 }) => {
-  const chartData = branchPerf.map((p) => ({
+  const salesData = branchPerf.map((p) => ({
     label: p.date.slice(5),
-    salesActual: p.salesActual,
-    salesTarget: p.salesTarget || targetSalesPerDay,
-    marginPct: p.marginPct
+    actual: p.salesActual,
+    target: p.salesTarget || targetSalesPerDay
+  }));
+
+  const marginData = branchPerf.map((p) => ({
+    label: p.date.slice(5),
+    actual: p.marginPct,
+    target: 15
   }));
 
   return (
@@ -34,23 +38,14 @@ export const PerformanceChartSection: React.FC<PerformanceChartSectionProps> = (
               Aktual
             </span>
             <span className="flex items-center gap-1.5 text-slate-400">
-              <span className="w-2.5 h-2.5 rounded-full bg-slate-600 inline-block" />
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
               Target
             </span>
           </div>
         </div>
 
-        {chartData.length > 0 ? (
-          <div className="h-64">
-            <SimpleLineChart
-              data={chartData}
-              lines={[
-                { key: 'salesActual', color: '#10b981', label: 'Laba Aktual' },
-                { key: 'salesTarget', color: '#475569', label: 'Target Laba' }
-              ]}
-              formatY={(val) => formatShortRupiah(val)}
-            />
-          </div>
+        {salesData.length > 0 ? (
+          <SimpleLineChart data={salesData} />
         ) : (
           <div className="h-48 flex items-center justify-center text-xs text-slate-500 italic">
             Belum ada data input kinerja untuk cabang ini.
@@ -62,17 +57,11 @@ export const PerformanceChartSection: React.FC<PerformanceChartSectionProps> = (
       <div className="lg:col-span-4 bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-xl">
         <div>
           <h3 className="text-sm font-bold text-white">Tren Margin Profit (%)</h3>
-          <p className="text-xs text-slate-400">Fluktuasi margin keuntungan</p>
+          <p className="text-xs text-slate-400">Margin aktual vs Standar Min. 15%</p>
         </div>
 
-        {chartData.length > 0 ? (
-          <div className="h-64">
-            <SimpleLineChart
-              data={chartData}
-              lines={[{ key: 'marginPct', color: '#3b82f6', label: 'Margin %' }]}
-              formatY={(val) => `${val}%`}
-            />
-          </div>
+        {marginData.length > 0 ? (
+          <SimpleLineChart data={marginData} />
         ) : (
           <div className="h-48 flex items-center justify-center text-xs text-slate-500 italic">
             Belum ada data margin.

@@ -20,7 +20,7 @@ export const EscalationManager: React.FC<EscalationManagerProps> = ({
   const [showModal, setShowModal] = useState(false);
   const [editingTicket, setEditingTicket] = useState<EscalationTicket | null>(null);
 
-  const pendingCount = escalations.filter((e) => e.status === 'diajukan' || e.status === 'proses').length;
+  const pendingCount = escalations.filter((e) => e.status === 'diajukan' || e.status === 'ditinjau').length;
 
   const handleOpenAdd = () => {
     setEditingTicket(null);

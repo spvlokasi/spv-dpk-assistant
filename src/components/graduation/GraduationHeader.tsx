@@ -1,5 +1,5 @@
 import React from 'react';
-import { GraduationCap, Award } from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
 import { Branch, BranchGraduation } from '../../types';
 import { StatusBadge } from '../common/Badge';
 
@@ -15,11 +15,8 @@ export const GraduationHeader: React.FC<GraduationHeaderProps> = ({
   branches,
   selectedBranchId,
   onSelectBranch,
-  currentBranch,
-  currentGraduation
+  currentBranch
 }) => {
-  const isGraduated = currentBranch?.status === 'lulus_mandiri' || currentGraduation.approvedByManager;
-
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
       <div className="space-y-1">

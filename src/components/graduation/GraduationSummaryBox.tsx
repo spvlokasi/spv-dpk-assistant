@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award, BookOpen, CheckCircle2, Sparkles } from 'lucide-react';
+import { Award, BookOpen, Sparkles } from 'lucide-react';
 import { Branch, BranchGraduation } from '../../types';
 
 interface GraduationSummaryBoxProps {
@@ -18,7 +18,7 @@ export const GraduationSummaryBox: React.FC<GraduationSummaryBoxProps> = ({
   const metCount = currentGraduation.checklists.filter((c) => c.isMet).length;
   const totalCount = currentGraduation.checklists.length;
   const isReady = metCount === totalCount && currentGraduation.consecutiveMonthsHit >= 3;
-  const isGraduated = branch?.status === 'lulus_mandiri' || currentGraduation.approvedByManager;
+  const isGraduated = branch?.status === 'lulus_dpk' || currentGraduation.approvedByManager;
 
   return (
     <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-xl">

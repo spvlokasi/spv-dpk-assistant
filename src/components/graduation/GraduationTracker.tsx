@@ -58,11 +58,10 @@ export const GraduationTracker: React.FC<GraduationTrackerProps> = ({
     const updated: BranchGraduation = {
       ...currentGraduation,
       approvedByManager: true,
-      graduationDate: new Date().toISOString().slice(0, 10),
-      graduatedBySpv: 'Supervisor DPK (Saya)'
+      graduationDate: new Date().toISOString().slice(0, 10)
     };
     onSaveGraduation(updated);
-    onUpdateBranchStatus(currentBranch.id, 'lulus_mandiri');
+    onUpdateBranchStatus(currentBranch.id, 'lulus_dpk');
   };
 
   return (
