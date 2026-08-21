@@ -30,61 +30,53 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       id: 'dashboard',
       label: 'Dashboard',
-      icon: LayoutDashboard,
-      desc: ''
+      icon: LayoutDashboard
     },
     {
       id: 'branches',
       label: 'Cabang & Diagnosa',
       icon: Store,
-      badge: branchCount,
-      desc: ''
+      badge: branchCount > 0 ? branchCount : undefined,
+      badgeColor: 'bg-slate-800 text-slate-300 border border-slate-700'
     },
     {
       id: 'actionplan',
       label: 'Aksi Perbaikan',
-      icon: Target,
-      desc: ''
+      icon: Target
     },
     {
       id: 'fieldvisit',
       label: 'Kunjungan & Coaching',
       icon: ClipboardCheck,
-      badge: openIssuesCount > 0 ? `${openIssuesCount} Temuan` : undefined,
-      badgeColor: 'bg-amber-500/20 text-amber-300 border border-amber-500/30',
-      desc: ''
+      badge: openIssuesCount > 0 ? openIssuesCount : undefined,
+      badgeColor: 'bg-amber-950/80 text-amber-300 border border-amber-700/60'
     },
     {
       id: 'performance',
       label: 'Monitoring Kinerja',
-      icon: TrendingUp,
-      desc: ''
+      icon: TrendingUp
     },
     {
       id: 'graduation',
       label: 'Status Kelulusan DPK',
-      icon: GraduationCap,
-      desc: ''
+      icon: GraduationCap
     },
     {
       id: 'reports',
       label: 'Laporan Manajer Bisnis',
-      icon: FileText,
-      desc: ''
+      icon: FileText
     },
     {
       id: 'escalations',
       label: 'Eskalasi Kendala Berat',
       icon: AlertTriangle,
-      badge: pendingEscalationCount > 0 ? `${pendingEscalationCount} Belum Disetujui` : undefined,
-      badgeColor: 'bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse',
-      desc: ''
+      badge: pendingEscalationCount > 0 ? pendingEscalationCount : undefined,
+      badgeColor: 'bg-rose-950/80 text-rose-300 border border-rose-700/60'
     },
     {
       id: 'settings',
       label: 'Pengaturan & Data',
-      icon: Settings,
-      desc: ''
+      icon: Settings
     }
   ];
 
@@ -98,7 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center justify-between p-3 rounded-xl text-left transition-all ${
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left transition-all ${
                 isActive
                   ? 'bg-emerald-600/20 text-emerald-300 border border-emerald-500/40 shadow-sm'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -106,17 +98,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <div className="flex items-center gap-3">
                 <Icon className={`w-5 h-5 ${isActive ? 'text-emerald-400' : 'text-slate-500'}`} />
-                <div>
-                  <div className={`text-xs font-semibold ${isActive ? 'text-emerald-200' : 'text-slate-200'}`}>
-                    {item.label}
-                  </div>
-                  {item.desc ? (
-                    <div className="text-[10px] text-slate-500 line-clamp-1">{item.desc}</div>
-                  ) : null}
-                </div>
+                <span className={`text-xs font-semibold ${isActive ? 'text-emerald-200' : 'text-slate-200'}`}>
+                  {item.label}
+                </span>
               </div>
+
               {item.badge !== undefined && (
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.badgeColor || 'bg-slate-800 text-slate-400'}`}>
+                <span className={`text-[11px] font-bold font-mono px-2 py-0.5 min-w-[22px] text-center rounded-full ${item.badgeColor || 'bg-slate-800 text-slate-400'}`}>
                   {item.badge}
                 </span>
               )}
