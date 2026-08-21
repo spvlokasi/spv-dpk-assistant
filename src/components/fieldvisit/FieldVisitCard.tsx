@@ -1,7 +1,8 @@
 import React from 'react';
-import { Calendar, Clock, User, Star, Trash2, Edit, AlertTriangle, CheckCircle2, ShieldCheck, MessageSquare } from 'lucide-react';
-import { Branch, FieldVisit, OperationalIssue } from '../../types';
+import { Calendar, Clock, User, Trash2, Edit } from 'lucide-react';
+import { Branch, FieldVisit } from '../../types';
 import { formatDateIndo } from '../../utils/formatters';
+import { FieldVisitIssueList } from './FieldVisitIssueList';
 
 interface FieldVisitCardProps {
   visit: FieldVisit;
@@ -20,7 +21,7 @@ export const FieldVisitCard: React.FC<FieldVisitCardProps> = ({
 }) => {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-xl hover:border-slate-700/80 transition-all">
-      {/* Top Card Bar: Branch, Date/Time, Rating & Actions */}
+      {/* Top Card Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
@@ -98,79 +99,7 @@ export const FieldVisitCard: React.FC<FieldVisitCardProps> = ({
       </div>
 
       {/* Issues / Temuan Kendala Section */}
-      {visit.issues && visit.issues.length > 0 && (
-        <div className="space-y-2 pt-2 border-t border-slate-800">
-          <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-            <AlertTriangle className="w-4 h-4 text-amber-400" />
-            Temuan Kendala Lapangan ({visit.issues.length}):
-          </span>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {visit.issues.map((issue) => (
-              <div
-                key={issue.id}
-                className={`p-3 rounded-xl border text-xs flex flex-col justify-between gap-2 transition-all ${
-                  issue.resolved
-                    ? 'bg-slate-850/40 border-slate-800 text-slate-400'
-                    : 'bg-amber-950/20 border-amber-800/50 text-slate-200'
-                }`}
-              >
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between gap-1.5">
-                    <span className="px-1.5 py-0.2 rounded text-[10px] font-bold uppercase bg-slate-800 border border-slate-700 text-slate-300">
-                      {issue.category.replace('_', ' ')}
-                    </span>
-                    <span
-                      className={`text-[10px] font-bold uppercase ${
-                        issue.severity === 'kritis'
-                          ? 'text-rose-400'
-                          : issue.severity === 'sedang'
-                          ? 'text-amber-400'
-                          : 'text-blue-400'
-                      }`}
-                    >
-                      {issue.severity}
-                    </span>
-                  </div>
-                  <p className={`font-medium ${issue.resolved ? 'line-through text-slate-500' : 'text-slate-200'}`}>
-                    {issue.description}
-                  </p>
-                  {issue.immediateSolution && (
-                    <p className="text-[11px] text-emerald-400">
-                      💡 Solusi: {issue.immediateSolution}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between pt-2 border-t border-slate-800/60">
-                  <button
-                    type="button"
-                    onClick={() => onToggleIssueResolved(visit, issue.id)}
-                    className={`px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all ${
-                      issue.resolved
-                        ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
-                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-                    }`}
-                  >
-                    <CheckCircle2 className="w-3 h-3" />
-                    {issue.resolved ? 'Terselesaikan' : 'Tandai Selesai'}
-                  </button>
-                  {issue.photoUrl && (
-                    <a
-                      href={issue.photoUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[10px] text-blue-400 hover:underline"
-                    >
-                      Lihat Foto
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <FieldVisitIssueList visit={visit} onToggleIssueResolved={onToggleIssueResolved} />
     </div>
   );
 };

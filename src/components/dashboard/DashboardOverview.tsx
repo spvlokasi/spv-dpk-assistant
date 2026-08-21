@@ -1,13 +1,8 @@
 import React from 'react';
-import { 
-  Store, 
-  AlertOctagon, 
-  Award, 
-  Calendar
-} from 'lucide-react';
+import { Store } from 'lucide-react';
 import { Branch, FieldVisit, ActionPlanMilestone, DailyPerformance, EscalationTicket } from '../../types';
-import { StatusBadge, UrgencyBadge } from '../common/Badge';
-import { formatShortRupiah, formatCategoryName } from '../../utils/formatters';
+import { DashboardKpiGrid } from './DashboardKpiGrid';
+import { DashboardBranchCard } from './DashboardBranchCard';
 
 interface DashboardOverviewProps {
   branches: Branch[];
@@ -28,64 +23,10 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   performance,
   onSelectBranch
 }) => {
-  const totalBranches = branches.length;
-  const criticalBranches = branches.filter(b => b.status === 'kritis');
-  const inProgressBranches = branches.filter(b => b.status === 'dalam_progres');
-  const readyToGraduate = branches.filter(b => b.status === 'siap_lulus');
-  const graduatedBranches = branches.filter(b => b.status === 'lulus_dpk');
-
-  const openIssues = visits.flatMap(v => v.issues).filter(i => !i.resolved);
-
   return (
     <div className="space-y-6">
-      {/* KPI Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-medium">Total Cabang DPK</span>
-            <Store className="w-4 h-4 text-slate-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-white">{totalBranches}</div>
-          <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
-            <span className="text-amber-400 font-semibold">{inProgressBranches.length} Toko</span> dalam pendampingan
-          </div>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <div className="flex items-center justify-between text-rose-400 mb-2">
-            <span className="text-xs font-medium">Cabang Kritis</span>
-            <AlertOctagon className="w-4 h-4 text-rose-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-rose-400">{criticalBranches.length}</div>
-          <div className="text-[11px] text-slate-400 mt-1">
-            Butuh intervensi intensif & eskalasi
-          </div>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <div className="flex items-center justify-between text-emerald-400 mb-2">
-            <span className="text-xs font-medium">Siap Lulus / Lulus</span>
-            <Award className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400">
-            {readyToGraduate.length + graduatedBranches.length}
-          </div>
-          <div className="text-[11px] text-emerald-400/80 mt-1">
-            {readyToGraduate.length} toko siap sidang evaluasi
-          </div>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <div className="flex items-center justify-between text-amber-400 mb-2">
-            <span className="text-xs font-medium">Log Kunjungan Bulan Ini</span>
-            <Calendar className="w-4 h-4 text-amber-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-white">{visits.length}</div>
-          <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
-            <span className="text-rose-400 font-semibold">{openIssues.length}</span> temuan fisik terbuka
-          </div>
-        </div>
-      </div>
+      {/* 4 KPI Stats Grid */}
+      <DashboardKpiGrid branches={branches} visits={visits} />
 
       {/* Main Full-Width: Branch Turnaround Cards */}
       <div className="space-y-4">
@@ -98,122 +39,15 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {branches.map((branch) => {
-            const branchPerf = performance.filter(p => p.branchId === branch.id);
-            const latestPerf = branchPerf.length > 0 ? branchPerf[branchPerf.length - 1] : null;
-            const salesPct = latestPerf ? Math.round((latestPerf.salesActual / branch.targetSalesPerDay) * 100) : 0;
-            const branchMilestones = milestones.filter(m => m.branchId === branch.id);
-            const completedTasks = branchMilestones.flatMap(m => m.tasks).filter(t => t.completed).length;
-            const totalTasks = branchMilestones.flatMap(m => m.tasks).length;
-            const taskPct = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-            const imgUrl = branch.imageUrl || (branch.code === 'M3017' || branch.name.toLowerCase().includes('bugih') ? '/stores/bugih.jpg' : '');
-
-            // Dynamic Root Cause detection from actual RCA audit
-            const hasDiagnosed = branch.rootCauses && branch.rootCauses.length > 0;
-            const criticalFactors = hasDiagnosed ? branch.rootCauses.filter(f => f.score <= 2) : [];
-            const moderateFactors = hasDiagnosed ? branch.rootCauses.filter(f => f.score === 3) : [];
-
-            const issueKeywords = criticalFactors.length > 0
-              ? criticalFactors.map(f => f.title.split('(')[0].replace(/^(Efisiensi|Penertiban|Kedisiplinan|Kemandirian|Ketersediaan)\s+/i, '').trim()).slice(0, 2).join(' & ')
-              : moderateFactors.length > 0
-              ? moderateFactors.map(f => f.title.split('(')[0].replace(/^(Efisiensi|Penertiban|Kedisiplinan|Kemandirian|Ketersediaan)\s+/i, '').trim()).slice(0, 2).join(' & ')
-              : 'Kondisi Menuju Stabil';
-
-            return (
-              <div
-                key={branch.id}
-                onClick={() => onSelectBranch(branch.id)}
-                className="group relative overflow-hidden bg-slate-900 border border-slate-800 hover:border-emerald-500/60 p-5 rounded-2xl transition-all cursor-pointer hover:shadow-xl hover:shadow-emerald-950/20 space-y-3"
-              >
-                {/* Translucent Store Photo (Opacity 65% - 85%) */}
-                {imgUrl && (
-                  <>
-                    <div 
-                      className="absolute inset-0 bg-cover bg-center opacity-65 group-hover:opacity-85 transition-opacity duration-300 pointer-events-none rounded-2xl"
-                      style={{ backgroundImage: `url(${imgUrl})` }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/40 pointer-events-none rounded-2xl" />
-                  </>
-                )}
-
-                <div className="relative z-10 flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-slate-800/90 border border-slate-700 flex items-center justify-center font-bold text-xs text-emerald-400 font-mono shadow-sm">
-                      {branch.code}
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-slate-100 group-hover:text-emerald-400 transition-colors">
-                        {branch.name}
-                      </h4>
-                      <div className="text-[11px] text-slate-400">
-                        KTB: <span className="text-slate-300 font-medium">{branch.kepalaToko}</span> | SPV Area: {branch.spvArea}
-                      </div>
-                    </div>
-                  </div>
-
-                  <StatusBadge status={branch.status} />
-                </div>
-
-                {/* Dynamic Root Cause Diagnosis Box (Uniform Minimum Height) */}
-                <div className="min-h-[60px] flex flex-col justify-center">
-                  {hasDiagnosed ? (
-                    <div className="relative z-10 text-xs text-slate-300 bg-slate-850/85 p-2.5 sm:p-3 rounded-xl border border-slate-800/90 backdrop-blur-sm space-y-1">
-                      <div className="text-[11px] font-bold text-amber-400 truncate">
-                        ⚠️ Akar Masalah: {issueKeywords}
-                      </div>
-                      <div className="text-[11px] text-slate-300 line-clamp-1">
-                        {branch.diagnosisSummary || 'Faktor telah dinilai, siap susun strategi perbaikan.'}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="relative z-10 text-xs text-slate-400 bg-slate-850/50 p-2.5 sm:p-3 rounded-xl border border-dashed border-slate-800 backdrop-blur-sm text-center">
-                      <span className="text-[11px] font-semibold text-slate-400">Belum ada diagnosa</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Parallel Full-Width Progress Bars (Neat, Balanced & Aligned) */}
-                <div className="relative z-10 space-y-2.5 pt-2.5 border-t border-slate-800/80">
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-slate-400 font-medium">Target Laba Harian</span>
-                      <span className="font-bold text-slate-200 font-mono">
-                        {latestPerf ? formatShortRupiah(latestPerf.salesActual) : '-'} <span className="text-slate-500 font-normal">/</span> {formatShortRupiah(branch.targetSalesPerDay)}{' '}
-                        <strong className={salesPct >= 100 ? 'text-emerald-400' : salesPct >= 80 ? 'text-amber-400' : 'text-rose-400'}>
-                          ({salesPct}%)
-                        </strong>
-                      </span>
-                    </div>
-                    <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          salesPct >= 100 ? 'bg-emerald-500' : salesPct >= 80 ? 'bg-amber-500' : 'bg-rose-500'
-                        }`}
-                        style={{ width: `${Math.min(salesPct, 100)}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-slate-400 font-medium">Eksekusi Action Plan</span>
-                      <span className="font-bold text-slate-200 font-mono">
-                        {completedTasks}/{totalTasks} Tugas{' '}
-                        <strong className="text-blue-400">({taskPct}%)</strong>
-                      </span>
-                    </div>
-                    <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-blue-500 rounded-full transition-all duration-500"
-                        style={{ width: `${taskPct}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {branches.map((branch) => (
+            <DashboardBranchCard
+              key={branch.id}
+              branch={branch}
+              performance={performance}
+              milestones={milestones}
+              onSelect={() => onSelectBranch(branch.id)}
+            />
+          ))}
         </div>
       </div>
     </div>

@@ -1,12 +1,5 @@
 import React from 'react';
-import { 
-  Branch, 
-  ActionPlanMilestone, 
-  FieldVisit, 
-  DailyPerformance, 
-  BranchGraduation, 
-  EscalationTicket 
-} from '../../types';
+import { Branch, ActionPlanMilestone, FieldVisit, DailyPerformance, BranchGraduation, EscalationTicket } from '../../types';
 import { UserAccount } from '../../types/auth';
 import { DashboardOverview } from '../dashboard/DashboardOverview';
 import { BranchList } from '../branch/BranchList';
@@ -37,22 +30,7 @@ interface MainContentRouterProps {
     graduations: BranchGraduation[];
     escalations: EscalationTicket[];
   };
-  handlers: {
-    loadData: () => void;
-    handleSaveBranch: (b: Branch) => Promise<void>;
-    handleDeleteBranch: (id: string) => Promise<void>;
-    handleSaveMilestone: (m: ActionPlanMilestone) => Promise<void>;
-    handleDeleteMilestone: (id: string) => Promise<void>;
-    handleSaveVisit: (v: FieldVisit) => Promise<void>;
-    handleDeleteVisit: (id: string) => Promise<void>;
-    handleAddPerformance: (p: DailyPerformance) => Promise<void>;
-    handleDeletePerformance: (id: string) => Promise<void>;
-    handleSaveGraduation: (g: BranchGraduation) => Promise<void>;
-    handleUpdateBranchStatus: (id: string, s: any) => Promise<void>;
-    handleSaveEscalation: (e: EscalationTicket) => Promise<void>;
-    handleDeleteEscalation: (id: string) => Promise<void>;
-    onOpenProfileModal: () => void;
-  };
+  handlers: any;
 }
 
 export const MainContentRouter: React.FC<MainContentRouterProps> = ({
@@ -68,10 +46,7 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
   data,
   handlers
 }) => {
-  const currentSelectedBranch = selectedBranchId 
-    ? data.branches.find(b => b.id === selectedBranchId) 
-    : null;
-
+  const currentSelectedBranch = selectedBranchId ? data.branches.find((b) => b.id === selectedBranchId) : null;
   const handleSelectBranch = (branchId: string) => {
     setSelectedBranchId(branchId);
     setActiveTab('branch_detail');
@@ -79,129 +54,25 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
 
   switch (activeTab) {
     case 'dashboard':
-      return (
-        <DashboardOverview
-          branches={data.branches}
-          visits={data.visits}
-          milestones={data.milestones}
-          performance={data.performance}
-          escalations={data.escalations}
-          onSelectBranch={handleSelectBranch}
-          setActiveTab={setActiveTab}
-          onNewVisit={() => {
-            setIsAddingVisit(true);
-            setActiveTab('fieldvisit');
-          }}
-          onNewBranch={() => {
-            setIsAddingBranch(true);
-            setActiveTab('branches');
-          }}
-        />
-      );
-
+      return <DashboardOverview branches={data.branches} visits={data.visits} milestones={data.milestones} performance={data.performance} escalations={data.escalations} onSelectBranch={handleSelectBranch} setActiveTab={setActiveTab} onNewVisit={() => { setIsAddingVisit(true); setActiveTab('fieldvisit'); }} onNewBranch={() => { setIsAddingBranch(true); setActiveTab('branches'); }} />;
     case 'branches':
-      return (
-        <BranchList
-          branches={data.branches}
-          onSelectBranch={handleSelectBranch}
-          onSaveBranch={handlers.handleSaveBranch}
-          onDeleteBranch={async (id) => {
-            await handlers.handleDeleteBranch(id);
-            if (selectedBranchId === id) setSelectedBranchId(null);
-          }}
-          isAddingNew={isAddingBranch}
-          onCloseNewModal={() => setIsAddingBranch(false)}
-        />
-      );
-
+      return <BranchList branches={data.branches} onSelectBranch={handleSelectBranch} onSaveBranch={handlers.handleSaveBranch} onDeleteBranch={async (id) => { await handlers.handleDeleteBranch(id); if (selectedBranchId === id) setSelectedBranchId(null); }} isAddingNew={isAddingBranch} onCloseNewModal={() => setIsAddingBranch(false)} />;
     case 'branch_detail':
-      return currentSelectedBranch ? (
-        <BranchDetailAndRCA
-          branch={currentSelectedBranch}
-          onBack={() => setActiveTab('branches')}
-          onSaveBranch={handlers.handleSaveBranch}
-          onNavigateToTab={setActiveTab}
-        />
-      ) : null;
-
+      return currentSelectedBranch ? <BranchDetailAndRCA branch={currentSelectedBranch} onBack={() => setActiveTab('branches')} onSaveBranch={handlers.handleSaveBranch} onNavigateToTab={setActiveTab} /> : null;
     case 'actionplan':
-      return (
-        <ActionPlanManager
-          branches={data.branches}
-          milestones={data.milestones}
-          performance={data.performance}
-          selectedBranchId={selectedBranchId || undefined}
-          onSaveMilestone={handlers.handleSaveMilestone}
-          onDeleteMilestone={handlers.handleDeleteMilestone}
-        />
-      );
-
+      return <ActionPlanManager branches={data.branches} milestones={data.milestones} performance={data.performance} selectedBranchId={selectedBranchId || undefined} onSaveMilestone={handlers.handleSaveMilestone} onDeleteMilestone={handlers.handleDeleteMilestone} />;
     case 'fieldvisit':
-      return (
-        <FieldVisitLog
-          branches={data.branches}
-          visits={data.visits}
-          selectedBranchId={selectedBranchId || undefined}
-          onSaveVisit={handlers.handleSaveVisit}
-          onDeleteVisit={handlers.handleDeleteVisit}
-          isOpenNewModal={isAddingVisit}
-          onCloseNewModal={() => setIsAddingVisit(false)}
-        />
-      );
-
+      return <FieldVisitLog branches={data.branches} visits={data.visits} selectedBranchId={selectedBranchId || undefined} onSaveVisit={handlers.handleSaveVisit} onDeleteVisit={handlers.handleDeleteVisit} isOpenNewModal={isAddingVisit} onCloseNewModal={() => setIsAddingVisit(false)} />;
     case 'performance':
-      return (
-        <PerformanceTracker
-          branches={data.branches}
-          performance={data.performance}
-          selectedBranchId={selectedBranchId || undefined}
-          onAddPerformance={handlers.handleAddPerformance}
-          onDeletePerformance={handlers.handleDeletePerformance}
-        />
-      );
-
+      return <PerformanceTracker branches={data.branches} performance={data.performance} selectedBranchId={selectedBranchId || undefined} onAddPerformance={handlers.handleAddPerformance} onDeletePerformance={handlers.handleDeletePerformance} />;
     case 'graduation':
-      return (
-        <GraduationTracker
-          branches={data.branches}
-          graduations={data.graduations}
-          onSaveGraduation={handlers.handleSaveGraduation}
-          onUpdateBranchStatus={handlers.handleUpdateBranchStatus}
-        />
-      );
-
+      return <GraduationTracker branches={data.branches} graduations={data.graduations} onSaveGraduation={handlers.handleSaveGraduation} onUpdateBranchStatus={handlers.handleUpdateBranchStatus} />;
     case 'reports':
-      return (
-        <ExecutiveReportGenerator
-          branches={data.branches}
-          visits={data.visits}
-          milestones={data.milestones}
-          performance={data.performance}
-          graduations={data.graduations}
-          escalations={data.escalations}
-          currentUser={currentUser}
-        />
-      );
-
+      return <ExecutiveReportGenerator branches={data.branches} visits={data.visits} milestones={data.milestones} performance={data.performance} graduations={data.graduations} escalations={data.escalations} currentUser={currentUser} />;
     case 'escalations':
-      return (
-        <EscalationManager
-          branches={data.branches}
-          escalations={data.escalations}
-          onSaveEscalation={handlers.handleSaveEscalation}
-          onDeleteEscalation={handlers.handleDeleteEscalation}
-        />
-      );
-
+      return <EscalationManager branches={data.branches} escalations={data.escalations} onSaveEscalation={handlers.handleSaveEscalation} onDeleteEscalation={handlers.handleDeleteEscalation} />;
     case 'settings':
-      return (
-        <SettingsAndData
-          currentUser={currentUser}
-          onDataChange={handlers.loadData}
-          onOpenProfileModal={handlers.onOpenProfileModal}
-        />
-      );
-
+      return <SettingsAndData currentUser={currentUser} onDataChange={handlers.loadData} onOpenProfileModal={handlers.onOpenProfileModal} />;
     default:
       return null;
   }

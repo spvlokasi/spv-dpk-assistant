@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
-import { Branch, RootCauseFactor, DiagnosisLog, DpkStatus } from '../../types';
-import { StorageService } from '../../services/storage';
-import { getSidogiriPresetFactors } from './rca/rcaPresets';
-import { generateGeminiDiagnosisAndStrategy } from '../../services/geminiService';
+import React from 'react';
+import { Branch } from '../../types';
 import { BranchHeaderProfile } from './rca/BranchHeaderProfile';
 import { BranchPeriodPicker } from './rca/BranchPeriodPicker';
 import { BranchFinancialTargets } from './rca/BranchFinancialTargets';
 import { RcaFactorSection } from './rca/RcaFactorSection';
 import { RcaHealthScoreCard } from './rca/RcaHealthScoreCard';
 import { RcaStrategyPlan } from './rca/RcaStrategyPlan';
+import { useBranchRca } from './rca/useBranchRca';
 
 interface BranchDetailAndRCAProps {
   branch: Branch;
@@ -19,200 +17,65 @@ interface BranchDetailAndRCAProps {
 
 export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
   branch,
-  onBack,
-  onSaveBranch,
-  onNavigateToTab
+  onSaveBranch
 }) => {
-  const getTodayStr = () => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  };
-
-  const todayStr = getTodayStr();
-
-  const getAutoStatus = (factors: RootCauseFactor[], currentStatus: DpkStatus): DpkStatus => {
-    if (currentStatus === 'lulus_dpk') return 'lulus_dpk';
-    if (!factors || factors.length === 0) return currentStatus;
-    const avg = factors.reduce((acc, curr) => acc + curr.score, 0) / factors.length;
-    if (avg <= 2.5) return 'kritis';
-    if (avg <= 3.8) return 'dalam_progres';
-    return 'siap_lulus';
-  };
-
-  const [data, setData] = useState<Branch>(() => {
-    const isOldDummyDate = branch.diagnosisStartDate === '2026-08-01' || branch.diagnosisStartDate === '2026-06-01';
-    const isOldDummyRootCauses = branch.rootCauses?.some(r => ['rc-1', 'rc-2', 'rc-3', 'rc-4', 'rc-21', 'rc-31'].includes(r.id));
-    const initialRootCauses = isOldDummyRootCauses ? [] : (branch.rootCauses || []);
-    return {
-      ...branch,
-      diagnosisStartDate: (!branch.diagnosisStartDate || isOldDummyDate) ? todayStr : branch.diagnosisStartDate,
-      diagnosisEndDate: (!branch.diagnosisEndDate || isOldDummyDate) ? todayStr : branch.diagnosisEndDate,
-      rootCauses: initialRootCauses,
-      status: getAutoStatus(initialRootCauses, branch.status)
-    };
-  });
-  const [isSaved, setIsSaved] = useState(false);
-  const [diagnosisLogs, setDiagnosisLogs] = useState<DiagnosisLog[]>(() => StorageService.getDiagnosisLogs(branch.id));
-
-  const addDefaultRcaFactor = (category: 'internal' | 'eksternal') => {
-    const newFactor: RootCauseFactor = {
-      id: `rc-${Date.now()}`,
-      category,
-      title: category === 'internal' ? 'Faktor Operasional Baru' : 'Faktor Lingkungan/Kompetitor Baru',
-      score: 3,
-      note: ''
-    };
-    const updated = [...data.rootCauses, newFactor];
-    setData({ ...data, rootCauses: updated, status: getAutoStatus(updated, data.status) });
-  };
-
-  const handleUpdateFactor = (id: string, field: keyof RootCauseFactor, value: any) => {
-    const updated = data.rootCauses.map(f => f.id === id ? { ...f, [field]: value } : f);
-    setData({ ...data, rootCauses: updated, status: getAutoStatus(updated, data.status) });
-  };
-
-  const handleDeleteFactor = (id: string) => {
-    const updated = data.rootCauses.filter(f => f.id !== id);
-    setData({ ...data, rootCauses: updated, status: getAutoStatus(updated, data.status) });
-  };
-
-  const handleLoadPreset = () => {
-    const preset = getSidogiriPresetFactors();
-    setData({ ...data, rootCauses: preset, status: getAutoStatus(preset, data.status) });
-  };
-
-  const handleAutoGenerateAnalysis = async () => {
-    const res = await generateGeminiDiagnosisAndStrategy(data);
-    setData({
-      ...data,
-      diagnosisSummary: res.diagnosisSummary,
-      recommendedStrategy: res.recommendedStrategy
-    });
-  };
-
-  const handleClearAnalysis = () => {
-    setData({
-      ...data,
-      diagnosisSummary: '',
-      recommendedStrategy: ''
-    });
-  };
-
-  const handleSave = async () => {
-    onSaveBranch(data);
-    if (data.diagnosisStartDate && data.diagnosisEndDate) {
-      await StorageService.saveDiagnosisLog({
-        id: `dlog-${data.id}-${data.diagnosisStartDate}-${data.diagnosisEndDate}`,
-        branchId: data.id,
-        periodStartDate: data.diagnosisStartDate,
-        periodEndDate: data.diagnosisEndDate,
-        category: data.category,
-        status: data.status,
-        urgencyLevel: data.urgencyLevel,
-        targetSalesPerDay: data.targetSalesPerDay,
-        targetMarginPct: data.targetMarginPct,
-        targetMaxOpexPerMonth: data.targetMaxOpexPerMonth,
-        rootCauses: data.rootCauses,
-        diagnosisSummary: data.diagnosisSummary,
-        recommendedStrategy: data.recommendedStrategy,
-        diagnosedBy: StorageService.getProfile().name,
-        createdAt: new Date().toISOString()
-      });
-      setDiagnosisLogs(StorageService.getDiagnosisLogs(data.id));
-    }
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2500);
-  };
-
-  const handleSelectHistoryLog = (logId: string) => {
-    const selected = diagnosisLogs.find(l => l.id === logId);
-    if (selected) {
-      setData({
-        ...data,
-        diagnosisStartDate: selected.periodStartDate,
-        diagnosisEndDate: selected.periodEndDate,
-        category: selected.category,
-        status: selected.status,
-        urgencyLevel: selected.urgencyLevel,
-        targetSalesPerDay: selected.targetSalesPerDay,
-        targetMarginPct: selected.targetMarginPct,
-        targetMaxOpexPerMonth: selected.targetMaxOpexPerMonth,
-        rootCauses: selected.rootCauses,
-        diagnosisSummary: selected.diagnosisSummary,
-        recommendedStrategy: selected.recommendedStrategy
-      });
-    }
-  };
-
-  const internalFactors = data.rootCauses.filter(f => f.category === 'internal');
-  const externalFactors = data.rootCauses.filter(f => f.category === 'eksternal');
-  const avgScore = data.rootCauses.length > 0
-    ? (data.rootCauses.reduce((acc, curr) => acc + curr.score, 0) / data.rootCauses.length).toFixed(1)
-    : '0';
+  const rca = useBranchRca(branch, onSaveBranch);
 
   return (
-    <div className="space-y-6">
-      {/* Header Profile Card with Embedded Actions */}
-      <div className="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-2xl shadow-xl space-y-4">
-        <BranchHeaderProfile
-          data={data}
-          isSaved={isSaved}
-          startDate={data.diagnosisStartDate || ''}
-          endDate={data.diagnosisEndDate || ''}
-          onChangeStartDate={(val) => setData({ ...data, diagnosisStartDate: val })}
-          onChangeEndDate={(val) => setData({ ...data, diagnosisEndDate: val })}
-          onResetDates={() => setData({ ...data, diagnosisStartDate: '', diagnosisEndDate: '' })}
-        />
+    <div className="space-y-6 max-w-5xl mx-auto pb-12">
+      <BranchHeaderProfile
+        data={rca.data}
+        isSaved={rca.isSaved}
+        startDate={rca.data.diagnosisStartDate || ''}
+        endDate={rca.data.diagnosisEndDate || ''}
+        onChangeStartDate={(val) => rca.setData({ ...rca.data, diagnosisStartDate: val })}
+        onChangeEndDate={(val) => rca.setData({ ...rca.data, diagnosisEndDate: val })}
+        onResetDates={() => rca.setData({ ...rca.data, diagnosisStartDate: '', diagnosisEndDate: '' })}
+      />
 
-        {/* History Logs Selector Bar */}
-        <BranchPeriodPicker
-          diagnosisLogs={diagnosisLogs}
-          onSelectHistoryLog={handleSelectHistoryLog}
-        />
+      <BranchPeriodPicker
+        diagnosisLogs={rca.diagnosisLogs}
+        onSelectHistoryLog={rca.handleSelectHistoryLog}
+      />
 
-        {/* Financial Targets 1-Row Summary Badge Bar */}
-        <BranchFinancialTargets
-          targetSalesPerDay={data.targetSalesPerDay}
-          targetMarginPct={data.targetMarginPct}
-          targetMaxOpexPerMonth={data.targetMaxOpexPerMonth}
+      <BranchFinancialTargets
+        targetSalesPerDay={rca.data.targetSalesPerDay}
+        targetMarginPct={rca.data.targetMarginPct}
+        targetMaxOpexPerMonth={rca.data.targetMaxOpexPerMonth}
+      />
+
+      {/* 2-Column RCA Factor Sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <RcaFactorSection
+          category="internal"
+          factors={rca.internalFactors}
+          onAddFactor={() => rca.addDefaultRcaFactor('internal')}
+          onUpdateFactor={rca.handleUpdateFactor}
+          onDeleteFactor={rca.handleRemoveFactor}
+          onLoadPreset={rca.handleApplyPreset}
+        />
+        <RcaFactorSection
+          category="eksternal"
+          factors={rca.eksternalFactors}
+          onAddFactor={() => rca.addDefaultRcaFactor('eksternal')}
+          onUpdateFactor={rca.handleUpdateFactor}
+          onDeleteFactor={rca.handleRemoveFactor}
+          onSaveDiagnosa={rca.handleSave}
         />
       </div>
 
-      {/* Main Grid: RCA Analysis & Strategy Plan */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Root Cause Factors (Internal & External) */}
-        <div className="lg:col-span-2 space-y-6">
-          <RcaFactorSection
-            category="internal"
-            factors={internalFactors}
-            onAddFactor={() => addDefaultRcaFactor('internal')}
-            onUpdateFactor={handleUpdateFactor}
-            onDeleteFactor={handleDeleteFactor}
-            onLoadPreset={handleLoadPreset}
-          />
-          <RcaFactorSection
-            category="eksternal"
-            factors={externalFactors}
-            onAddFactor={() => addDefaultRcaFactor('eksternal')}
-            onUpdateFactor={handleUpdateFactor}
-            onDeleteFactor={handleDeleteFactor}
-            onSaveDiagnosa={handleSave}
-          />
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+        <div className="md:col-span-4">
+          <RcaHealthScoreCard avgScore={rca.avgScore} status={rca.data.status} />
         </div>
-
-        {/* Right Col: Summary, Health Score & Strategy Plan */}
-        <div className="space-y-6">
-          <RcaHealthScoreCard
-            avgScore={avgScore}
-            status={data.status}
-          />
+        <div className="md:col-span-8">
           <RcaStrategyPlan
-            diagnosisSummary={data.diagnosisSummary}
-            recommendedStrategy={data.recommendedStrategy}
-            onChangeSummary={(val) => setData({ ...data, diagnosisSummary: val })}
-            onChangeStrategy={(val) => setData({ ...data, recommendedStrategy: val })}
-            onGenerateAnalysis={handleAutoGenerateAnalysis}
-            onClearAnalysis={handleClearAnalysis}
+            diagnosisSummary={rca.data.diagnosisSummary}
+            recommendedStrategy={rca.data.recommendedStrategy}
+            onChangeSummary={(val) => rca.setData({ ...rca.data, diagnosisSummary: val })}
+            onChangeStrategy={(val) => rca.setData({ ...rca.data, recommendedStrategy: val })}
+            onGenerateAnalysis={rca.handleGenerateAISummary}
+            onClearAnalysis={rca.handleClearAnalysis}
           />
         </div>
       </div>
