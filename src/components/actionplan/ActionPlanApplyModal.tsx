@@ -71,7 +71,7 @@ export const ActionPlanApplyModal: React.FC<ActionPlanApplyModalProps> = ({
           </div>
 
           <div className="pt-2 border-t border-slate-800">
-            <span className="text-slate-400 text-[10px] block mb-1">Akar Masalah Terdeteksi dari RCA:</span>
+            <span className="text-slate-400 text-[10px] block mb-1">Akar Masalah Terdeteksi:</span>
             <div className="flex items-center gap-1.5 flex-wrap">
               {detectedIssues.map((issue, idx) => (
                 <span

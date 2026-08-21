@@ -79,7 +79,7 @@ export const ActionPlanLeftSidebar: React.FC<ActionPlanLeftSidebarProps> = ({
         <div className="space-y-1.5">
           <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
             <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
-            <span>Akar Masalah Terdeteksi (RCA)</span>
+            <span>Akar Masalah Terdeteksi</span>
           </div>
 
           {issueKeywords.length > 0 ? (
@@ -94,7 +94,7 @@ export const ActionPlanLeftSidebar: React.FC<ActionPlanLeftSidebarProps> = ({
               ))}
             </div>
           ) : (
-            <p className="text-[11px] text-slate-500 italic">Belum ada penilaian faktor kritis di RCA</p>
+            <p className="text-[11px] text-slate-500 italic">Belum ada penilaian faktor</p>
           )}
         </div>
 
