@@ -85,7 +85,7 @@ export const BranchCard: React.FC<BranchCardProps> = ({
           </div>
         ) : (
           <div className="p-3 rounded-xl bg-slate-850/50 border border-dashed border-slate-800 backdrop-blur-sm space-y-1 mb-4 text-center">
-            <div className="text-[11px] font-semibold text-slate-400">Belum ada diagnosa RCA</div>
+            <div className="text-[11px] font-semibold text-slate-400">Belum ada diagnosa</div>
             <p className="text-[10px] text-slate-500">Klik kartu untuk mulai audit lapangan</p>
           </div>
         )}
