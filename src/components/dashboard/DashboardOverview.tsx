@@ -141,10 +141,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <StatusBadge status={branch.status} />
-                    <UrgencyBadge urgency={branch.urgencyLevel} />
-                  </div>
+                  <StatusBadge status={branch.status} />
                 </div>
 
                 <div className="relative z-10 text-xs text-slate-300 bg-slate-850/85 p-3 rounded-xl border border-slate-800/90 backdrop-blur-sm">

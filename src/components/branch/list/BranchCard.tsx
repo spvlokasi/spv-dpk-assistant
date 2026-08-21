@@ -97,12 +97,9 @@ export const BranchCard: React.FC<BranchCardProps> = ({
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
-            <UrgencyBadge urgency={branch.urgencyLevel} />
             <span className="text-xs font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">
               Detail →
             </span>
-          </div>
         </div>
       </div>
     </div>
