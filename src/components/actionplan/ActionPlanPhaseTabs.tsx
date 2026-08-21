@@ -14,18 +14,20 @@ export const ActionPlanPhaseTabs: React.FC<ActionPlanPhaseTabsProps> = ({
   onSelectPhase
 }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full text-xs">
       <button
         type="button"
         onClick={() => onSelectPhase('all')}
-        className={`p-3 rounded-2xl border text-left transition-all ${
+        className={`px-3 py-1.5 rounded-xl border text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
           selectedPhase === 'all'
-            ? 'bg-slate-800 border-emerald-500/80 shadow-md ring-1 ring-emerald-500/50'
-            : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+            ? 'bg-emerald-600/20 text-emerald-300 border-emerald-500/50 shadow-sm'
+            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
         }`}
       >
-        <div className="text-[11px] font-bold text-slate-200">Semua Roadmap</div>
-        <div className="text-[10px] text-slate-400 mt-0.5">Total {allMilestones.length} Milestone Aksi</div>
+        <span>Semua Fase</span>
+        <span className="px-1.5 py-0.2 rounded-md bg-slate-800 text-[10px] font-mono">
+          {allMilestones.length}
+        </span>
       </button>
 
       {SOP_PHASES.map((phase) => {
@@ -37,20 +39,16 @@ export const ActionPlanPhaseTabs: React.FC<ActionPlanPhaseTabsProps> = ({
             key={phase.id}
             type="button"
             onClick={() => onSelectPhase(phase.id)}
-            className={`p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
+            className={`px-3 py-1.5 rounded-xl border text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
               isSelected
-                ? 'bg-slate-800 border-emerald-500/80 shadow-md ring-1 ring-emerald-500/50'
-                : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+                ? 'bg-emerald-600/20 text-emerald-300 border-emerald-500/50 shadow-sm'
+                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
-            <div className="flex items-center justify-between gap-1">
-              <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${phase.badgeColor}`}>
-                {phase.title.split(':')[0]}
-              </span>
-              <span className="text-[10px] font-bold text-slate-400 font-mono">{count} Aksi</span>
-            </div>
-            <div className="text-xs font-bold text-slate-200 mt-1 truncate">{phase.subtitle}</div>
-            <div className="text-[10px] text-slate-400 mt-0.5 truncate">{phase.duration}</div>
+            <span>{phase.title}</span>
+            <span className="px-1.5 py-0.2 rounded-md bg-slate-800 text-[10px] font-mono">
+              {count}
+            </span>
           </button>
         );
       })}

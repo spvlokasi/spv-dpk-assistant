@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Branch, ActionPlanMilestone, DailyPerformance, TurnaroundPhase } from '../../types';
 import { generateSmartActionPlan } from '../../services/smartActionPlanGenerator';
 import { ActionPlanHeader } from './ActionPlanHeader';
+import { ActionPlanLeftSidebar } from './ActionPlanLeftSidebar';
 import { ActionPlanPhaseTabs } from './ActionPlanPhaseTabs';
 import { ActionPlanMilestoneCard } from './ActionPlanMilestoneCard';
 import { ActionPlanApplyModal } from './ActionPlanApplyModal';
@@ -96,53 +97,69 @@ export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
 
   return (
     <div className="space-y-5">
-      {/* Top Toolbar: Branch Picker, Smart Generate, Add Milestone */}
+      {/* Top Header Row */}
       <ActionPlanHeader
         branches={branches}
         activeBranchId={activeBranchId}
         onSelectBranch={setActiveBranchId}
-        onOpenSmartModal={() => setShowSmartModal(true)}
-        onAddNewMilestone={handleAddNewMilestone}
       />
 
-      {/* 180-Day Phase Tabs */}
-      <ActionPlanPhaseTabs
-        allMilestones={allBranchMilestones}
-        selectedPhase={selectedPhase}
-        onSelectPhase={setSelectedPhase}
-      />
-
-      {/* Milestones List */}
-      <div className="space-y-3.5">
-        {filteredMilestones.length === 0 ? (
-          <div className="bg-slate-900 border border-dashed border-slate-800 rounded-2xl p-8 sm:p-12 text-center space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl mx-auto">
-              📋
-            </div>
-            <h4 className="text-sm font-bold text-slate-300">Belum Ada Program Aksi</h4>
-            <p className="text-xs text-slate-500 max-w-md mx-auto">
-              Klik <strong className="text-emerald-400">"Aksi Cerdas ✨"</strong> untuk menyusun roadmap otomatis berdasarkan data diagnosa RCA & target kinerja toko ini.
-            </p>
-            <button
-              type="button"
-              onClick={() => setShowSmartModal(true)}
-              className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-md active:scale-95"
-            >
-              Generate Aksi Cerdas Sekarang ✨
-            </button>
-          </div>
-        ) : (
-          filteredMilestones.map((milestone) => (
-            <ActionPlanMilestoneCard
-              key={milestone.id}
-              milestone={milestone}
-              isExpanded={expandedMilestones[milestone.id] ?? true}
-              onToggleExpand={() => toggleExpand(milestone.id)}
-              onDeleteMilestone={() => onDeleteMilestone(milestone.id)}
-              onUpdateMilestone={onSaveMilestone}
+      {/* 2-Column Split Screen Layout (Pilihan 1) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column (Sticky Diagnosa & Target Sidebar) */}
+        {currentBranch && (
+          <div className="lg:col-span-4 lg:sticky lg:top-4">
+            <ActionPlanLeftSidebar
+              branch={currentBranch}
+              milestones={allBranchMilestones}
+              onOpenSmartModal={() => setShowSmartModal(true)}
+              onAddNewMilestone={handleAddNewMilestone}
             />
-          ))
+          </div>
         )}
+
+        {/* Right Column (Phase Pills & Checklist Tasks) */}
+        <div className={`space-y-4 ${currentBranch ? 'lg:col-span-8' : 'lg:col-span-12'}`}>
+          {/* Phase Filter Tabs (Pill Buttons) */}
+          <ActionPlanPhaseTabs
+            allMilestones={allBranchMilestones}
+            selectedPhase={selectedPhase}
+            onSelectPhase={setSelectedPhase}
+          />
+
+          {/* Milestones List */}
+          <div className="space-y-3.5">
+            {filteredMilestones.length === 0 ? (
+              <div className="bg-slate-900 border border-dashed border-slate-800 rounded-2xl p-8 sm:p-12 text-center space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-xl mx-auto">
+                  📋
+                </div>
+                <h4 className="text-sm font-bold text-slate-300">Belum Ada Program Aksi</h4>
+                <p className="text-xs text-slate-500 max-w-md mx-auto">
+                  Klik <strong className="text-emerald-400">"Generate Aksi Cerdas ✨"</strong> di samping kiri untuk memuat roadmap otomatis sesuai diagnosa toko ini.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowSmartModal(true)}
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-md active:scale-95"
+                >
+                  Generate Aksi Cerdas Sekarang ✨
+                </button>
+              </div>
+            ) : (
+              filteredMilestones.map((milestone) => (
+                <ActionPlanMilestoneCard
+                  key={milestone.id}
+                  milestone={milestone}
+                  isExpanded={expandedMilestones[milestone.id] ?? true}
+                  onToggleExpand={() => toggleExpand(milestone.id)}
+                  onDeleteMilestone={() => onDeleteMilestone(milestone.id)}
+                  onUpdateMilestone={onSaveMilestone}
+                />
+              ))
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Smart Contextual Generation Confirmation Modal */}
