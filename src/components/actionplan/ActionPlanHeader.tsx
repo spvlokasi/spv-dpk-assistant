@@ -18,7 +18,7 @@ export const ActionPlanHeader: React.FC<ActionPlanHeaderProps> = ({
       <div className="flex items-center gap-2">
         <Target className="w-5 h-5 text-emerald-400 flex-shrink-0" />
         <h2 className="text-sm sm:text-base font-bold text-white tracking-tight">
-          Program Aksi Perbaikan (180 Hari)
+          Program Aksi Perbaikan
         </h2>
       </div>
 
