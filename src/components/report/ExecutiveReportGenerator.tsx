@@ -221,7 +221,7 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
               const healthScore = calculateHealthScore(branch.rootCauses);
 
               const internalFactors = branch.rootCauses ? branch.rootCauses.filter((f) => f.category === 'internal') : [];
-              const externalFactors = branch.rootCauses ? branch.rootCauses.filter((f) => f.category === 'external') : [];
+              const externalFactors = branch.rootCauses ? branch.rootCauses.filter((f) => f.category === 'eksternal') : [];
 
               return (
                 <div key={branch.id} className="p-5 border border-slate-300 rounded-xl space-y-4 bg-slate-50/60 break-inside-avoid">
