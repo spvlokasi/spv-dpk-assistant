@@ -33,7 +33,7 @@ export const FieldVisitHeader: React.FC<FieldVisitHeaderProps> = ({
           onChange={(e) => onFilterChange(e.target.value)}
           className="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-3 py-2 focus:border-emerald-500 focus:outline-none cursor-pointer max-w-[200px] truncate"
         >
-          <option value="all">Semua Cabang Binaan</option>
+          <option value="all">Semua Cabang</option>
           {branches.map((b) => (
             <option key={b.id} value={b.id}>
               [{b.code}] {b.name}
@@ -68,7 +68,7 @@ export const FieldVisitHeader: React.FC<FieldVisitHeaderProps> = ({
         className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md shadow-emerald-950 transition-all active:scale-95 flex-shrink-0"
       >
         <Plus className="w-4 h-4" />
-        <span>+ Catat Kunjungan</span>
+        <span>Kunjungan</span>
       </button>
     </div>
   );
