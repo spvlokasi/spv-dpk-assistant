@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, CheckCircle2 } from 'lucide-react';
 import { DailyPerformance, Branch } from '../../types';
+import { useToast } from '../../context/ToastContext';
 
 interface PerformanceInputModalProps {
   branch?: Branch;
@@ -13,12 +14,11 @@ export const PerformanceInputModal: React.FC<PerformanceInputModalProps> = ({
   onSave,
   onClose
 }) => {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     date: new Date().toISOString().slice(0, 10),
     salesActual: branch?.targetSalesPerDay ? Math.round(branch.targetSalesPerDay * 0.9) : 1500000,
     salesTarget: branch?.targetSalesPerDay || 1500000,
-    marginPct: branch?.targetMarginPct || 15.0,
-    opex: 700000,
     trafficCount: 250,
     basketSize: 35000,
     notes: ''
@@ -34,14 +34,15 @@ export const PerformanceInputModal: React.FC<PerformanceInputModalProps> = ({
       date: formData.date,
       salesActual: Number(formData.salesActual) || 0,
       salesTarget: Number(formData.salesTarget) || branch.targetSalesPerDay,
-      marginPct: Number(formData.marginPct) || 15,
-      opex: Number(formData.opex) || 0,
+      marginPct: 15,
+      opex: 0,
       trafficCount: Number(formData.trafficCount) || 0,
       basketSize: Number(formData.basketSize) || 0,
       notes: formData.notes.trim()
     };
 
     onSave(entry);
+    showToast('Data kinerja harian cabang berhasil disimpan!', 'success');
     onClose();
   };
 
@@ -85,29 +86,7 @@ export const PerformanceInputModal: React.FC<PerformanceInputModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Margin Aktual (%):</label>
-              <input
-                type="number"
-                step="0.1"
-                value={formData.marginPct}
-                onChange={(e) => setFormData({ ...formData, marginPct: Number(e.target.value) })}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-blue-400 font-mono font-bold focus:outline-none focus:border-emerald-500"
-              />
-            </div>
-            <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Beban Harian / Opex (Rp):</label>
-              <input
-                type="number"
-                value={formData.opex}
-                onChange={(e) => setFormData({ ...formData, opex: Number(e.target.value) })}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Jumlah Struk (Traffic):</label>
+              <label className="block text-slate-400 mb-1 font-semibold">STD (Struk Transaksi / Hari):</label>
               <input
                 type="number"
                 value={formData.trafficCount}
@@ -116,12 +95,12 @@ export const PerformanceInputModal: React.FC<PerformanceInputModalProps> = ({
               />
             </div>
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Basket Size (Rp/Struk):</label>
+              <label className="block text-slate-400 mb-1 font-semibold">APC (Rupiah / Struk):</label>
               <input
                 type="number"
                 value={formData.basketSize}
                 onChange={(e) => setFormData({ ...formData, basketSize: Number(e.target.value) })}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-purple-400 font-mono focus:outline-none focus:border-emerald-500"
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-purple-400 font-mono font-bold focus:outline-none focus:border-emerald-500"
               />
             </div>
           </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, DollarSign, Percent, Users, ShoppingCart } from 'lucide-react';
+import { Plus, DollarSign, Users, ShoppingCart } from 'lucide-react';
 import { Branch } from '../../types';
 import { formatRupiah, formatShortRupiah } from '../../utils/formatters';
 
@@ -20,7 +20,6 @@ export const PerformanceHeaderBar: React.FC<PerformanceHeaderBarProps> = ({
   activeBranchId,
   onSelectBranch,
   avgSales,
-  avgMargin,
   totalTraffic,
   avgBasket,
   targetSalesPerDay,
@@ -54,14 +53,14 @@ export const PerformanceHeaderBar: React.FC<PerformanceHeaderBarProps> = ({
         </button>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {/* KPI Cards Grid (Laba, STD, APC) */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-1 shadow-lg">
           <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
             <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
             Rata-rata Laba / Hari:
           </span>
-          <div className="text-base sm:text-lg font-bold font-mono text-white truncate">
+          <div className="text-base sm:text-lg font-bold font-mono text-emerald-400 truncate">
             {formatRupiah(avgSales)}
           </div>
           <span className="text-[10px] text-slate-500 block">
@@ -71,35 +70,26 @@ export const PerformanceHeaderBar: React.FC<PerformanceHeaderBarProps> = ({
 
         <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-1 shadow-lg">
           <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
-            <Percent className="w-3.5 h-3.5 text-blue-400" />
-            Rata-rata Margin:
+            <Users className="w-3.5 h-3.5 text-blue-400" />
+            Rata-rata STD (Struk / Hari):
           </span>
           <div className="text-base sm:text-lg font-bold font-mono text-blue-400">
-            {avgMargin}%
+            {totalTraffic > 0 ? Math.round(totalTraffic / (branches.length || 1)) : 0} Struk
           </div>
-          <span className="text-[10px] text-slate-500 block">Target Min: 15%</span>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-1 shadow-lg">
-          <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
-            <Users className="w-3.5 h-3.5 text-amber-400" />
-            Total Pengunjung:
+          <span className="text-[10px] text-slate-500 block">
+            Total Akumulasi: {totalTraffic.toLocaleString('id-ID')} Struk
           </span>
-          <div className="text-base sm:text-lg font-bold font-mono text-amber-400">
-            {totalTraffic.toLocaleString('id-ID')} Struk
-          </div>
-          <span className="text-[10px] text-slate-500 block">Akumulasi Struk</span>
         </div>
 
         <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-1 shadow-lg">
           <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
             <ShoppingCart className="w-3.5 h-3.5 text-purple-400" />
-            Rata-rata Basket Size:
+            Rata-rata APC (Rupiah / Struk):
           </span>
           <div className="text-base sm:text-lg font-bold font-mono text-purple-400 truncate">
             {formatRupiah(avgBasket)}
           </div>
-          <span className="text-[10px] text-slate-500 block">Nilai per Struk</span>
+          <span className="text-[10px] text-slate-500 block">Rata-rata Belanja Pelanggan</span>
         </div>
       </div>
     </div>

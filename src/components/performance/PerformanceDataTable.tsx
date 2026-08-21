@@ -28,10 +28,8 @@ export const PerformanceDataTable: React.FC<PerformanceDataTableProps> = ({
               <th className="p-3">Tanggal</th>
               <th className="p-3 text-right">Laba Aktual</th>
               <th className="p-3 text-right">Target Laba</th>
-              <th className="p-3 text-right">Margin %</th>
-              <th className="p-3 text-right">Opex / Beban</th>
-              <th className="p-3 text-right">Pengunjung</th>
-              <th className="p-3 text-right">Basket Size</th>
+              <th className="p-3 text-right">STD</th>
+              <th className="p-3 text-right">APC</th>
               <th className="p-3">Catatan</th>
               <th className="p-3 text-center">Aksi</th>
             </tr>
@@ -50,19 +48,13 @@ export const PerformanceDataTable: React.FC<PerformanceDataTableProps> = ({
                   <td className="p-3 text-right font-mono text-slate-400">
                     {formatRupiah(p.salesTarget || targetSalesPerDay)}
                   </td>
-                  <td className="p-3 text-right font-mono font-bold text-blue-400">
-                    {p.marginPct}%
-                  </td>
-                  <td className="p-3 text-right font-mono text-slate-400">
-                    {formatRupiah(p.opex)}
-                  </td>
                   <td className="p-3 text-right font-mono text-slate-200">
                     {p.trafficCount} Struk
                   </td>
-                  <td className="p-3 text-right font-mono text-purple-400">
+                  <td className="p-3 text-right font-mono text-purple-400 font-bold">
                     {formatRupiah(p.basketSize)}
                   </td>
-                  <td className="p-3 text-slate-400 max-w-[180px] truncate">
+                  <td className="p-3 text-slate-400 max-w-[220px] truncate">
                     {p.notes || '-'}
                   </td>
                   <td className="p-3 text-center">
