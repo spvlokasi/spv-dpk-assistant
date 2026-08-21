@@ -42,9 +42,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'actionplan',
-      label: 'Program Aksi Perbaikan',
+      label: 'Aksi Perbaikan',
       icon: Target,
-      desc: 'Target & milestone mingguan'
+      desc: ''
     },
     {
       id: 'fieldvisit',

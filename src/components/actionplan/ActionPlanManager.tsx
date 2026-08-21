@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Branch, ActionPlanMilestone, DailyPerformance, TurnaroundPhase } from '../../types';
 import { generateGeminiActionPlan } from '../../services/geminiService';
-import { ActionPlanHeader } from './ActionPlanHeader';
 import { ActionPlanLeftSidebar } from './ActionPlanLeftSidebar';
 import { ActionPlanPhaseTabs } from './ActionPlanPhaseTabs';
 import { ActionPlanMilestoneCard } from './ActionPlanMilestoneCard';
@@ -96,15 +95,8 @@ export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
   };
 
   return (
-    <div className="space-y-5">
-      {/* Top Header Row */}
-      <ActionPlanHeader
-        branches={branches}
-        activeBranchId={activeBranchId}
-        onSelectBranch={setActiveBranchId}
-      />
-
-      {/* 2-Column Split Screen Layout (Pilihan 1) */}
+    <div className="space-y-4">
+      {/* 2-Column Split Screen Layout (Box Masalah & Fase/Pilih Cabang Sejajar Rapi) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column (Sticky Diagnosa & Target Sidebar) */}
         {currentBranch && (
@@ -118,10 +110,13 @@ export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
           </div>
         )}
 
-        {/* Right Column (Phase Pills & Checklist Tasks) */}
-        <div className={`space-y-4 ${currentBranch ? 'lg:col-span-8' : 'lg:col-span-12'}`}>
-          {/* Phase Filter Tabs (Pill Buttons) */}
+        {/* Right Column (Phase Pills, Branch Selector & Checklist Tasks) */}
+        <div className={`space-y-3.5 ${currentBranch ? 'lg:col-span-8' : 'lg:col-span-12'}`}>
+          {/* Phase Filter Tabs & Branch Selector in 1 Parallel Row */}
           <ActionPlanPhaseTabs
+            branches={branches}
+            activeBranchId={activeBranchId}
+            onSelectBranch={setActiveBranchId}
             allMilestones={allBranchMilestones}
             selectedPhase={selectedPhase}
             onSelectPhase={setSelectedPhase}
