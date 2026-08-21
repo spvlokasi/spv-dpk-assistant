@@ -50,8 +50,7 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
         <div className="border-b-2 border-slate-900 pb-3 print:pb-2">
           <div className="flex justify-between items-start">
             <div>
-              <div className="text-[11px] font-black text-emerald-800 tracking-widest uppercase mb-0.5">PT. SIDOGIRI MITRA UTAMA — TOKOBASMALAH</div>
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 uppercase print:text-lg">Laporan Transformasi 180 Hari Penanganan Cabang DPK</h1>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 uppercase print:text-lg">Laporan Cabang DPK</h1>
               <p className="text-xs font-bold text-slate-700 mt-0.5 uppercase tracking-wider print:text-[11px]">Departemen Bisnis & Marketing — {authorRole}</p>
             </div>
             <div className="text-right text-xs text-slate-600 print:text-[11px]">
