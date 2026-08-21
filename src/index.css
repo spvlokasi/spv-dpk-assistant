@@ -25,6 +25,11 @@
 }
 
 /* Print styling */
+@page {
+  size: A4;
+  margin: 12mm 10mm 15mm 10mm;
+}
+
 @media print {
   body {
     background: white !important;
@@ -38,5 +43,9 @@
   }
   .print-break-inside {
     break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  table, tr, td, th {
+    page-break-inside: avoid;
   }
 }
