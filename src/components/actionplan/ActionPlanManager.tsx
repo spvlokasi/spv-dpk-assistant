@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Branch, ActionPlanMilestone, DailyPerformance, TurnaroundPhase } from '../../types';
-import { generateSmartActionPlan } from '../../services/smartActionPlanGenerator';
+import { generateGeminiActionPlan } from '../../services/geminiService';
 import { ActionPlanHeader } from './ActionPlanHeader';
 import { ActionPlanLeftSidebar } from './ActionPlanLeftSidebar';
 import { ActionPlanPhaseTabs } from './ActionPlanPhaseTabs';
@@ -49,9 +49,9 @@ export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
     }));
   };
 
-  const handleApplySmartPlan = () => {
+  const handleApplySmartPlan = async () => {
     if (!currentBranch) return;
-    const smartMilestones = generateSmartActionPlan(currentBranch, performance);
+    const smartMilestones = await generateGeminiActionPlan(currentBranch, performance);
     smartMilestones.forEach((m) => {
       onSaveMilestone(m);
     });

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Branch, RootCauseFactor, DiagnosisLog, DpkStatus } from '../../types';
 import { StorageService } from '../../services/storage';
 import { getSidogiriPresetFactors } from './rca/rcaPresets';
-import { generateSmartRetailAnalysis } from './rca/strategyKnowledgeBank';
+import { generateGeminiDiagnosisAndStrategy } from '../../services/geminiService';
 import { BranchHeaderProfile } from './rca/BranchHeaderProfile';
 import { BranchPeriodPicker } from './rca/BranchPeriodPicker';
 import { BranchFinancialTargets } from './rca/BranchFinancialTargets';
@@ -81,12 +81,12 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
     setData({ ...data, rootCauses: preset, status: getAutoStatus(preset, data.status) });
   };
 
-  const handleAutoGenerateAnalysis = () => {
-    const res = generateSmartRetailAnalysis(data.name, data.rootCauses);
+  const handleAutoGenerateAnalysis = async () => {
+    const res = await generateGeminiDiagnosisAndStrategy(data);
     setData({
       ...data,
-      diagnosisSummary: res.summary,
-      recommendedStrategy: res.strategy
+      diagnosisSummary: res.diagnosisSummary,
+      recommendedStrategy: res.recommendedStrategy
     });
   };
 
