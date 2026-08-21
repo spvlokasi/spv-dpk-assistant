@@ -73,9 +73,25 @@ export const BranchIdentityFields: React.FC<BranchIdentityFieldsProps> = ({
           <input type="text" required value={formData.kepalaToko || ''} onChange={(e) => onFormDataChange({ ...formData, kepalaToko: e.target.value })} placeholder="Nama KTB" className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500" />
         </div>
         <div>
-          <label className="block text-slate-400 mb-1 font-semibold">No. HP / WhatsApp KTB:</label>
-          <input type="text" value={formData.phone || ''} onChange={(e) => onFormDataChange({ ...formData, phone: e.target.value })} placeholder="0812xxxx" className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 font-mono" />
+          <label className="block text-slate-400 mb-1 font-semibold">SPV Area (Wilayah):</label>
+          <input type="text" value={formData.spvArea || ''} onChange={(e) => onFormDataChange({ ...formData, spvArea: e.target.value })} placeholder="Nama SPV Area" className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500" />
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label className="block text-slate-400 mb-1 font-semibold">📅 Tanggal Masuk DPK:</label>
+          <input type="date" required value={formData.entryDate || ''} onChange={(e) => onFormDataChange({ ...formData, entryDate: e.target.value })} className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label className="block text-slate-400 mb-1 font-semibold">Target Tanggal Lulus:</label>
+          <input type="date" value={formData.targetGraduationDate || ''} onChange={(e) => onFormDataChange({ ...formData, targetGraduationDate: e.target.value })} className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500" />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-slate-400 mb-1 font-semibold">Alamat Lengkap Cabang:</label>
+        <input type="text" value={formData.address || ''} onChange={(e) => onFormDataChange({ ...formData, address: e.target.value })} placeholder="Jalan, RT/RW, Kecamatan..." className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500" />
       </div>
     </div>
   );

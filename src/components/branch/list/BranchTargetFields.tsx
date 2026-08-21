@@ -14,17 +14,19 @@ export const BranchTargetFields: React.FC<BranchTargetFieldsProps> = ({
     <div className="space-y-3 text-xs">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block text-slate-400 mb-1 font-semibold">Status Cabang:</label>
+          <label className="block text-slate-400 mb-1 font-semibold">Status Progres DPK:</label>
           <select
             value={formData.status || 'kritis'}
             onChange={(e) => onFormDataChange({ ...formData, status: e.target.value as DpkStatus })}
             className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 font-semibold"
           >
-            <option value="kritis">🚨 Kritis (Intervensi Khusus)</option>
-            <option value="akut">⚠️ Akut (Tahap Awal)</option>
-            <option value="dalam_progres">🔄 Dalam Progres Turnaround</option>
-            <option value="siap_lulus">🎓 Siap Sidang Kelulusan</option>
-            <option value="lulus_dpk">✅ Lulus Mandiri</option>
+            <option value="akut">🔴 Akut (Penanganan Darurat)</option>
+            <option value="kritis">🔴 Kritis (Intervensi Khusus)</option>
+            <option value="dalam_progres">🟡 Dalam Progres (Pendampingan)</option>
+            <option value="existing">🏢 Existing (Pemantauan Rutin)</option>
+            <option value="cabang_baru">🆕 Cabang Baru (Masa Adaptasi)</option>
+            <option value="siap_lulus">🟢 Siap Lulus (Hasil Membaik)</option>
+            <option value="lulus_dpk">🎓 Lulus DPK (Turnaround Berhasil)</option>
           </select>
         </div>
 
@@ -46,7 +48,7 @@ export const BranchTargetFields: React.FC<BranchTargetFieldsProps> = ({
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div>
-          <label className="block text-slate-400 mb-1 font-semibold">Target Laba Harian (Rp):</label>
+          <label className="block text-slate-400 mb-1 font-semibold">Target Laba Bersih (Rp/hari):</label>
           <input
             type="number"
             required
@@ -68,7 +70,7 @@ export const BranchTargetFields: React.FC<BranchTargetFieldsProps> = ({
         </div>
 
         <div>
-          <label className="block text-slate-400 mb-1 font-semibold">Batas Opex / Bulan (Rp):</label>
+          <label className="block text-slate-400 mb-1 font-semibold">Target Biaya Maks (Rp/bln):</label>
           <input
             type="number"
             value={formData.targetMaxOpexPerMonth || 20000000}
