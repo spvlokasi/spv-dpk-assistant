@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { Cloud, CheckCircle2, RefreshCw, ChevronDown, ChevronUp, Link as LinkIcon, Key } from 'lucide-react';
 import { SupabaseService } from '../../services/supabase';
+import { useToast } from '../../context/ToastContext';
 
 interface SettingsSyncStatusProps {
   isCloudConnected: boolean;
   onSync: () => void;
   isSyncing: boolean;
-  onShowToast: (msg: string) => void;
 }
 
 export const SettingsSyncStatus: React.FC<SettingsSyncStatusProps> = ({
   isCloudConnected,
   onSync,
-  isSyncing,
-  onShowToast
+  isSyncing
 }) => {
+  const { showToast } = useToast();
   const creds = SupabaseService.getCredentials();
   const [supabaseUrl, setSupabaseUrl] = useState(creds.supabaseUrl);
   const [supabaseKey, setSupabaseKey] = useState(creds.supabaseAnonKey);
@@ -30,7 +30,9 @@ export const SettingsSyncStatus: React.FC<SettingsSyncStatusProps> = ({
     setIsTesting(false);
     setCloudStatusMsg(res.message);
     if (res.success) {
-      onShowToast('Koneksi Supabase Aktif & Tersimpan!');
+      showToast('Koneksi Supabase Aktif & Tersimpan!', 'success');
+    } else {
+      showToast('Gagal terhubung ke Supabase. Periksa URL & Anon Key', 'error');
     }
   };
 

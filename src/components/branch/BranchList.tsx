@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Branch, DpkCategory, DpkStatus } from '../../types';
+import { useToast } from '../../context/ToastContext';
 import { BranchSearchBar } from './list/BranchSearchBar';
 import { BranchCard } from './list/BranchCard';
 import { BranchModalForm } from './list/BranchModalForm';
@@ -46,7 +47,8 @@ export const BranchList: React.FC<BranchListProps> = ({
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [showModal, setShowModal] = useState(isAddingNew);
+  const { showToast } = useToast();
+  const [showModal, setShowModal] = useState(isAddingNew || false);
   const [editingBranch, setEditingBranch] = useState<Branch | null>(null);
   const [formData, setFormData] = useState<Partial<Branch>>(DEFAULT_FORM_DATA);
 
@@ -72,13 +74,14 @@ export const BranchList: React.FC<BranchListProps> = ({
     e.stopPropagation();
     if (window.confirm(`Apakah Anda yakin ingin menghapus data cabang "${branchName}"? Semua riwayat monitoring akan ikut terhapus.`)) {
       onDeleteBranch(branchId);
+      showToast(`Data cabang ${branchName} berhasil dihapus`, 'warning');
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.code || !formData.kepalaToko) {
-      alert('Mohon isi nama cabang, kode cabang, dan nama KTB!');
+      showToast('Mohon isi nama cabang, kode cabang, dan nama KTB!', 'warning');
       return;
     }
 
@@ -106,6 +109,7 @@ export const BranchList: React.FC<BranchListProps> = ({
     };
 
     onSaveBranch(branchToSave);
+    showToast(editingBranch ? 'Perubahan cabang berhasil disimpan!' : 'Cabang binaan baru berhasil didaftarkan!', 'success');
     setShowModal(false);
     if (onCloseNewModal) onCloseNewModal();
   };

@@ -1,16 +1,17 @@
 import React from 'react';
 import { Database, Download, Upload, AlertTriangle } from 'lucide-react';
 import { StorageService } from '../../services/storage';
+import { useToast } from '../../context/ToastContext';
 
 interface SettingsBackupRestoreProps {
   onDataChange: () => void;
-  onShowToast: (msg: string) => void;
 }
 
 export const SettingsBackupRestore: React.FC<SettingsBackupRestoreProps> = ({
-  onDataChange,
-  onShowToast
+  onDataChange
 }) => {
+  const { showToast } = useToast();
+
   const handleExport = () => {
     const dataStr = StorageService.exportAllData();
     const blob = new Blob([dataStr], { type: 'application/json' });
@@ -20,7 +21,7 @@ export const SettingsBackupRestore: React.FC<SettingsBackupRestoreProps> = ({
     a.download = `SPV_DPK_Backup_${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    onShowToast('Data Berhasil Diekspor ke File JSON!');
+    showToast('Data Berhasil Diekspor ke File JSON!', 'success');
   };
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,13 +33,13 @@ export const SettingsBackupRestore: React.FC<SettingsBackupRestoreProps> = ({
           const content = event.target?.result as string;
           const success = StorageService.importAllData(content);
           if (success) {
-            onShowToast('Data Berhasil Diimpor & Dipulihkan!');
+            showToast('Data Berhasil Diimpor & Dipulihkan!', 'success');
             onDataChange();
           } else {
-            alert('Format file cadangan tidak valid.');
+            showToast('Format file cadangan tidak valid!', 'error');
           }
         } catch {
-          alert('Gagal membaca file.');
+          showToast('Gagal membaca file cadangan!', 'error');
         }
       };
       reader.readAsText(file);
@@ -48,7 +49,7 @@ export const SettingsBackupRestore: React.FC<SettingsBackupRestoreProps> = ({
   const handleResetData = () => {
     if (window.confirm('PERINGATAN: Apakah Anda yakin ingin mereset seluruh data lokal ke kondisi bawaan awal?')) {
       StorageService.resetToDefaults();
-      onShowToast('Database Lokal Berhasil Direset ke Default!');
+      showToast('Database Lokal Berhasil Direset ke Default!', 'warning');
       onDataChange();
     }
   };

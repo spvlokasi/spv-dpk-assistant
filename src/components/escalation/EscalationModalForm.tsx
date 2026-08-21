@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, CheckCircle2 } from 'lucide-react';
 import { EscalationTicket, Branch } from '../../types';
+import { useToast } from '../../context/ToastContext';
 
 interface EscalationModalFormProps {
   branches: Branch[];
@@ -15,6 +16,7 @@ export const EscalationModalForm: React.FC<EscalationModalFormProps> = ({
   onSave,
   onClose
 }) => {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState<Partial<EscalationTicket>>({
     branchId: editingTicket?.branchId || branches[0]?.id || '',
     title: editingTicket?.title || '',
@@ -30,7 +32,7 @@ export const EscalationModalForm: React.FC<EscalationModalFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title?.trim() || !formData.description?.trim()) {
-      alert('Lengkapi judul dan deskripsi kendala');
+      showToast('Lengkapi judul dan deskripsi kendala', 'warning');
       return;
     }
 
@@ -50,6 +52,7 @@ export const EscalationModalForm: React.FC<EscalationModalFormProps> = ({
     };
 
     onSave(ticket);
+    showToast(editingTicket ? 'Tiket eskalasi berhasil diperbarui!' : 'Tiket eskalasi berhasil diajukan ke Manajer!', 'success');
     onClose();
   };
 

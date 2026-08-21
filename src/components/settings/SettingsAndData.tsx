@@ -3,6 +3,7 @@ import { User, ShieldCheck } from 'lucide-react';
 import { StorageService } from '../../services/storage';
 import { SupabaseService } from '../../services/supabase';
 import { UserAccount } from '../../types/auth';
+import { useToast } from '../../context/ToastContext';
 import { SettingsSyncStatus } from './SettingsSyncStatus';
 import { SettingsBackupRestore } from './SettingsBackupRestore';
 
@@ -17,14 +18,9 @@ export const SettingsAndData: React.FC<SettingsAndDataProps> = ({
   onDataChange,
   onOpenProfileModal
 }) => {
+  const { showToast } = useToast();
   const [isCloudConnected, setIsCloudConnected] = useState(SupabaseService.isConfigured());
   const [isSyncing, setIsSyncing] = useState(false);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
-
-  const showToast = (msg: string) => {
-    setToastMsg(msg);
-    setTimeout(() => setToastMsg(null), 3500);
-  };
 
   const handleSyncToCloud = async () => {
     setIsSyncing(true);
@@ -38,20 +34,12 @@ export const SettingsAndData: React.FC<SettingsAndDataProps> = ({
     };
     const res = await SupabaseService.syncLocalToCloud(payload);
     setIsSyncing(false);
-    showToast(res.message);
+    showToast(res.message, res.success ? 'success' : 'error');
     onDataChange();
   };
 
   return (
     <div className="space-y-6 max-w-4xl">
-      {/* Toast Notification */}
-      {toastMsg && (
-        <div className="fixed top-4 right-4 z-50 bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-2xl animate-fade-in flex items-center gap-2">
-          <span>✅</span>
-          <span>{toastMsg}</span>
-        </div>
-      )}
-
       {/* User Profile Card */}
       <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex items-center justify-between shadow-xl">
         <div className="flex items-center gap-3">
@@ -79,13 +67,11 @@ export const SettingsAndData: React.FC<SettingsAndDataProps> = ({
         isCloudConnected={isCloudConnected}
         onSync={handleSyncToCloud}
         isSyncing={isSyncing}
-        onShowToast={showToast}
       />
 
       {/* Backup & Restore JSON */}
       <SettingsBackupRestore
         onDataChange={onDataChange}
-        onShowToast={showToast}
       />
     </div>
   );

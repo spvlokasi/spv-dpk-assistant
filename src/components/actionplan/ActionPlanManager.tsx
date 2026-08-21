@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Branch, ActionPlanMilestone, DailyPerformance, TurnaroundPhase } from '../../types';
 import { generateGeminiActionPlan } from '../../services/geminiService';
+import { useToast } from '../../context/ToastContext';
 import { ActionPlanLeftSidebar } from './ActionPlanLeftSidebar';
 import { ActionPlanPhaseTabs } from './ActionPlanPhaseTabs';
 import { ActionPlanMilestoneCard } from './ActionPlanMilestoneCard';
@@ -23,6 +24,7 @@ export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
   onSaveMilestone,
   onDeleteMilestone
 }) => {
+  const { showToast } = useToast();
   const [activeBranchId, setActiveBranchId] = useState<string>(
     selectedBranchId || (branches.length > 0 ? branches[0].id : '')
   );
@@ -54,6 +56,7 @@ export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
     smartMilestones.forEach((m) => {
       onSaveMilestone(m);
     });
+    showToast('Program Aksi Perbaikan berhasil dimuat & disinkronkan!', 'success');
     setShowSmartModal(false);
   };
 

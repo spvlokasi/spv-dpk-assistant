@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { X, Camera, Plus, Trash2, Star, CheckCircle2 } from 'lucide-react';
+import { X, Camera, Trash2, CheckCircle2 } from 'lucide-react';
 import { Branch, FieldVisit, OperationalIssue } from '../../types';
+import { useToast } from '../../context/ToastContext';
 
 interface FieldVisitFormModalProps {
   branches: Branch[];
@@ -17,6 +18,7 @@ export const FieldVisitFormModal: React.FC<FieldVisitFormModalProps> = ({
   onSave,
   onClose
 }) => {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState<FieldVisit>({
     id: editingVisit?.id || `visit-${Date.now()}`,
     branchId: editingVisit?.branchId || initialBranchId || branches[0]?.id || '',
@@ -54,6 +56,7 @@ export const FieldVisitFormModal: React.FC<FieldVisitFormModalProps> = ({
     setNewDesc('');
     setNewSolution('');
     setNewPhoto(undefined);
+    showToast('Temuan kendala ditambahkan ke daftar', 'info');
   };
 
   const handleRemoveIssue = (id: string) => {
@@ -66,6 +69,7 @@ export const FieldVisitFormModal: React.FC<FieldVisitFormModalProps> = ({
       const reader = new FileReader();
       reader.onload = (event) => {
         setNewPhoto(event.target?.result as string);
+        showToast('Foto temuan berhasil dimuat', 'success');
       };
       reader.readAsDataURL(file);
     }
@@ -74,10 +78,11 @@ export const FieldVisitFormModal: React.FC<FieldVisitFormModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.branchId) {
-      alert('Pilih cabang terlebih dahulu');
+      showToast('Pilih cabang binaan terlebih dahulu', 'warning');
       return;
     }
     onSave(formData);
+    showToast(editingVisit ? 'Log kunjungan berhasil diperbarui!' : 'Log kunjungan lapangan berhasil disimpan!', 'success');
     onClose();
   };
 
