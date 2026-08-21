@@ -157,18 +157,16 @@ export const BranchDetailAndRCA: React.FC<BranchDetailAndRCAProps> = ({
         <BranchHeaderProfile
           data={data}
           isSaved={isSaved}
-          onBack={onBack}
-          onNavigateToTab={onNavigateToTab}
-        />
-
-        {/* Date Range Picker & History Logs */}
-        <BranchPeriodPicker
           startDate={data.diagnosisStartDate || ''}
           endDate={data.diagnosisEndDate || ''}
-          diagnosisLogs={diagnosisLogs}
           onChangeStartDate={(val) => setData({ ...data, diagnosisStartDate: val })}
           onChangeEndDate={(val) => setData({ ...data, diagnosisEndDate: val })}
           onResetDates={() => setData({ ...data, diagnosisStartDate: '', diagnosisEndDate: '' })}
+        />
+
+        {/* History Logs Selector Bar */}
+        <BranchPeriodPicker
+          diagnosisLogs={diagnosisLogs}
           onSelectHistoryLog={handleSelectHistoryLog}
         />
 

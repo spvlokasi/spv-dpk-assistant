@@ -1,20 +1,26 @@
 import React from 'react';
-import { ArrowLeft, Target, Calendar, TrendingUp, CheckCircle2, User, Shield, MapPin } from 'lucide-react';
+import { CheckCircle2, User, Shield, MapPin } from 'lucide-react';
 import { Branch } from '../../../types';
 import { StatusBadge } from '../../common/Badge';
 
 interface BranchHeaderProfileProps {
   data: Branch;
   isSaved: boolean;
-  onBack: () => void;
-  onNavigateToTab: (tab: string) => void;
+  startDate: string;
+  endDate: string;
+  onChangeStartDate: (val: string) => void;
+  onChangeEndDate: (val: string) => void;
+  onResetDates: () => void;
 }
 
 export const BranchHeaderProfile: React.FC<BranchHeaderProfileProps> = ({
   data,
   isSaved,
-  onBack,
-  onNavigateToTab
+  startDate,
+  endDate,
+  onChangeStartDate,
+  onChangeEndDate,
+  onResetDates
 }) => {
   const getBranchDisplayNames = (fullName: string) => {
     const prefixMatch = fullName.match(/^(TokoBASMALAH|Cabang Basmalah|Basmalah)\s+(.+)$/i);
@@ -28,7 +34,7 @@ export const BranchHeaderProfile: React.FC<BranchHeaderProfileProps> = ({
 
   return (
     <div className="space-y-3">
-      {/* Row 1: Title, Badges, and Navigation Buttons */}
+      {/* Row 1: Title, Badges at Left | Date Range Controls at Right */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-slate-800">
         <div className="flex items-center gap-1.5 sm:gap-2.5 flex-nowrap overflow-x-auto py-0.5 max-w-full">
           <span className="px-2 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-[10px] sm:text-[11px] font-mono font-bold text-emerald-400 flex-shrink-0">
@@ -46,36 +52,36 @@ export const BranchHeaderProfile: React.FC<BranchHeaderProfileProps> = ({
           )}
         </div>
 
-        {/* Quick Action Navigation Buttons */}
-        <div className="flex items-center gap-1.5 flex-nowrap flex-shrink-0">
-          <button
-            onClick={onBack}
-            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap active:scale-95"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 text-slate-400" />
-            Kembali
-          </button>
-          <button
-            onClick={() => onNavigateToTab('actionplan')}
-            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap"
-          >
-            <Target className="w-3.5 h-3.5 text-blue-400" />
-            Aksi
-          </button>
-          <button
-            onClick={() => onNavigateToTab('fieldvisit')}
-            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap"
-          >
-            <Calendar className="w-3.5 h-3.5 text-amber-400" />
-            Kunjungan
-          </button>
-          <button
-            onClick={() => onNavigateToTab('performance')}
-            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors whitespace-nowrap"
-          >
-            <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-            Monitor
-          </button>
+        {/* Date Range Picker (Replaced action buttons) */}
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap text-xs flex-shrink-0">
+          <div className="flex items-center bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 shadow-sm">
+            <input
+              type="date"
+              value={startDate || ''}
+              onChange={(e) => onChangeStartDate(e.target.value)}
+              className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs cursor-pointer"
+            />
+          </div>
+          <span className="text-slate-500 font-bold text-xs">s/d</span>
+          <div className="flex items-center bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 shadow-sm">
+            <input
+              type="date"
+              min={startDate || undefined}
+              value={endDate || ''}
+              onChange={(e) => onChangeEndDate(e.target.value)}
+              className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs cursor-pointer"
+            />
+          </div>
+          {(startDate || endDate) && (
+            <button
+              type="button"
+              onClick={onResetDates}
+              className="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 text-[11px] transition-colors border border-slate-700"
+              title="Reset Tanggal"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
 
