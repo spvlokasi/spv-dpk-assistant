@@ -136,14 +136,14 @@ export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
                 </div>
                 <h4 className="text-sm font-bold text-slate-300">Belum Ada Program Aksi</h4>
                 <p className="text-xs text-slate-500 max-w-md mx-auto">
-                  Klik <strong className="text-emerald-400">"Generate Aksi Cerdas ✨"</strong> di samping kiri untuk memuat roadmap otomatis sesuai diagnosa toko ini.
+                  Klik <strong className="text-emerald-400">"Muat Aksi"</strong> di samping kiri untuk memuat roadmap otomatis sesuai diagnosa toko ini.
                 </p>
                 <button
                   type="button"
                   onClick={() => setShowSmartModal(true)}
                   className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-md active:scale-95"
                 >
-                  Generate Aksi Cerdas Sekarang ✨
+                  Muat Aksi
                 </button>
               </div>
             ) : (

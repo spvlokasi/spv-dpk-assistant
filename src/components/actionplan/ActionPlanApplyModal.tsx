@@ -41,11 +41,11 @@ export const ActionPlanApplyModal: React.FC<ActionPlanApplyModalProps> = ({
 
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center flex-shrink-0">
-            <Sparkles className="w-5 h-5 text-emerald-400" />
+            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-white">Generate Rencana Aksi Cerdas ✨</h3>
-            <p className="text-xs text-slate-400">Sinkronisasi Otomatis Diagnosa RCA & Monitor Kinerja</p>
+            <h3 className="text-base font-bold text-white">Muat Rencana Aksi</h3>
+            <p className="text-xs text-slate-400">Sinkronisasi Otomatis Diagnosa RCA & Target Kinerja</p>
           </div>
         </div>
 
@@ -103,7 +103,7 @@ export const ActionPlanApplyModal: React.FC<ActionPlanApplyModalProps> = ({
             className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-emerald-950 transition-all active:scale-95"
           >
             <CheckCircle2 className="w-4 h-4" />
-            Muat Rencana Aksi Sekarang
+            Muat Aksi
           </button>
         </div>
       </div>
