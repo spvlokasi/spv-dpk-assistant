@@ -35,18 +35,18 @@ export const ReportSignatures: React.FC<ReportSignaturesProps> = ({
           <div className="text-slate-600 text-[11px]">{authorRole}</div>
         </div>
 
-        {/* 2. Mengetahui SPV Area */}
-        <div>
-          <div className="text-slate-500 mb-14 print:mb-10">Mengetahui SPV,</div>
-          <div className="font-bold text-slate-900 underline">{spvAreaName}</div>
-          <div className="text-slate-600 text-[11px]">Supervisor Area</div>
-        </div>
-
-        {/* 3. Mengetahui KTB */}
+        {/* 2. Mengetahui KTB */}
         <div>
           <div className="text-slate-500 mb-14 print:mb-10">Mengetahui KTB,</div>
           <div className="font-bold text-slate-900 underline">{ktbName}</div>
           <div className="text-slate-600 text-[11px]">Kepala Toko Basmalah</div>
+        </div>
+
+        {/* 3. Mengetahui SPV Area */}
+        <div>
+          <div className="text-slate-500 mb-14 print:mb-10">Mengetahui SPV,</div>
+          <div className="font-bold text-slate-900 underline">{spvAreaName}</div>
+          <div className="text-slate-600 text-[11px]">Supervisor Area</div>
         </div>
 
         {/* 4. Disetujui Oleh */}
