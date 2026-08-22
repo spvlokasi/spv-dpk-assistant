@@ -32,7 +32,6 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
   const fallback = StorageService.getProfile();
   const authorName = currentUser?.fullName || fallback.name;
   const authorRole = currentUser?.roleTitle || fallback.roleTitle;
-  const authorDept = currentUser?.department || fallback.department;
   const authorManager = currentUser?.businessManager || fallback.businessManager;
 
   const targetBranches = reportType === 'all' ? branches : branches.filter((b) => b.id === selectedBranchId);
@@ -57,13 +56,6 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
               <div>Tanggal: {formatDateIndo(new Date().toISOString())}</div>
               <div className="font-semibold text-slate-800">Periode: {reportPeriod}</div>
             </div>
-          </div>
-
-          <div className="mt-3 print:mt-2 p-2.5 print:p-2 bg-slate-50 border border-slate-200 rounded-xl grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs print:text-[11px]">
-            <div><span className="text-slate-500 block text-[10px]">Penyusun:</span><strong className="text-slate-800 font-bold">{authorName}</strong></div>
-            <div><span className="text-slate-500 block text-[10px]">Jabatan:</span><strong className="text-slate-800 font-bold">{authorRole}</strong></div>
-            <div><span className="text-slate-500 block text-[10px]">Atasan:</span><strong className="text-slate-800 font-bold">{authorManager}</strong></div>
-            <div><span className="text-slate-500 block text-[10px]">Departemen:</span><strong className="text-slate-800 font-bold">{authorDept}</strong></div>
           </div>
         </div>
 
