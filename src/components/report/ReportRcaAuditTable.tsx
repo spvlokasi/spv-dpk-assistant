@@ -19,8 +19,8 @@ export const ReportRcaAuditTable: React.FC<ReportRcaAuditTableProps> = ({ rootCa
       <table className="w-full text-xs text-left border border-slate-300 bg-white">
         <thead className="bg-slate-100 font-bold text-slate-700 text-[10px] border-b border-slate-300 uppercase">
           <tr>
-            <th className="p-1.5 border-r border-slate-300 w-1/4">Kelompok Faktor</th>
-            <th className="p-1.5 border-r border-slate-300">Faktor Evaluasi</th>
+            <th className="p-1.5 border-r border-slate-300 w-24">Faktor</th>
+            <th className="p-1.5 border-r border-slate-300">Rincian Audit</th>
             <th className="p-1.5 border-r border-slate-300 text-center w-24">Skor (1-5)</th>
             <th className="p-1.5 text-center w-28">Kondisi / Keterangan</th>
           </tr>
@@ -32,7 +32,7 @@ export const ReportRcaAuditTable: React.FC<ReportRcaAuditTableProps> = ({ rootCa
             return (
               <tr key={factor.id || idx} className={isCritical ? 'bg-rose-50/40' : ''}>
                 <td className="p-1.5 border-r border-slate-300 font-semibold text-slate-600 capitalize">
-                  {factor.category === 'internal' ? 'Internal Operasional' : 'Eksternal / Pasar'}
+                  {factor.category === 'internal' ? 'Internal' : 'Eksternal'}
                 </td>
                 <td className="p-1.5 border-r border-slate-300 text-slate-800 font-medium">
                   {factor.title}
