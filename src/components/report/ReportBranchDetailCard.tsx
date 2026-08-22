@@ -43,7 +43,7 @@ export const ReportBranchDetailCard: React.FC<ReportBranchDetailCardProps> = ({
         </div>
 
         <div className="break-inside-avoid">
-          <strong className="text-slate-900 block mb-1">Rekomendasi Strategi Turnaround (180 Hari):</strong>
+          <strong className="text-slate-900 block mb-1">Rekomendasi Strategi Perbaikan:</strong>
           <p className="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed whitespace-pre-line print:p-2 text-[11px]">
             {branch.recommendedStrategy || 'Belum ada catatan strategi khusus.'}
           </p>
