@@ -53,9 +53,11 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
               const totalActual = bPerfMonth.reduce((sum, p) => sum + (p.salesActual || 0), 0);
               const actualProfit = bPerfMonth.length > 0 ? totalActual : (latest ? latest.salesActual : 0);
 
-              const hitPct = targetLabaKumulatif > 0 ? Math.round((actualProfit / targetLabaKumulatif) * 100) : 0;
-              const isMinus = actualProfit < 0 || hitPct < 0;
-              const displayPct = isMinus ? `-${Math.abs(hitPct)}%` : `${hitPct}%`;
+              // Rumus Deviasi Selisih Target: ((Laba Aktual / Target Laba) * 100) - 100
+              const rawPct = targetLabaKumulatif > 0 ? (actualProfit / targetLabaKumulatif) * 100 : 0;
+              const gapPct = Math.round(rawPct - 100);
+              const isMinus = gapPct < 0;
+              const displayPct = isMinus ? `${gapPct}%` : `${gapPct}%`; // Minus muncul -28%, Plus muncul angka saja (misal 16%)
               const healthScore = calculateHealthScore(b.rootCauses);
 
               return (
@@ -70,11 +72,11 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
                   </td>
                   <td className="p-2 border-r border-slate-300 font-bold uppercase text-[10px]">{b.status.replace('_', ' ')}</td>
                   <td className="p-2 text-right border-r border-slate-300 font-mono font-bold text-slate-800">{formatRupiah(targetLabaKumulatif)}</td>
-                  <td className={`p-2 text-right border-r border-slate-300 font-mono font-bold ${isMinus ? 'text-rose-600' : 'text-emerald-700'}`}>
+                  <td className={`p-2 text-right border-r border-slate-300 font-mono font-bold ${actualProfit < 0 ? 'text-rose-600' : 'text-emerald-700'}`}>
                     {actualProfit !== 0 ? formatRupiah(actualProfit) : '-'}
                   </td>
                   <td className="p-2 text-center font-bold font-mono">
-                    <span className={`px-1.5 py-0.5 rounded ${isMinus ? 'bg-rose-100 text-rose-800 font-black' : hitPct >= 100 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+                    <span className={`px-2 py-0.5 rounded text-xs ${isMinus ? 'bg-rose-100 text-rose-800 font-black' : 'bg-emerald-100 text-emerald-800 font-black'}`}>
                       {displayPct}
                     </span>
                   </td>
