@@ -13,8 +13,9 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
   performance,
   calculateHealthScore
 }) => {
-  // Hitung jumlah hari berjalan s/d tanggal hari ini (misal tgl 2 -> 2 hari, tgl 23 -> 23 hari)
-  const currentDay = Math.max(1, new Date().getDate());
+  const today = new Date();
+  const currentDay = Math.max(1, today.getDate());
+  const currentYm = today.toISOString().slice(0, 7); // '2026-08' (Bulan Agustus saja)
 
   return (
     <div>
@@ -37,15 +38,16 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
           </thead>
           <tbody className="divide-y divide-slate-200">
             {branches.map((b) => {
-              const bPerf = performance.filter((p) => p.branchId === b.id);
-              const latest = bPerf.length > 0 ? bPerf[bPerf.length - 1] : null;
-              
-              // Target Laba dikalikan jumlah hari berjalan
+              // Filter ketat KHUSUS BULAN INI (Agustus 2026) agar data Juli TIDAK bercampur
+              const bPerfMonth = performance.filter((p) => p.branchId === b.id && (!p.date || p.date.startsWith(currentYm)));
+              const latest = bPerfMonth.length > 0 ? bPerfMonth[bPerfMonth.length - 1] : null;
+
+              // Target Laba dikalikan hari berjalan bulan ini
               const dailyTarget = b.targetSalesPerDay || 1500000;
               const targetLabaKumulatif = dailyTarget * currentDay;
 
-              // Laba Aktual akumulasi s/d tanggal cetak
-              const totalActual = bPerf.reduce((sum, p) => sum + (p.salesActual || 0), 0);
+              // Laba Aktual khusus bulan ini saja
+              const totalActual = bPerfMonth.reduce((sum, p) => sum + (p.salesActual || 0), 0);
               const actualProfit = totalActual > 0 ? totalActual : (latest ? latest.salesActual : 0);
 
               const hitPct = targetLabaKumulatif > 0 ? Math.round((actualProfit / targetLabaKumulatif) * 100) : 0;
