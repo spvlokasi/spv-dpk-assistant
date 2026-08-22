@@ -336,8 +336,12 @@ export const StorageService = {
   // Field Visits
   getVisits(branchId?: string): FieldVisit[] {
     const data = localStorage.getItem(KEYS.VISITS);
-    const visits = data ? safeParse<FieldVisit[]>(KEYS.VISITS, INITIAL_FIELD_VISITS) : INITIAL_FIELD_VISITS;
-    if (!data) this.saveVisits(INITIAL_FIELD_VISITS);
+    const rawVisits = data ? safeParse<FieldVisit[]>(KEYS.VISITS, []) : [];
+    // Auto-purge legacy dummy visits (fv-01, fv-02)
+    const visits = rawVisits.filter(v => v.id !== 'fv-01' && v.id !== 'fv-02');
+    if (visits.length !== rawVisits.length) {
+      this.saveVisits(visits);
+    }
     if (branchId) {
       return visits.filter(v => v.branchId === branchId);
     }
@@ -684,7 +688,8 @@ export const StorageService = {
       }
 
       if (vRes.data && vRes.data.length > 0) {
-        const visits: FieldVisit[] = vRes.data.map((v: any) => ({
+        const cleanVData = vRes.data.filter((v: any) => v.id !== 'fv-01' && v.id !== 'fv-02');
+        const visits: FieldVisit[] = cleanVData.map((v: any) => ({
           id: v.id,
           branchId: v.branch_id,
           date: v.visit_date,
@@ -700,6 +705,15 @@ export const StorageService = {
           issues: v.issues || []
         }));
         this.saveVisits(visits);
+
+        // Delete legacy dummy visits from Supabase Cloud if present
+        if (cleanVData.length !== vRes.data.length) {
+          try {
+            await client.from('field_visits').delete().in('id', ['fv-01', 'fv-02']);
+          } catch (e) {
+            console.warn('Purge dummy cloud visits error:', e);
+          }
+        }
       }
 
       if (pRes.data && pRes.data.length > 0) {

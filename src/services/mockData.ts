@@ -107,64 +107,7 @@ export const INITIAL_MILESTONES: ActionPlanMilestone[] = [
   }
 ];
 
-export const INITIAL_FIELD_VISITS: FieldVisit[] = [
-  {
-    id: 'fv-01',
-    branchId: 'br-01',
-    date: '2026-08-18',
-    time: '10:30',
-    spvName: 'Supervisor DPK (Saya)',
-    agenda: 'Pendampingan Program Kasir & Audit Display Facing Out',
-    katokCoachingTopic: 'Strategi pembagian tugas shift pagi-siang dan monitoring target harian',
-    katokCommitment: 'KaTok berkomitmen menempel papan KPI harian dan mengecek struk kasir jam 14:00 dan jam 21:00',
-    crewCoachingTopic: 'Kerapian seragam, senyum salam sapa, dan teknik menawarkan tebus murah',
-    spvAreaCoordinationNote: 'SPV Area Budi Santoso setuju fokus pengawasan cabang ini difokuskan pada ketersediaan stok DC',
-    generalRating: 4,
-    summaryConclusion: 'Sudah ada perubahan antusiasme kru toko. Penawaran promo kasir meningkat dari 15% menjadi 38% struk.',
-    issues: [
-      {
-        id: 'iss-1',
-        description: 'Chiller minuman baris ke-2 mati lampu LED sehingga produk gelap',
-        category: 'fasilitas_alat',
-        severity: 'sedang',
-        immediateSolution: 'Sudah diganti lampu cadangan bersama kru toko',
-        resolved: true
-      },
-      {
-        id: 'iss-2',
-        description: 'Minyak goreng 2 Liter stok di gudang belum dipajang ke rak',
-        category: 'kekosongan_oos',
-        severity: 'kritis',
-        immediateSolution: 'Langsung instruksikan pajang 5 karton saat itu juga',
-        resolved: true
-      }
-    ]
-  },
-  {
-    id: 'fv-02',
-    branchId: 'br-03',
-    date: '2026-08-17',
-    time: '14:00',
-    spvName: 'Supervisor DPK (Saya)',
-    agenda: 'Investigasi Lonjakan Biaya Listrik & NKL Audit',
-    katokCoachingTopic: 'Audit disiplin pemakaian listrik AC dan penyusunan roster shift anti-lembur',
-    katokCommitment: 'Mematikan lampu kanopi pukul 06:00 tepat dan membatasi lembur maks. 1 jam saat bongkar DC',
-    crewCoachingTopic: 'Kepekaan terhadap gerak-gerik mencurigakan di lorong belakang',
-    spvAreaCoordinationNote: 'Perlu pengajuan ke Manajer Bisnis untuk perbaikan kompresor chiller yang aus',
-    generalRating: 2,
-    summaryConclusion: 'Perlu intervensi teknis segera dari departemen pemeliharaan aset pusat.',
-    issues: [
-      {
-        id: 'iss-3',
-        description: 'Kompresor chiller bersuara dengung keras dan menyedot daya tinggi',
-        category: 'fasilitas_alat',
-        severity: 'kritis',
-        immediateSolution: 'Dibuatkan tiket eskalasi ke Manajer Bisnis untuk teknisi DC',
-        resolved: false
-      }
-    ]
-  }
-];
+export const INITIAL_FIELD_VISITS: FieldVisit[] = [];
 
 export const INITIAL_PERFORMANCE: DailyPerformance[] = [
   { id: 'dp-1', branchId: 'br-01', date: '2026-08-13', salesActual: 9800000, salesTarget: 13500000, marginPct: 14.1, opex: 720000, trafficCount: 280, basketSize: 35000, notes: 'Awal program' },
