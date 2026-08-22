@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx';
 import { Branch, DailyPerformance } from '../../types';
+import { parseAnyDateToIso } from '../../utils/formatters';
 
 export function downloadPerformanceExcelTemplate(branch?: Branch) {
   const code = branch?.code || 'M3019';
@@ -14,20 +15,6 @@ export function downloadPerformanceExcelTemplate(branch?: Branch) {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'RekapCabangByDate');
   XLSX.writeFile(wb, `Template_Rekap_Kinerja_${code}.xlsx`);
-}
-
-function parseDateString(raw: string): string {
-  if (!raw) return new Date().toISOString().slice(0, 10);
-  if (raw.includes('/')) {
-    const parts = raw.split('/');
-    if (parts.length === 3) {
-      const d = parts[0].padStart(2, '0');
-      const m = parts[1].padStart(2, '0');
-      const y = parts[2].length === 2 ? '20' + parts[2] : parts[2];
-      return `${y}-${m}-${d}`;
-    }
-  }
-  return raw;
 }
 
 export function parsePerformanceExcelOrCsv(
@@ -85,7 +72,7 @@ export function parsePerformanceExcelOrCsv(
           entries.push({
             id: `dp-imp-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 4)}`,
             branchId: targetBranch.id,
-            date: parseDateString(rawDate),
+            date: parseAnyDateToIso(rawDate),
             salesActual: sales,
             salesTarget: targetBranch.targetSalesPerDay || 1500000,
             marginPct: 0,
@@ -100,9 +87,9 @@ export function parsePerformanceExcelOrCsv(
 
     // 2. Fallback to standard binary .xlsx / .xls using XLSX library
     if (entries.length === 0) {
-      const wb = XLSX.read(fileContent, { type: typeof fileContent === 'string' ? 'string' : 'array' });
+      const wb = XLSX.read(fileContent, { type: typeof fileContent === 'string' ? 'string' : 'array', cellDates: true });
       const ws = wb.Sheets[wb.SheetNames[0]];
-      const json: any[][] = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      const json: any[][] = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false });
       if (json && json.length > 1) {
         for (let i = 1; i < json.length; i++) {
           const cells = json[i];
@@ -115,7 +102,7 @@ export function parsePerformanceExcelOrCsv(
           entries.push({
             id: `dp-imp-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 4)}`,
             branchId: targetBranch.id,
-            date: parseDateString(String(cells[1] || '')),
+            date: parseAnyDateToIso(cells[1]),
             salesActual: sales,
             salesTarget: targetBranch.targetSalesPerDay || 1500000,
             marginPct: 0,

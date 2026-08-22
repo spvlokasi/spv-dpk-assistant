@@ -15,10 +15,29 @@ export function formatShortRupiah(amount: number | null | undefined): string {
   return `Rp ${val}`;
 }
 
-export function formatDateIndo(dateStr: string | null | undefined): string {
+export function parseAnyDateToIso(dateStr: string | number | null | undefined): string {
+  if (!dateStr) return new Date().toISOString().slice(0, 10);
+  if (typeof dateStr === 'number' || (/^\d{4,6}$/.test(String(dateStr).trim()) && Number(dateStr) > 30000 && Number(dateStr) < 70000)) {
+    const num = Number(dateStr);
+    return new Date(Math.round((num - 25569) * 86400 * 1000)).toISOString().slice(0, 10);
+  }
+  const str = String(dateStr).trim();
+  if (str.includes('/')) {
+    const p = str.split('/');
+    if (p.length === 3) return `${p[2].length === 2 ? '20' + p[2] : p[2]}-${p[1].padStart(2, '0')}-${p[0].padStart(2, '0')}`;
+  }
+  if (str.includes('-') && str.split('-')[0].length <= 2) {
+    const p = str.split('-');
+    if (p.length === 3) return `${p[2].length === 2 ? '20' + p[2] : p[2]}-${p[1].padStart(2, '0')}-${p[0].padStart(2, '0')}`;
+  }
+  return str;
+}
+
+export function formatDateIndo(dateStr: string | number | null | undefined): string {
   if (!dateStr) return '-';
   try {
-    const d = new Date(dateStr);
+    const iso = parseAnyDateToIso(dateStr);
+    const d = new Date(iso);
     if (isNaN(d.getTime())) return String(dateStr);
     return new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }).format(d);
   } catch {
@@ -29,7 +48,8 @@ export function formatDateIndo(dateStr: string | null | undefined): string {
 export function formatMonthYearIndo(ymStr: string): string {
   if (!ymStr || ymStr === 'all') return 'Semua Periode';
   try {
-    const [year, month] = ymStr.split('-');
+    const iso = parseAnyDateToIso(ymStr);
+    const [year, month] = iso.slice(0, 7).split('-');
     const d = new Date(Number(year), Number(month) - 1, 1);
     return new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(d);
   } catch {
