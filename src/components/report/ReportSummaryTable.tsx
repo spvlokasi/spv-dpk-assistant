@@ -13,6 +13,9 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
   performance,
   calculateHealthScore
 }) => {
+  // Hitung jumlah hari berjalan s/d tanggal hari ini (misal tgl 2 -> 2 hari, tgl 23 -> 23 hari)
+  const currentDay = Math.max(1, new Date().getDate());
+
   return (
     <div>
       <h3 className="text-sm font-black uppercase text-slate-950 mb-2 border-l-4 border-emerald-600 pl-2">
@@ -25,10 +28,10 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
               <th className="p-2 border-r border-slate-300">Kode</th>
               <th className="p-2 border-r border-slate-300">Nama Cabang</th>
               <th className="p-2 border-r border-slate-300">KTB</th>
-              <th className="p-2 border-r border-slate-300">Skor RCA</th>
+              <th className="p-2 border-r border-slate-300 text-center">Nilai</th>
               <th className="p-2 border-r border-slate-300">Status</th>
-              <th className="p-2 border-r border-slate-300 text-right">Target Laba</th>
-              <th className="p-2 border-r border-slate-300 text-right">Laba Terakhir</th>
+              <th className="p-2 border-r border-slate-300 text-right">Target Laba (s/d Tgl {currentDay})</th>
+              <th className="p-2 border-r border-slate-300 text-right">Laba Aktual</th>
               <th className="p-2 text-center">Pencapaian</th>
             </tr>
           </thead>
@@ -36,10 +39,16 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
             {branches.map((b) => {
               const bPerf = performance.filter((p) => p.branchId === b.id);
               const latest = bPerf.length > 0 ? bPerf[bPerf.length - 1] : null;
-              const hitPct =
-                latest && b.targetSalesPerDay > 0
-                  ? Math.round((latest.salesActual / b.targetSalesPerDay) * 100)
-                  : 0;
+              
+              // Target Laba dikalikan jumlah hari berjalan
+              const dailyTarget = b.targetSalesPerDay || 1500000;
+              const targetLabaKumulatif = dailyTarget * currentDay;
+
+              // Laba Aktual akumulasi s/d tanggal cetak
+              const totalActual = bPerf.reduce((sum, p) => sum + (p.salesActual || 0), 0);
+              const actualProfit = totalActual > 0 ? totalActual : (latest ? latest.salesActual : 0);
+
+              const hitPct = targetLabaKumulatif > 0 ? Math.round((actualProfit / targetLabaKumulatif) * 100) : 0;
               const healthScore = calculateHealthScore(b.rootCauses);
 
               return (
@@ -63,11 +72,11 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
                   <td className="p-2 border-r border-slate-300 font-bold uppercase text-[10px]">
                     {b.status.replace('_', ' ')}
                   </td>
-                  <td className="p-2 text-right border-r border-slate-300 font-mono">
-                    {formatRupiah(b.targetSalesPerDay)}
+                  <td className="p-2 text-right border-r border-slate-300 font-mono font-bold text-slate-800">
+                    {formatRupiah(targetLabaKumulatif)}
                   </td>
-                  <td className="p-2 text-right border-r border-slate-300 font-mono">
-                    {latest ? formatRupiah(latest.salesActual) : '-'}
+                  <td className="p-2 text-right border-r border-slate-300 font-mono font-bold text-emerald-700">
+                    {actualProfit > 0 ? formatRupiah(actualProfit) : '-'}
                   </td>
                   <td className="p-2 text-center font-bold font-mono">
                     <span
