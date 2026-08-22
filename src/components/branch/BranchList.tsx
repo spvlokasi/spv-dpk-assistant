@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Branch } from '../../types';
 import { useToast } from '../../context/ToastContext';
+import { sortBranchesByStatus } from '../../utils/formatters';
 import { BranchSearchBar } from './list/BranchSearchBar';
 import { BranchCard } from './list/BranchCard';
 import { BranchModalForm } from './list/BranchModalForm';
@@ -84,16 +85,19 @@ export const BranchList: React.FC<BranchListProps> = ({
     if (onCloseNewModal) onCloseNewModal();
   };
 
-  const filteredBranches = branches.map((b) => (!b.imageUrl && (b.code === 'M3017' || b.name.toLowerCase().includes('bugih')) ? { ...b, imageUrl: '/stores/bugih.jpg' } : b)).filter((b) => {
-    const matchSearch = b.name.toLowerCase().includes(search.toLowerCase()) || b.code.toLowerCase().includes(search.toLowerCase()) || b.kepalaToko.toLowerCase().includes(search.toLowerCase());
-    return matchSearch && (filterStatus === 'all' || b.status === filterStatus);
-  });
+  const sortedAndFilteredBranches = useMemo(() => {
+    const rawList = branches.map((b) => (!b.imageUrl && (b.code === 'M3017' || b.name.toLowerCase().includes('bugih')) ? { ...b, imageUrl: '/stores/bugih.jpg' } : b)).filter((b) => {
+      const matchSearch = b.name.toLowerCase().includes(search.toLowerCase()) || b.code.toLowerCase().includes(search.toLowerCase()) || b.kepalaToko.toLowerCase().includes(search.toLowerCase());
+      return matchSearch && (filterStatus === 'all' || b.status === filterStatus);
+    });
+    return sortBranchesByStatus(rawList);
+  }, [branches, search, filterStatus]);
 
   return (
     <div className="space-y-4">
       <BranchSearchBar search={search} filterStatus={filterStatus} onSearchChange={setSearch} onStatusChange={setFilterStatus} onOpenAdd={handleOpenAdd} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredBranches.map((b) => (
+        {sortedAndFilteredBranches.map((b) => (
           <BranchCard key={b.id} branch={b} onSelect={() => onSelectBranch(b.id)} onEdit={(e) => handleOpenEdit(b, e)} onDelete={(e) => handleDelete(b.id, b.name, e)} />
         ))}
       </div>

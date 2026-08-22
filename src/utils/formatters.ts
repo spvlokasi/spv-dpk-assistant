@@ -57,6 +57,25 @@ export function formatMonthYearIndo(ymStr: string): string {
   }
 }
 
+export const DPK_STATUS_PRIORITY: Record<string, number> = {
+  akut: 1,
+  kritis: 2,
+  dalam_progres: 3,
+  existing: 4,
+  cabang_baru: 5,
+  siap_lulus: 6,
+  lulus_dpk: 7
+};
+
+export function sortBranchesByStatus<T extends { status?: string; name?: string }>(list: T[]): T[] {
+  return [...list].sort((a, b) => {
+    const pA = DPK_STATUS_PRIORITY[a.status || ''] || 99;
+    const pB = DPK_STATUS_PRIORITY[b.status || ''] || 99;
+    if (pA !== pB) return pA - pB;
+    return (a.name || '').localeCompare(b.name || '');
+  });
+}
+
 export function formatCategoryName(category: string): string {
   const map: Record<string, string> = {
     sales_drop: '📉 Sales Drop / Anjlok',
