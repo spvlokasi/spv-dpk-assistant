@@ -62,7 +62,7 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
         <ReportSummaryTable branches={targetBranches} performance={performance} calculateHealthScore={calculateHealthScore} />
 
         <div className="space-y-2">
-          <h3 className="text-sm font-black uppercase text-slate-950 mb-2 border-l-4 border-emerald-600 pl-2">II. Rincian Audit Diagnosa Akar Masalah & Aksi Turnaround</h3>
+          <h3 className="text-sm font-black uppercase text-slate-950 mb-2 border-l-4 border-emerald-600 pl-2">II. Rincian Audit, Diagnosa, Akar Masalah & Aksi Perbaikan</h3>
           <div className="space-y-4 print:space-y-3">
             {targetBranches.map((b) => (
               <ReportBranchDetailCard key={b.id} branch={b} milestones={milestones} visits={visits} calculateHealthScore={calculateHealthScore} />
