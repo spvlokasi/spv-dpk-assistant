@@ -70,7 +70,14 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
           </div>
         </div>
 
-        <ReportSignatures authorName={authorName} authorRole={authorRole} authorManager={authorManager} targetBranchCount={targetBranches.length} singleBranchKtb={targetBranches.length === 1 ? targetBranches[0].kepalaToko : undefined} />
+        <ReportSignatures
+          authorName={authorName}
+          authorRole={authorRole}
+          authorManager={authorManager}
+          targetBranchCount={targetBranches.length}
+          singleBranchKtb={targetBranches.length === 1 ? targetBranches[0].kepalaToko : undefined}
+          singleBranchSpvArea={targetBranches.length === 1 ? targetBranches[0].spvArea : undefined}
+        />
       </div>
     </div>
   );
