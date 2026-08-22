@@ -1,5 +1,5 @@
 import React from 'react';
-import { Store, AlertOctagon, Calendar, Building2, Target } from 'lucide-react';
+import { Store, AlertOctagon, Calendar, Building2 } from 'lucide-react';
 import { Branch, FieldVisit } from '../../types';
 
 interface DashboardKpiGridProps {
@@ -30,47 +30,47 @@ export const DashboardKpiGrid: React.FC<DashboardKpiGridProps> = ({ branches, vi
   const openIssues = visits.flatMap((v) => v.issues || []).filter((i) => !i.resolved);
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 items-stretch">
       {/* 1. Total Cabang DPK */}
-      <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg">
-        <div className="flex items-center justify-between text-slate-400 mb-2">
-          <span className="text-xs font-semibold">Total Cabang DPK</span>
-          <Store className="w-4 h-4 text-slate-400" />
+      <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg flex flex-col justify-between h-full min-h-[116px]">
+        <div className="flex items-center justify-between text-slate-400">
+          <span className="text-xs font-semibold truncate">Total Cabang DPK</span>
+          <Store className="w-4 h-4 text-slate-400 shrink-0" />
         </div>
-        <div className="text-2xl sm:text-3xl font-extrabold text-white">{totalBranches}</div>
-        <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
+        <div className="text-2xl sm:text-3xl font-extrabold text-white my-1">{totalBranches}</div>
+        <div className="text-[11px] text-slate-400 truncate">
           <span className="text-emerald-400 font-semibold">{totalBranches} Toko</span> terdaftar binaan
         </div>
       </div>
 
       {/* 2. Kartu Status Utama / Urgensi */}
-      <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg">
-        <div className={`flex items-center justify-between ${card2.color} mb-2`}>
-          <span className="text-xs font-semibold">{card2.title}</span>
-          <AlertOctagon className="w-4 h-4" />
+      <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg flex flex-col justify-between h-full min-h-[116px]">
+        <div className={`flex items-center justify-between ${card2.color}`}>
+          <span className="text-xs font-semibold truncate">{card2.title}</span>
+          <AlertOctagon className="w-4 h-4 shrink-0" />
         </div>
-        <div className={`text-2xl sm:text-3xl font-extrabold ${card2.color}`}>{card2.count}</div>
-        <div className="text-[11px] text-slate-400 mt-1">{card2.desc}</div>
+        <div className={`text-2xl sm:text-3xl font-extrabold ${card2.color} my-1`}>{card2.count}</div>
+        <div className="text-[11px] text-slate-400 truncate">{card2.desc}</div>
       </div>
 
       {/* 3. Kartu Status Kedua / Existing / Progres */}
-      <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg">
-        <div className={`flex items-center justify-between ${card3.color} mb-2`}>
-          <span className="text-xs font-semibold">{card3.title}</span>
-          <Building2 className="w-4 h-4" />
+      <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg flex flex-col justify-between h-full min-h-[116px]">
+        <div className={`flex items-center justify-between ${card3.color}`}>
+          <span className="text-xs font-semibold truncate">{card3.title}</span>
+          <Building2 className="w-4 h-4 shrink-0" />
         </div>
-        <div className={`text-2xl sm:text-3xl font-extrabold ${card3.color}`}>{card3.count}</div>
-        <div className="text-[11px] text-slate-400 mt-1">{card3.desc}</div>
+        <div className={`text-2xl sm:text-3xl font-extrabold ${card3.color} my-1`}>{card3.count}</div>
+        <div className="text-[11px] text-slate-400 truncate">{card3.desc}</div>
       </div>
 
       {/* 4. Log Kunjungan */}
-      <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg">
-        <div className="flex items-center justify-between text-amber-400 mb-2">
-          <span className="text-xs font-semibold">Log Kunjungan</span>
-          <Calendar className="w-4 h-4 text-amber-400" />
+      <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg flex flex-col justify-between h-full min-h-[116px]">
+        <div className="flex items-center justify-between text-amber-400">
+          <span className="text-xs font-semibold truncate">Log Kunjungan</span>
+          <Calendar className="w-4 h-4 text-amber-400 shrink-0" />
         </div>
-        <div className="text-2xl sm:text-3xl font-extrabold text-white">{visits.length}</div>
-        <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
+        <div className="text-2xl sm:text-3xl font-extrabold text-white my-1">{visits.length}</div>
+        <div className="text-[11px] text-slate-400 truncate">
           <span className="text-rose-400 font-semibold">{openIssues.length}</span> temuan terbuka
         </div>
       </div>
