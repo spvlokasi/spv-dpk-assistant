@@ -1,6 +1,6 @@
 import React from 'react';
 import { Branch, FieldVisit, ActionPlanMilestone, RootCauseFactor } from '../../types';
-import { formatRupiah, formatDateIndo } from '../../utils/formatters';
+import { formatDateIndo } from '../../utils/formatters';
 import { ReportRcaAuditTable } from './ReportRcaAuditTable';
 import { ReportActionPlanList } from './ReportActionPlanList';
 
@@ -8,60 +8,25 @@ interface ReportBranchDetailCardProps {
   branch: Branch;
   milestones: ActionPlanMilestone[];
   visits: FieldVisit[];
-  calculateHealthScore: (factors?: RootCauseFactor[]) => number;
+  calculateHealthScore?: (factors?: RootCauseFactor[]) => number;
 }
 
 export const ReportBranchDetailCard: React.FC<ReportBranchDetailCardProps> = ({
   branch,
   milestones,
-  visits,
-  calculateHealthScore
+  visits
 }) => {
   const bMilestones = milestones.filter((m) => m.branchId === branch.id);
   const bVisits = visits.filter((v) => v.branchId === branch.id);
   const latestVisit = bVisits.length > 0 ? bVisits[0] : null;
-  const healthScore = calculateHealthScore(branch.rootCauses);
 
   return (
-    <div className="p-4 sm:p-5 border border-slate-300 rounded-xl space-y-3.5 bg-slate-50/60 print:bg-white print:p-3 print:space-y-2.5">
-      {/* Branch Banner */}
-      <div className="flex justify-between items-start border-b border-slate-300 pb-2">
-        <div>
-          <div className="font-bold text-base text-slate-950">
-            [{branch.code}] {branch.name}
-          </div>
-          <span className="font-semibold text-slate-600 text-xs">
-            SPV Area: <strong className="text-slate-800">{branch.spvArea || '-'}</strong> | KTB:{' '}
-            <strong className="text-slate-800">{branch.kepalaToko || '-'}</strong>
-          </span>
-        </div>
-        <div className="text-right">
-          <div className="font-bold text-xs px-2 py-0.5 bg-slate-200 text-slate-800 rounded inline-block">
-            STATUS: {branch.status.toUpperCase()}
-          </div>
-          <div className="text-[11px] font-bold text-slate-600 mt-0.5">
-            Skor Kesehatan: <strong className="text-slate-900 font-mono">{healthScore} / 5.0</strong>
-          </div>
-        </div>
-      </div>
-
-      {/* Financial Targets Bar */}
-      <div className="grid grid-cols-3 gap-2 bg-white p-2 rounded-lg border border-slate-200 text-xs print:p-1.5">
-        <div>
-          <span className="text-slate-500 text-[10px] block">Target Laba Harian:</span>
-          <strong className="font-mono text-emerald-800 font-bold">
-            {formatRupiah(branch.targetSalesPerDay)}
-          </strong>
-        </div>
-        <div>
-          <span className="text-slate-500 text-[10px] block">Target Margin:</span>
-          <strong className="font-mono text-blue-800 font-bold">{branch.targetMarginPct}%</strong>
-        </div>
-        <div>
-          <span className="text-slate-500 text-[10px] block">Batas Biaya Maksimal:</span>
-          <strong className="font-mono text-rose-800 font-bold">
-            {formatRupiah(branch.targetMaxOpexPerMonth)}/bln
-          </strong>
+    <div className="p-4 sm:p-5 border border-slate-300 rounded-xl space-y-3 bg-slate-50/60 print:bg-white print:p-3 print:space-y-2.5">
+      {/* Header Bersih Rincian Hasil Audit Cabang */}
+      <div className="border-b-2 border-slate-800 pb-1.5 flex items-center justify-between">
+        <div className="font-bold text-sm text-slate-950 uppercase tracking-wide flex items-center gap-1.5">
+          <span>📋 HASIL AUDIT CABANG :</span>
+          <span className="text-emerald-800">[{branch.code}] {branch.name}</span>
         </div>
       </div>
 

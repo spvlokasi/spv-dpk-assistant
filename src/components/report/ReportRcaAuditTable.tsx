@@ -16,10 +16,6 @@ export const ReportRcaAuditTable: React.FC<ReportRcaAuditTableProps> = ({ rootCa
 
   return (
     <div className="space-y-1.5">
-      <span className="text-xs font-bold text-slate-900 block uppercase tracking-wider">
-        📋 Hasil Audit Rincian Faktor Diagnosa RCA:
-      </span>
-
       <table className="w-full text-xs text-left border border-slate-300 bg-white">
         <thead className="bg-slate-100 font-bold text-slate-700 text-[10px] border-b border-slate-300 uppercase">
           <tr>
