@@ -1,14 +1,16 @@
 import React from 'react';
-import { Printer } from 'lucide-react';
+import { Printer, Calendar } from 'lucide-react';
 import { Branch } from '../../types';
+import { formatMonthYearIndo } from '../../utils/formatters';
 
 interface ReportHeaderBarProps {
   reportType: 'all' | 'single';
   onReportTypeChange: (type: 'all' | 'single') => void;
   selectedBranchId: string;
   onSelectBranch: (id: string) => void;
-  reportPeriod: string;
-  onPeriodChange: (period: string) => void;
+  selectedMonth: string;
+  onMonthChange: (month: string) => void;
+  availableMonths: string[];
   branches: Branch[];
   onPrint: () => void;
 }
@@ -18,8 +20,9 @@ export const ReportHeaderBar: React.FC<ReportHeaderBarProps> = ({
   onReportTypeChange,
   selectedBranchId,
   onSelectBranch,
-  reportPeriod,
-  onPeriodChange,
+  selectedMonth,
+  onMonthChange,
+  availableMonths,
   branches,
   onPrint
 }) => {
@@ -49,13 +52,21 @@ export const ReportHeaderBar: React.FC<ReportHeaderBarProps> = ({
           </select>
         )}
 
-        <input
-          type="text"
-          value={reportPeriod}
-          onChange={(e) => onPeriodChange(e.target.value)}
-          placeholder="Periode Laporan..."
-          className="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-3.5 py-2.5 focus:border-emerald-500 focus:outline-none min-w-[200px]"
-        />
+        {/* Dropdown Filter Bulan Laporan */}
+        <div className="flex items-center gap-1.5 bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-1 text-slate-200">
+          <Calendar className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <select
+            value={selectedMonth}
+            onChange={(e) => onMonthChange(e.target.value)}
+            className="bg-transparent text-slate-200 text-xs font-semibold focus:outline-none cursor-pointer py-1.5"
+          >
+            {availableMonths.map((ym) => (
+              <option key={ym} value={ym} className="bg-slate-800 text-slate-100">
+                {formatMonthYearIndo(ym)}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <button

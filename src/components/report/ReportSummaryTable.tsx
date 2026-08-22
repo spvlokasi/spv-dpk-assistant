@@ -1,26 +1,33 @@
 import React from 'react';
 import { Branch, DailyPerformance, RootCauseFactor } from '../../types';
-import { formatRupiah } from '../../utils/formatters';
+import { formatRupiah, formatMonthYearIndo } from '../../utils/formatters';
 
 interface ReportSummaryTableProps {
   branches: Branch[];
   performance: DailyPerformance[];
+  selectedMonth: string;
   calculateHealthScore: (factors?: RootCauseFactor[]) => number;
 }
 
 export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
   branches,
   performance,
+  selectedMonth,
   calculateHealthScore
 }) => {
   const today = new Date();
-  const currentDay = Math.max(1, today.getDate());
-  const currentYm = today.toISOString().slice(0, 7); // '2026-08' (Bulan Agustus saja)
+  const currentYm = today.toISOString().slice(0, 7);
+  const isCurrentMonth = selectedMonth === currentYm;
+
+  // Jika bulan berjalan, hitung s/d hari ini. Jika bulan lalu, hitung full hari dalam bulan itu
+  const [yStr, mStr] = selectedMonth.split('-');
+  const daysInMonth = new Date(Number(yStr), Number(mStr), 0).getDate();
+  const effectiveDays = isCurrentMonth ? Math.max(1, today.getDate()) : daysInMonth;
 
   return (
     <div>
       <h3 className="text-sm font-black uppercase text-slate-950 mb-2 border-l-4 border-emerald-600 pl-2">
-        I. Ringkasan Status Cabang Dalam Pengawasan Khusus (DPK)
+        I. Ringkasan Status Cabang DPK — {formatMonthYearIndo(selectedMonth)}
       </h3>
       <div className="overflow-x-auto">
         <table className="w-full text-xs text-left border border-slate-300">
@@ -31,22 +38,20 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
               <th className="p-2 border-r border-slate-300">KTB</th>
               <th className="p-2 border-r border-slate-300 text-center">Nilai</th>
               <th className="p-2 border-r border-slate-300">Status</th>
-              <th className="p-2 border-r border-slate-300 text-right">Target Laba (s/d Tgl {currentDay})</th>
+              <th className="p-2 border-r border-slate-300 text-right">Target ({effectiveDays} Hari)</th>
               <th className="p-2 border-r border-slate-300 text-right">Laba Aktual</th>
               <th className="p-2 text-center">Pencapaian</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
             {branches.map((b) => {
-              // Filter ketat KHUSUS BULAN INI (Agustus 2026) agar data Juli TIDAK bercampur
-              const bPerfMonth = performance.filter((p) => p.branchId === b.id && (!p.date || p.date.startsWith(currentYm)));
+              // Filter data KHUSUS bulan yang dipilih
+              const bPerfMonth = performance.filter((p) => p.branchId === b.id && p.date && p.date.startsWith(selectedMonth));
               const latest = bPerfMonth.length > 0 ? bPerfMonth[bPerfMonth.length - 1] : null;
 
-              // Target Laba dikalikan hari berjalan bulan ini
               const dailyTarget = b.targetSalesPerDay || 1500000;
-              const targetLabaKumulatif = dailyTarget * currentDay;
+              const targetLabaKumulatif = dailyTarget * effectiveDays;
 
-              // Laba Aktual khusus bulan ini saja
               const totalActual = bPerfMonth.reduce((sum, p) => sum + (p.salesActual || 0), 0);
               const actualProfit = totalActual > 0 ? totalActual : (latest ? latest.salesActual : 0);
 

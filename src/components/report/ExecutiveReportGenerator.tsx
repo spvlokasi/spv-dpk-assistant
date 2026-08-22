@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Branch, FieldVisit, ActionPlanMilestone, DailyPerformance, BranchGraduation, EscalationTicket, RootCauseFactor } from '../../types';
 import { UserAccount } from '../../types/auth';
-import { formatDateIndo } from '../../utils/formatters';
+import { formatDateIndo, formatMonthYearIndo } from '../../utils/formatters';
 import { StorageService } from '../../services/storage';
 import { ReportHeaderBar } from './ReportHeaderBar';
 import { ReportSummaryTable } from './ReportSummaryTable';
@@ -25,9 +25,23 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
   performance,
   currentUser
 }) => {
+  const currentYm = new Date().toISOString().slice(0, 7);
+  const [selectedMonth, setSelectedMonth] = useState<string>(currentYm);
   const [reportType, setReportType] = useState<'all' | 'single'>('all');
   const [selectedBranchId, setSelectedBranchId] = useState<string>(branches[0]?.id || '');
-  const [reportPeriod, setReportPeriod] = useState<string>('Mingguan (Periode Agustus 2026)');
+
+  // Ekstrak daftar bulan dari data performa + 6 bulan terakhir
+  const availableMonths = useMemo(() => {
+    const set = new Set<string>();
+    set.add(currentYm);
+    performance.forEach((p) => { if (p.date && p.date.length >= 7) set.add(p.date.slice(0, 7)); });
+    for (let i = 1; i <= 5; i++) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      set.add(d.toISOString().slice(0, 7));
+    }
+    return Array.from(set).sort().reverse();
+  }, [performance, currentYm]);
 
   const fallback = StorageService.getProfile();
   const authorName = currentUser?.fullName || fallback.name;
@@ -43,7 +57,17 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
 
   return (
     <div className="space-y-6">
-      <ReportHeaderBar reportType={reportType} onReportTypeChange={setReportType} selectedBranchId={selectedBranchId} onSelectBranch={setSelectedBranchId} reportPeriod={reportPeriod} onPeriodChange={setReportPeriod} branches={branches} onPrint={() => window.print()} />
+      <ReportHeaderBar
+        reportType={reportType}
+        onReportTypeChange={setReportType}
+        selectedBranchId={selectedBranchId}
+        onSelectBranch={setSelectedBranchId}
+        selectedMonth={selectedMonth}
+        onMonthChange={setSelectedMonth}
+        availableMonths={availableMonths}
+        branches={branches}
+        onPrint={() => window.print()}
+      />
 
       <div className="bg-white text-slate-900 p-8 sm:p-12 rounded-2xl shadow-2xl max-w-5xl mx-auto border border-slate-200 font-sans print:p-0 print:border-none print:shadow-none space-y-5 print:space-y-3">
         <div className="border-b-2 border-slate-900 pb-3 print:pb-2">
@@ -54,12 +78,12 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
             </div>
             <div className="text-right text-xs text-slate-600 print:text-[11px]">
               <div>Tanggal: {formatDateIndo(new Date().toISOString())}</div>
-              <div className="font-semibold text-slate-800">Periode: {reportPeriod}</div>
+              <div className="font-semibold text-slate-800">Periode: {formatMonthYearIndo(selectedMonth)}</div>
             </div>
           </div>
         </div>
 
-        <ReportSummaryTable branches={targetBranches} performance={performance} calculateHealthScore={calculateHealthScore} />
+        <ReportSummaryTable branches={targetBranches} performance={performance} selectedMonth={selectedMonth} calculateHealthScore={calculateHealthScore} />
 
         <div className="space-y-2">
           <h3 className="text-sm font-black uppercase text-slate-950 mb-2 border-l-4 border-emerald-600 pl-2">II. Rincian Audit, Diagnosa, Akar Masalah & Aksi Perbaikan</h3>
