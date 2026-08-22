@@ -19,7 +19,6 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
   const currentYm = today.toISOString().slice(0, 7);
   const isCurrentMonth = selectedMonth === currentYm;
 
-  // Jika bulan berjalan, hitung s/d hari ini. Jika bulan lalu, hitung full hari dalam bulan itu
   const [yStr, mStr] = selectedMonth.split('-');
   const daysInMonth = new Date(Number(yStr), Number(mStr), 0).getDate();
   const effectiveDays = isCurrentMonth ? Math.max(1, today.getDate()) : daysInMonth;
@@ -45,7 +44,6 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
           </thead>
           <tbody className="divide-y divide-slate-200">
             {branches.map((b) => {
-              // Filter data KHUSUS bulan yang dipilih
               const bPerfMonth = performance.filter((p) => p.branchId === b.id && p.date && p.date.startsWith(selectedMonth));
               const latest = bPerfMonth.length > 0 ? bPerfMonth[bPerfMonth.length - 1] : null;
 
@@ -53,9 +51,11 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
               const targetLabaKumulatif = dailyTarget * effectiveDays;
 
               const totalActual = bPerfMonth.reduce((sum, p) => sum + (p.salesActual || 0), 0);
-              const actualProfit = totalActual > 0 ? totalActual : (latest ? latest.salesActual : 0);
+              const actualProfit = bPerfMonth.length > 0 ? totalActual : (latest ? latest.salesActual : 0);
 
               const hitPct = targetLabaKumulatif > 0 ? Math.round((actualProfit / targetLabaKumulatif) * 100) : 0;
+              const isMinus = actualProfit < 0 || hitPct < 0;
+              const displayPct = isMinus ? `-${Math.abs(hitPct)}%` : `${hitPct}%`;
               const healthScore = calculateHealthScore(b.rootCauses);
 
               return (
@@ -64,34 +64,18 @@ export const ReportSummaryTable: React.FC<ReportSummaryTableProps> = ({
                   <td className="p-2 font-semibold border-r border-slate-300">{b.name}</td>
                   <td className="p-2 border-r border-slate-300">{b.kepalaToko}</td>
                   <td className="p-2 border-r border-slate-300 font-mono font-bold text-center">
-                    <span
-                      className={`px-1.5 py-0.5 rounded text-[10px] ${
-                        healthScore >= 3.5
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : healthScore >= 2.5
-                          ? 'bg-amber-100 text-amber-800'
-                          : 'bg-rose-100 text-rose-800'
-                      }`}
-                    >
+                    <span className={`px-1.5 py-0.5 rounded text-[10px] ${healthScore >= 3.5 ? 'bg-emerald-100 text-emerald-800' : healthScore >= 2.5 ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'}`}>
                       {healthScore > 0 ? `${healthScore} / 5.0` : '-'}
                     </span>
                   </td>
-                  <td className="p-2 border-r border-slate-300 font-bold uppercase text-[10px]">
-                    {b.status.replace('_', ' ')}
-                  </td>
-                  <td className="p-2 text-right border-r border-slate-300 font-mono font-bold text-slate-800">
-                    {formatRupiah(targetLabaKumulatif)}
-                  </td>
-                  <td className="p-2 text-right border-r border-slate-300 font-mono font-bold text-emerald-700">
-                    {actualProfit > 0 ? formatRupiah(actualProfit) : '-'}
+                  <td className="p-2 border-r border-slate-300 font-bold uppercase text-[10px]">{b.status.replace('_', ' ')}</td>
+                  <td className="p-2 text-right border-r border-slate-300 font-mono font-bold text-slate-800">{formatRupiah(targetLabaKumulatif)}</td>
+                  <td className={`p-2 text-right border-r border-slate-300 font-mono font-bold ${isMinus ? 'text-rose-600' : 'text-emerald-700'}`}>
+                    {actualProfit !== 0 ? formatRupiah(actualProfit) : '-'}
                   </td>
                   <td className="p-2 text-center font-bold font-mono">
-                    <span
-                      className={`px-1.5 py-0.5 rounded ${
-                        hitPct >= 100 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
-                      }`}
-                    >
-                      {hitPct}%
+                    <span className={`px-1.5 py-0.5 rounded ${isMinus ? 'bg-rose-100 text-rose-800 font-black' : hitPct >= 100 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+                      {displayPct}
                     </span>
                   </td>
                 </tr>
