@@ -175,31 +175,5 @@ export const INITIAL_GRADUATIONS: BranchGraduation[] = [
   }
 ];
 
-export const INITIAL_ESCALATIONS: EscalationTicket[] = [
-  {
-    id: 'esc-01',
-    branchId: 'br-03',
-    branchName: 'Cabang Basmalah Merdeka Barat',
-    date: '2026-08-17',
-    title: 'Usulan Penggantian / Servis Total Kompresor Chiller 3 Pintu',
-    category: 'renovasi_aset',
-    urgency: 'kritis',
-    description: 'Chiller display minuman utama toko mengalami kebocoran freon dan kompresor aus, memicu lonjakan tagihan listrik hingga Rp 4.5 Jt/bulan dan risiko minuman tidak dingin.',
-    proposedSolution: 'Kirimkan tim teknisi pemeliharaan aset pusat untuk penggantian kompresor hemat energi atau penggantian unit chiller cadangan.',
-    status: 'ditinjau',
-    managerFeedback: 'Sudah diteruskan ke Dept. GA/Maintenance untuk dijadwalkan inspeksi hari Jumat ini.'
-  },
-  {
-    id: 'esc-02',
-    branchId: 'br-01',
-    branchName: 'Cabang Basmalah Veteran Raya',
-    date: '2026-08-14',
-    title: 'Permohonan Alokasi Promo Khusus Tebus Murah Minyak Goreng',
-    category: 'diskon_khusus',
-    urgency: 'tinggi',
-    description: 'Untuk merebut kembali traffic pelanggan dari kompetitor baru di seberang, toko memerlukan dukungan program PWP (Purchase with Purchase) Minyak 1L.',
-    proposedSolution: 'Alokasikan 100 karton promo tebus murah Rp 12.000 per struk belanja min. Rp 60.000 produk non-sembako.',
-    status: 'disetujui',
-    managerFeedback: 'Disetujui untuk kuota 80 karton mulai periode weekend ini.'
-  }
-];
+export const INITIAL_ESCALATIONS: EscalationTicket[] = [];
+

@@ -515,9 +515,9 @@ export const StorageService = {
 
   // Escalation Tickets
   getEscalations(branchId?: string): EscalationTicket[] {
-    const data = localStorage.getItem(KEYS.ESCALATIONS);
-    const list = data ? safeParse<EscalationTicket[]>(KEYS.ESCALATIONS, INITIAL_ESCALATIONS) : INITIAL_ESCALATIONS;
-    if (!data) this.saveEscalations(INITIAL_ESCALATIONS);
+    const raw = localStorage.getItem(KEYS.ESCALATIONS);
+    let list = raw ? safeParse<EscalationTicket[]>(KEYS.ESCALATIONS, []) : [];
+    list = list.filter(e => !['esc-01', 'esc-02'].includes(e.id));
     if (branchId) {
       return list.filter(e => e.branchId === branchId);
     }
@@ -745,20 +745,22 @@ export const StorageService = {
         this.saveGraduations(graduations);
       }
 
-      if (eRes.data && eRes.data.length > 0) {
-        const escalations: EscalationTicket[] = eRes.data.map((e: any) => ({
-          id: e.id,
-          branchId: e.branch_id,
-          branchName: e.branch_name,
-          date: e.ticket_date,
-          title: e.title,
-          category: e.category,
-          urgency: e.urgency,
-          description: e.description,
-          proposedSolution: e.proposed_solution || '',
-          status: e.status,
-          managerFeedback: e.manager_feedback || ''
-        }));
+      if (eRes.data) {
+        const escalations: EscalationTicket[] = eRes.data
+          .filter((e: any) => !['esc-01', 'esc-02'].includes(e.id))
+          .map((e: any) => ({
+            id: e.id,
+            branchId: e.branch_id,
+            branchName: e.branch_name,
+            date: e.ticket_date,
+            title: e.title,
+            category: e.category,
+            urgency: e.urgency,
+            description: e.description,
+            proposedSolution: e.proposed_solution || '',
+            status: e.status,
+            managerFeedback: e.manager_feedback || ''
+          }));
         this.saveEscalations(escalations);
       }
 
