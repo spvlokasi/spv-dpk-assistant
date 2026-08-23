@@ -51,15 +51,15 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
   return (
     <div className="space-y-6">
       <ReportHeaderBar reportType={reportType} onReportTypeChange={setReportType} selectedBranchId={selectedBranchId} onSelectBranch={setSelectedBranchId} selectedMonth={selectedMonth} onMonthChange={setSelectedMonth} availableMonths={availableMonths} branches={branches} onPrint={() => window.print()} />
-      <div className="relative bg-white text-slate-900 pt-28 sm:pt-36 pb-24 sm:pb-32 px-6 sm:px-12 rounded-2xl shadow-2xl max-w-5xl mx-auto border border-slate-200 font-sans print:p-0 print:pt-24 print:pb-20 print:px-6 print:border-none print:shadow-none space-y-5 print:space-y-3.5 report-official-letterhead" style={{ backgroundImage: "url('/templates/kop_sidogiri.png')", backgroundSize: '100% auto', backgroundPosition: 'top center', backgroundRepeat: 'no-repeat' }}>
-        <div className="border-b-2 border-slate-900 pb-2.5 flex justify-between items-end">
+      <div className="bg-white text-slate-900 p-8 sm:p-12 rounded-2xl shadow-2xl max-w-5xl mx-auto border border-slate-200 font-sans print:p-0 print:border-none print:shadow-none space-y-5 print:space-y-3">
+        <div className="border-b-2 border-slate-900 pb-3 print:pb-2 flex justify-between items-start">
           <div>
-            <h1 className="text-lg sm:text-xl font-black tracking-tight text-slate-950 uppercase print:text-base">Laporan Supervisi Cabang DPK</h1>
-            <p className="text-xs font-bold text-emerald-800 mt-0.5 uppercase tracking-wider print:text-[10px]">PT Sidogiri Mitra Utama — {authorRole}</p>
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 uppercase print:text-lg">Laporan Cabang DPK</h1>
+            <p className="text-xs font-bold text-slate-700 mt-0.5 uppercase tracking-wider print:text-[11px]">Departemen Bisnis & Marketing — {authorRole}</p>
           </div>
-          <div className="text-right text-xs text-slate-600 print:text-[10px]">
+          <div className="text-right text-xs text-slate-600 print:text-[11px]">
             <div>Tanggal: {formatDateIndo(new Date().toISOString())}</div>
-            <div className="font-semibold text-slate-900">Periode: {formatMonthYearIndo(selectedMonth)}</div>
+            <div className="font-semibold text-slate-800">Periode: {formatMonthYearIndo(selectedMonth)}</div>
           </div>
         </div>
         <ReportSummaryTable branches={targetBranches} performance={performance} selectedMonth={selectedMonth} calculateHealthScore={calculateHealthScore} />
