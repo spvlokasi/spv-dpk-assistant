@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Branch, ActionPlanMilestone, FieldVisit, DailyPerformance, EscalationTicket } from '../../types';
 import { UserAccount } from '../../types/auth';
 import { DashboardOverview } from '../dashboard/DashboardOverview';
 import { BranchList } from '../branch/BranchList';
 import { BranchDetailAndRCA } from '../branch/BranchDetailAndRCA';
 import { BranchMapManager } from '../map/BranchMapManager';
+import { CatalogAdminManager } from '../catalog/admin/CatalogAdminManager';
+import { PublicStoreView } from '../catalog/public/PublicStoreView';
 import { ActionPlanManager } from '../actionplan/ActionPlanManager';
 import { FieldVisitLog } from '../fieldvisit/FieldVisitLog';
 import { PerformanceTracker } from '../performance/PerformanceTracker';
@@ -37,8 +39,14 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
   activeTab, setActiveTab, selectedBranchId, setSelectedBranchId, isAddingBranch,
   setIsAddingBranch, isAddingVisit, setIsAddingVisit, currentUser, data, handlers
 }) => {
+  const [publicBranchCode, setPublicBranchCode] = useState<string | null>(null);
   const currentSelectedBranch = selectedBranchId ? data.branches.find((b) => b.id === selectedBranchId) : null;
   const handleSelectBranch = (branchId: string) => { setSelectedBranchId(branchId); setActiveTab('branch_detail'); };
+  const targetPublicBranch = data.branches.find((b) => b.code === publicBranchCode) || data.branches[0];
+
+  if (activeTab === 'public_catalog' && targetPublicBranch) {
+    return <PublicStoreView branch={targetPublicBranch} onBackToApp={() => setActiveTab('catalog')} />;
+  }
 
   switch (activeTab) {
     case 'dashboard':
@@ -49,6 +57,8 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
       return currentSelectedBranch ? <BranchDetailAndRCA branch={currentSelectedBranch} onBack={() => setActiveTab('branches')} onSaveBranch={handlers.handleSaveBranch} onNavigateToTab={setActiveTab} /> : null;
     case 'map':
       return <BranchMapManager branches={data.branches} onNavigateToDetail={handleSelectBranch} />;
+    case 'catalog':
+      return <CatalogAdminManager branches={data.branches} onOpenPublicCatalog={(code) => { setPublicBranchCode(code); setActiveTab('public_catalog'); }} />;
     case 'actionplan':
       return <ActionPlanManager branches={data.branches} milestones={data.milestones} performance={data.performance} selectedBranchId={selectedBranchId || undefined} onSaveMilestone={handlers.handleSaveMilestone} onDeleteMilestone={handlers.handleDeleteMilestone} />;
     case 'fieldvisit':
