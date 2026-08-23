@@ -4,6 +4,7 @@ import { UserAccount } from '../../types/auth';
 import { DashboardOverview } from '../dashboard/DashboardOverview';
 import { BranchList } from '../branch/BranchList';
 import { BranchDetailAndRCA } from '../branch/BranchDetailAndRCA';
+import { BranchMapManager } from '../map/BranchMapManager';
 import { ActionPlanManager } from '../actionplan/ActionPlanManager';
 import { FieldVisitLog } from '../fieldvisit/FieldVisitLog';
 import { PerformanceTracker } from '../performance/PerformanceTracker';
@@ -33,23 +34,11 @@ interface MainContentRouterProps {
 }
 
 export const MainContentRouter: React.FC<MainContentRouterProps> = ({
-  activeTab,
-  setActiveTab,
-  selectedBranchId,
-  setSelectedBranchId,
-  isAddingBranch,
-  setIsAddingBranch,
-  isAddingVisit,
-  setIsAddingVisit,
-  currentUser,
-  data,
-  handlers
+  activeTab, setActiveTab, selectedBranchId, setSelectedBranchId, isAddingBranch,
+  setIsAddingBranch, isAddingVisit, setIsAddingVisit, currentUser, data, handlers
 }) => {
   const currentSelectedBranch = selectedBranchId ? data.branches.find((b) => b.id === selectedBranchId) : null;
-  const handleSelectBranch = (branchId: string) => {
-    setSelectedBranchId(branchId);
-    setActiveTab('branch_detail');
-  };
+  const handleSelectBranch = (branchId: string) => { setSelectedBranchId(branchId); setActiveTab('branch_detail'); };
 
   switch (activeTab) {
     case 'dashboard':
@@ -58,6 +47,8 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
       return <BranchList branches={data.branches} onSelectBranch={handleSelectBranch} onSaveBranch={handlers.handleSaveBranch} onDeleteBranch={async (id) => { await handlers.handleDeleteBranch(id); if (selectedBranchId === id) setSelectedBranchId(null); }} isAddingNew={isAddingBranch} onCloseNewModal={() => setIsAddingBranch(false)} />;
     case 'branch_detail':
       return currentSelectedBranch ? <BranchDetailAndRCA branch={currentSelectedBranch} onBack={() => setActiveTab('branches')} onSaveBranch={handlers.handleSaveBranch} onNavigateToTab={setActiveTab} /> : null;
+    case 'map':
+      return <BranchMapManager branches={data.branches} onNavigateToDetail={handleSelectBranch} />;
     case 'actionplan':
       return <ActionPlanManager branches={data.branches} milestones={data.milestones} performance={data.performance} selectedBranchId={selectedBranchId || undefined} onSaveMilestone={handlers.handleSaveMilestone} onDeleteMilestone={handlers.handleDeleteMilestone} />;
     case 'fieldvisit':

@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Store, Target, ClipboardCheck, TrendingUp, FileText, AlertTriangle, Settings } from 'lucide-react';
+import { LayoutDashboard, Store, MapPin, Target, ClipboardCheck, TrendingUp, FileText, AlertTriangle, Settings } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -13,6 +13,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, branc
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'branches', label: 'Cabang & Diagnosa', icon: Store, badge: branchCount || undefined, badgeColor: 'bg-slate-800 text-slate-300 border border-slate-700' },
+    { id: 'map', label: 'Peta & Rute Supervisi', icon: MapPin },
     { id: 'actionplan', label: 'Aksi Perbaikan', icon: Target },
     { id: 'fieldvisit', label: 'Kunjungan & Coaching', icon: ClipboardCheck, badge: openIssuesCount || undefined, badgeColor: 'bg-amber-950/80 text-amber-300 border border-amber-700/60' },
     { id: 'performance', label: 'Monitoring Kinerja', icon: TrendingUp },
@@ -39,10 +40,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, branc
             </button>
           );
         })}
-      </div>
-      <div className="mt-8 p-3 rounded-xl bg-slate-800/40 border border-slate-700/50">
-        <div className="flex items-center gap-2 text-[11px] font-semibold text-emerald-400 mb-1"><span className="w-2 h-2 rounded-full bg-emerald-500" />Fokus Supervisor DPK</div>
-        <p className="text-[11px] text-slate-400 leading-relaxed">Prioritaskan kunjungan ke cabang berkategori <b>Kritis</b> & kawal komitmen KTB setiap minggu.</p>
       </div>
     </aside>
   );

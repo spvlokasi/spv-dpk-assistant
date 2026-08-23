@@ -39,6 +39,10 @@ export interface Branch {
   imageUrl?: string;
   diagnosisStartDate?: string;
   diagnosisEndDate?: string;
+  latitude?: number;
+  longitude?: number;
+  city?: string;
+  areaCluster?: string;
 }
 
 export interface DiagnosisLog {
