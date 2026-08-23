@@ -10,7 +10,7 @@ export const INITIAL_GRADUATIONS: BranchGraduation[] = [
     checklists: [
       { id: 'gc-1', title: 'Target Sales Harian', targetDescription: 'Rata-rata sales >= Rp 13.500.000 selama 3 bulan berturut-turut', isMet: false },
       { id: 'gc-2', title: 'Target Margin Profit', targetDescription: 'Gross Margin >= 15.5%', isMet: true },
-      { id: 'gc-3', title: 'Efisiensi Biaya Opex', targetDescription: 'Opex <= Rp 22.000.000 / bulan', isMet: true },
+      { id: 'gc-3', title: 'Efisiensi Biaya Toko', targetDescription: 'Biaya <= Rp 22.000.000 / bulan', isMet: true },
       { id: 'gc-4', title: 'Audit Kepatuhan 5R & SOP', targetDescription: 'Skor audit toko min. 85 poin', isMet: false },
       { id: 'gc-5', title: 'Kemandirian KTB & Tim', targetDescription: 'KTB mampu memimpin briefing dan analisis harian tanpa pendampingan intensif', isMet: false }
     ]
@@ -25,7 +25,7 @@ export const INITIAL_GRADUATIONS: BranchGraduation[] = [
     checklists: [
       { id: 'gc-21', title: 'Pencapaian Sales Target >= 100%', targetDescription: 'Sales stabil di atas target harian 3 bulan berturut-turut', isMet: true },
       { id: 'gc-22', title: 'Target Margin Profit Tercapai', targetDescription: 'Gross Margin tercapai 16.2%', isMet: true },
-      { id: 'gc-23', title: 'Efisiensi Biaya Operasional (Opex)', targetDescription: 'Opex terkendali sesuai budget', isMet: true },
+      { id: 'gc-23', title: 'Efisiensi Biaya Operasional Toko', targetDescription: 'Biaya terkendali sesuai budget', isMet: true },
       { id: 'gc-24', title: 'Skor Audit Kepatuhan SOP & 5R', targetDescription: 'Nilai audit 92 poin', isMet: true },
       { id: 'gc-25', title: 'Kemandirian KTB & Tim', targetDescription: 'KTB mandiri menjalankan rutinitas', isMet: true }
     ]
@@ -39,7 +39,7 @@ export const INITIAL_GRADUATIONS: BranchGraduation[] = [
     checklists: [
       { id: 'gc-31', title: 'Pencapaian Sales Target >= 100%', targetDescription: 'Sales stabil', isMet: false },
       { id: 'gc-32', title: 'Target Margin Profit Tercapai', targetDescription: 'Margin >= 14.5%', isMet: false },
-      { id: 'gc-33', title: 'Efisiensi Biaya Operasional (Opex)', targetDescription: 'Opex terkontrol', isMet: false },
+      { id: 'gc-33', title: 'Efisiensi Biaya Operasional Toko', targetDescription: 'Biaya terkontrol', isMet: false },
       { id: 'gc-34', title: 'Skor Audit Kepatuhan SOP & 5R', targetDescription: 'Nilai audit min 85', isMet: false },
       { id: 'gc-35', title: 'Kemandirian KTB & Tim', targetDescription: 'KTB mampu memimpin pembagian shift', isMet: false }
     ]

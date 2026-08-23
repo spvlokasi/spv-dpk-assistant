@@ -12,7 +12,7 @@ DATA PROFIL & TARGET CABANG:
 - KTB: ${branch.kepalaToko || 'KTB'}
 - Target Laba Harian: ${formatShortRupiah(branch.targetSalesPerDay || 1500000)}/hari
 - Target Margin Profit: ${branch.targetMarginPct || 15}%
-- Batas Opex Max: ${formatShortRupiah(branch.targetMaxOpexPerMonth || 54000000)}/bulan
+- Batas Biaya Operasional Max: ${formatShortRupiah(branch.targetMaxOpexPerMonth || 54000000)}/bulan
 ${latestPerf ? `- Kinerja Terakhir: Laba ${formatShortRupiah(latestPerf.salesActual)}/hari, Margin ${latestPerf.marginPct}%` : ''}
 
 HASIL AUDIT DIAGNOSA RCA (1-5):

@@ -13,7 +13,7 @@ export const generateGeminiMilestones = async (
 
   const prompt = `Anda adalah SPV Senior Minimarket TokoBASMALAH.
 Buat 4 Milestone Aksi Turnaround untuk toko [${branch.code}] ${branch.name}.
-Target: Laba ${branch.targetSalesPerDay}/hari, Margin ${branch.targetMarginPct}%, Opex <= ${branch.targetMaxOpexPerMonth}/bln.
+Target: Laba ${branch.targetSalesPerDay}/hari, Margin ${branch.targetMarginPct}%, Biaya Operasional <= ${branch.targetMaxOpexPerMonth}/bln.
 
 Kembalikan HANYA array JSON valid (tanpa markdown):
 [
@@ -64,8 +64,7 @@ Kembalikan HANYA array JSON valid (tanpa markdown):
         verifiedBySpv: false
       }))
     }));
-  } catch (error) {
-    console.warn('Gemini Milestones generation failed, fallback to smart rule generator:', error);
+  } catch {
     return generateSmartActionPlan(branch, performanceHistory);
   }
 };

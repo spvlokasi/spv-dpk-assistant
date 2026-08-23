@@ -11,7 +11,7 @@ export const getFase2Milestones = (branchId: string, timestamp: number): ActionP
     targetMetric: 'Laporan Bedah Cabang Lengkap & Penyelarasan Stok Lokal',
     status: 'pending',
     tasks: [
-      { id: `t-${timestamp}-201`, title: 'Bedah Cabang: Analisis struktur biaya (margin vs opex) dan kesesuaian warga lokal', assignedTo: 'SPV DPK', frequency: 'sekali', completed: false, verifiedBySpv: false },
+      { id: `t-${timestamp}-201`, title: 'Bedah Cabang: Analisis struktur biaya (margin vs biaya operasional) dan kesesuaian warga lokal', assignedTo: 'SPV DPK', frequency: 'sekali', completed: false, verifiedBySpv: false },
       { id: `t-${timestamp}-202`, title: 'Ukur rasio Traffic vs Conversion rate pengunjung toko', assignedTo: 'SPV DPK', frequency: 'mingguan', completed: false, verifiedBySpv: false },
       { id: `t-${timestamp}-203`, title: 'Evaluasi jadwal kerja personil & cegah lembur yang tidak perlu', assignedTo: 'KTB', frequency: 'mingguan', completed: false, verifiedBySpv: false }
     ]

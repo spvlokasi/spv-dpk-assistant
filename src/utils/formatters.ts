@@ -58,7 +58,7 @@ export function sortBranchesByStatus<T extends { status?: string; name?: string 
 export function formatCategoryName(category: string): string {
   const map: Record<string, string> = {
     sales_drop: '📉 Sales Drop / Anjlok', margin_minus: '💸 Margin Rendah / Minus',
-    opex_bengkak: '⚡ Biaya Opex Bengkak', shrinkage_tinggi: '📦 Susut/NKL Tinggi',
+    opex_bengkak: '⚡ Biaya Toko Bengkak', shrinkage_tinggi: '📦 Susut/NKL Tinggi',
     traffic_rendah: '🚶 Traffic Struk Rendah', disiplin_sdm: '👥 Kedisiplinan & SDM'
   };
   return map[category] || category || '-';

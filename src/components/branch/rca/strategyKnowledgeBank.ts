@@ -41,7 +41,7 @@ export const generateSmartRetailAnalysis = (
   let stepNum = 1;
   focusFactors.slice(0, 4).forEach(f => {
     const t = f.title.toLowerCase();
-    if (t.includes('listrik') || t.includes('energi') || t.includes('ac')) remedySteps.push(`${stepNum++}. Efisiensi Opex: Kunci suhu AC 24-25°C & bersihkan kondensor.`);
+    if (t.includes('listrik') || t.includes('energi') || t.includes('ac')) remedySteps.push(`${stepNum++}. Efisiensi Biaya: Kunci suhu AC 24-25°C & bersihkan kondensor.`);
     else if (t.includes('stok mati') || t.includes('slow moving') || t.includes('expired')) remedySteps.push(`${stepNum++}. Penyelamatan Margin: Eksekusi mark-down 10-20% sebelum ED.`);
     else if (t.includes('kasir') || t.includes('up-selling')) remedySteps.push(`${stepNum++}. Up-Selling Kasir: Wajibkan kasir suggestive selling tebus murah.`);
     else if (t.includes('out-of-stock') || t.includes('sku')) remedySteps.push(`${stepNum++}. Zero OOS: Kawal ketersediaan Top 50 SKU fast-moving.`);

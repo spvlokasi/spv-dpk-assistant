@@ -7,8 +7,8 @@ export const getFase1Milestones = (branchId: string, timestamp: number): ActionP
     phase: 'fase_1',
     monthNumber: 1,
     weekNumber: 1,
-    title: 'M1: Audit Efisiensi Total Energi & Opex Toko',
-    targetMetric: 'Turunkan Biaya Listrik & Opex Minimal 15%',
+    title: 'M1: Audit Efisiensi Energi & Biaya Operasional Toko',
+    targetMetric: 'Turunkan Biaya Listrik & Operasional Minimal 15%',
     status: 'in_progress',
     tasks: [
       { id: `t-${timestamp}-101`, title: 'Pengaturan suhu AC ideal 24-25°C & matikan 1 unit AC saat jam sepi (08.00 - 11.00)', assignedTo: 'KTB', frequency: 'harian', completed: false, verifiedBySpv: false },

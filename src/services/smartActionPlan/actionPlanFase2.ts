@@ -3,7 +3,7 @@ import { formatShortRupiah } from '../../utils/formatters';
 
 export const buildSmartFase2 = (branchId: string, timestamp: number, ctx: any): ActionPlanMilestone[] => {
   const phase2TasksWeek3: ActionPlanTask[] = [
-    { id: `t-${timestamp}-201`, title: 'Bedah Cabang: Evaluasi struktur biaya (margin vs opex) dan karakter konsumen lokal', assignedTo: 'SPV DPK', frequency: 'sekali', completed: false, verifiedBySpv: false },
+    { id: `t-${timestamp}-201`, title: 'Bedah Cabang: Evaluasi struktur biaya (margin vs biaya operasional) dan karakter konsumen lokal', assignedTo: 'SPV DPK', frequency: 'sekali', completed: false, verifiedBySpv: false },
     { id: `t-${timestamp}-202`, title: 'Zero Out-of-Stock: Pastikan Top 50 SKU penyumbang omzet tidak pernah kosong', assignedTo: 'KTB', frequency: 'harian', completed: false, verifiedBySpv: false },
     { id: `t-${timestamp}-203`, title: 'Stock Opname (SO) parsial harian untuk kategori rawan (Rokok, Susu, Kosmetik)', assignedTo: 'KTB', frequency: 'harian', completed: false, verifiedBySpv: false }
   ];
