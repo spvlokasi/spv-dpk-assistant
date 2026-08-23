@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserCheck, LogOut } from 'lucide-react';
 import { UserAccount } from '../../types/auth';
+import { PwaInstallButton } from '../common/PwaInstallButton';
 
 interface NavbarProps {
   currentUser: UserAccount;
@@ -22,6 +23,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentUser, onOpenProfileModal,
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            <PwaInstallButton />
             <button onClick={onOpenProfileModal} className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-800 transition-colors text-left group" title="Klik untuk Edit Profil">
               <div className="w-8 h-8 rounded-full bg-emerald-700/40 border border-emerald-500/40 flex items-center justify-center group-hover:border-emerald-400 transition-colors">
                 <UserCheck className="w-4 h-4 text-emerald-400" />
