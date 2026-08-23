@@ -20,11 +20,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     setErrorMsg(null);
     const res = await AuthService.login(username, password);
     setIsLoading(false);
-    if (res.success && res.user) {
-      onLoginSuccess(res.user);
-    } else {
-      setErrorMsg(res.message);
-    }
+    if (res.success && res.user) onLoginSuccess(res.user);
+    else setErrorMsg(res.message);
   };
 
   return (
@@ -33,9 +30,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-teal-600/15 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-md space-y-6 relative z-10">
-        <div className="text-center space-y-3">
-          <img src="/logo.png" alt="Logo Basmalah" className="h-28 w-auto max-w-[200px] object-contain drop-shadow-2xl mx-auto hover:scale-105 transition-transform duration-300" />
+        <div className="text-center space-y-2">
+          <img src="/logo.png" alt="Logo Basmalah" className="h-24 w-auto max-w-[180px] object-contain drop-shadow-2xl mx-auto hover:scale-105 transition-transform" />
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">SPV DPK</h1>
+          <p className="text-xs font-semibold text-emerald-400 uppercase tracking-widest">Sistem Digital Toko</p>
         </div>
 
         <div className="bg-slate-900/90 border border-slate-800 backdrop-blur-xl p-7 sm:p-8 rounded-3xl shadow-2xl space-y-5">
@@ -48,21 +46,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-emerald-400" /> Username
-              </label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5"><User className="w-3.5 h-3.5 text-emerald-400" /> Username</label>
               <input type="text" required value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Masukkan username..." className="w-full bg-slate-800/80 border border-slate-700 text-slate-100 text-xs rounded-xl px-3.5 py-3 focus:outline-none focus:border-emerald-500 font-mono" />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-emerald-400" /> Kata Sandi
-              </label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5"><Lock className="w-3.5 h-3.5 text-emerald-400" /> Kata Sandi</label>
               <div className="relative">
                 <input type={showPassword ? 'text' : 'password'} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Masukkan kata sandi..." className="w-full bg-slate-800/80 border border-slate-700 text-slate-100 text-xs rounded-xl pl-3.5 pr-10 py-3 focus:outline-none focus:border-emerald-500 font-mono" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 p-1">
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 p-1">{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
               </div>
             </div>
 
