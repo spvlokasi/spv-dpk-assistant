@@ -6,6 +6,7 @@ import { StorageService } from '../../services/storage';
 import { ReportHeaderBar } from './ReportHeaderBar';
 import { ReportSummaryTable } from './ReportSummaryTable';
 import { ReportBranchDetailCard } from './ReportBranchDetailCard';
+import { ReportEscalationSection } from './ReportEscalationSection';
 import { ReportSignatures } from './ReportSignatures';
 
 interface ExecutiveReportGeneratorProps {
@@ -19,7 +20,7 @@ interface ExecutiveReportGeneratorProps {
 }
 
 export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> = ({
-  branches, visits, milestones, performance, currentUser
+  branches, visits, milestones, performance, escalations, currentUser
 }) => {
   const currentYm = new Date().toISOString().slice(0, 7);
   const [selectedMonth, setSelectedMonth] = useState<string>(currentYm);
@@ -68,6 +69,7 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
             {targetBranches.map((b) => (<ReportBranchDetailCard key={b.id} branch={b} milestones={milestones} visits={visits} calculateHealthScore={calculateHealthScore} />))}
           </div>
         </div>
+        <ReportEscalationSection escalations={escalations} targetBranches={targetBranches} />
         <ReportSignatures authorName={authorName} authorRole={authorRole} authorManager={authorManager} targetBranchCount={targetBranches.length} singleBranchKtb={targetBranches.length === 1 ? targetBranches[0].kepalaToko : undefined} singleBranchSpvArea={targetBranches.length === 1 ? targetBranches[0].spvArea : undefined} />
       </div>
     </div>
