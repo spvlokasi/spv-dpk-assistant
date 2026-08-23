@@ -9,7 +9,8 @@ export const loadPromoProducts = (branchId?: string): PromoProduct[] => {
     const raw = localStorage.getItem(PROD_KEY);
     const list: PromoProduct[] = raw ? JSON.parse(raw) : DEFAULT_PROMO_PRODUCTS;
     if (!branchId || branchId === 'all') return list;
-    return list.filter((p) => p.branchId === branchId);
+    const branchList = list.filter((p) => p.branchId === branchId || p.branchId === 'all');
+    return branchList.length > 0 ? branchList : DEFAULT_PROMO_PRODUCTS;
   } catch {
     return DEFAULT_PROMO_PRODUCTS;
   }
@@ -35,7 +36,8 @@ export const loadPromoVouchers = (branchId?: string): PromoVoucher[] => {
     const raw = localStorage.getItem(VOUCH_KEY);
     const list: PromoVoucher[] = raw ? JSON.parse(raw) : DEFAULT_PROMO_VOUCHERS;
     if (!branchId || branchId === 'all') return list;
-    return list.filter((v) => v.branchId === branchId);
+    const branchList = list.filter((v) => v.branchId === branchId || v.branchId === 'all');
+    return branchList.length > 0 ? branchList : DEFAULT_PROMO_VOUCHERS;
   } catch {
     return DEFAULT_PROMO_VOUCHERS;
   }
