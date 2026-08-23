@@ -22,12 +22,9 @@ export const BranchMapLeaflet: React.FC<BranchMapLeafletProps> = ({
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
     const map = L.map(mapContainerRef.current, { center: [-7.05, 113.3], zoom: 9 });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
     markersRef.current = L.layerGroup().addTo(map);
     mapInstanceRef.current = map;
-
     return () => { map.remove(); mapInstanceRef.current = null; };
   }, []);
 
@@ -47,11 +44,12 @@ export const BranchMapLeaflet: React.FC<BranchMapLeafletProps> = ({
       const isCritical = b.status === 'akut' || b.status === 'kritis';
       const isProgress = b.status === 'dalam_progres';
       const color = isCritical ? '#f43f5e' : isProgress ? '#f59e0b' : '#10b981';
+      const size = isSelected ? 36 : 28;
 
       const icon = L.divIcon({
-        className: 'custom-map-marker',
-        html: `<div style="background-color: ${color}; width: ${isSelected ? '24px' : '18px'}; height: ${isSelected ? '24px' : '18px'}; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 10px;">${b.code.replace('M', '')}</div>`,
-        iconSize: [24, 24], iconAnchor: [12, 12]
+        className: 'custom-basmalah-marker',
+        html: `<div style="display: flex; flex-direction: column; align-items: center; cursor: pointer; transform: translate(-50%, -50%);"><div style="background: white; border: 2.5px solid ${color}; width: ${size}px; height: ${size}px; border-radius: 50%; box-shadow: 0 3px 10px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 2px;"><img src="/logo.png" alt="Basmalah" style="width: 100%; height: 100%; object-fit: contain;" /></div><div style="background: ${color}; color: white; font-size: 8px; font-weight: 800; font-family: monospace; padding: 1px 3px; border-radius: 3px; margin-top: -3px; box-shadow: 0 1px 4px rgba(0,0,0,0.3); border: 1px solid white; white-space: nowrap;">${b.code}</div></div>`,
+        iconSize: [size, size + 14], iconAnchor: [size / 2, size / 2]
       });
 
       const marker = L.marker([lat, lng], { icon }).addTo(layerGroup);
@@ -59,7 +57,6 @@ export const BranchMapLeaflet: React.FC<BranchMapLeafletProps> = ({
       bounds.extend([lat, lng]);
     });
 
-    // Draw route polyline if multiple branches in route
     if (routeBranchIds.length > 1) {
       routeBranchIds.forEach((id) => {
         const b = branches.find((item) => item.id === id);
