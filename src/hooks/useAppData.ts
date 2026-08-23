@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
 import { StorageService } from '../services/storage';
-import { 
-  Branch, 
-  ActionPlanMilestone, 
-  FieldVisit, 
-  DailyPerformance, 
-  BranchGraduation, 
-  EscalationTicket 
-} from '../types';
+import { Branch, ActionPlanMilestone, FieldVisit, DailyPerformance, BranchGraduation, EscalationTicket } from '../types';
 
 export const useAppData = (isLoggedIn: boolean) => {
   const [branches, setBranches] = useState<Branch[]>([]);
@@ -29,96 +22,26 @@ export const useAppData = (isLoggedIn: boolean) => {
   useEffect(() => {
     if (isLoggedIn) {
       loadData();
-      StorageService.syncFromCloudOnStartup().then((synced) => {
-        if (synced) loadData();
-      });
+      StorageService.syncFromCloudOnStartup().then((synced) => { if (synced) loadData(); });
     }
   }, [isLoggedIn]);
 
-  // CRUD Handlers
-  const handleSaveBranch = async (b: Branch) => {
-    await StorageService.saveBranch(b);
-    loadData();
-  };
-
-  const handleDeleteBranch = async (id: string) => {
-    await StorageService.deleteBranch(id);
-    loadData();
-  };
-
-  const handleSaveMilestone = async (m: ActionPlanMilestone) => {
-    await StorageService.saveMilestone(m);
-    loadData();
-  };
-
-  const handleDeleteMilestone = async (id: string) => {
-    await StorageService.deleteMilestone(id);
-    loadData();
-  };
-
-  const handleSaveVisit = async (v: FieldVisit) => {
-    await StorageService.saveVisit(v);
-    loadData();
-  };
-
-  const handleDeleteVisit = async (id: string) => {
-    await StorageService.deleteVisit(id);
-    loadData();
-  };
-
-  const handleAddPerformance = async (p: DailyPerformance) => {
-    await StorageService.addPerformanceEntry(p);
-    loadData();
-  };
-
-  const handleDeletePerformance = async (id: string) => {
-    await StorageService.deletePerformanceEntry(id);
-    loadData();
-  };
-
-  const handleSaveGraduation = async (g: BranchGraduation) => {
-    await StorageService.saveGraduation(g);
-    loadData();
-  };
-
-  const handleUpdateBranchStatus = async (branchId: string, status: any) => {
-    const branch = StorageService.getBranchById(branchId);
-    if (branch) {
-      branch.status = status;
-      await StorageService.saveBranch(branch);
-      loadData();
-    }
-  };
-
-  const handleSaveEscalation = async (e: EscalationTicket) => {
-    await StorageService.saveEscalation(e);
-    loadData();
-  };
-
-  const handleDeleteEscalation = async (id: string) => {
-    await StorageService.deleteEscalation(id);
-    loadData();
-  };
-
   return {
-    branches,
-    milestones,
-    visits,
-    performance,
-    graduations,
-    escalations,
-    loadData,
-    handleSaveBranch,
-    handleDeleteBranch,
-    handleSaveMilestone,
-    handleDeleteMilestone,
-    handleSaveVisit,
-    handleDeleteVisit,
-    handleAddPerformance,
-    handleDeletePerformance,
-    handleSaveGraduation,
-    handleUpdateBranchStatus,
-    handleSaveEscalation,
-    handleDeleteEscalation
+    branches, milestones, visits, performance, graduations, escalations, loadData,
+    handleSaveBranch: async (b: Branch) => { await StorageService.saveBranch(b); loadData(); },
+    handleDeleteBranch: async (id: string) => { await StorageService.deleteBranch(id); loadData(); },
+    handleSaveMilestone: async (m: ActionPlanMilestone) => { await StorageService.saveMilestone(m); loadData(); },
+    handleDeleteMilestone: async (id: string) => { await StorageService.deleteMilestone(id); loadData(); },
+    handleSaveVisit: async (v: FieldVisit) => { await StorageService.saveVisit(v); loadData(); },
+    handleDeleteVisit: async (id: string) => { await StorageService.deleteVisit(id); loadData(); },
+    handleAddPerformance: async (p: DailyPerformance) => { await StorageService.addPerformanceEntry(p); loadData(); },
+    handleDeletePerformance: async (id: string) => { await StorageService.deletePerformanceEntry(id); loadData(); },
+    handleSaveGraduation: async (g: BranchGraduation) => { await StorageService.saveGraduation(g); loadData(); },
+    handleUpdateBranchStatus: async (branchId: string, status: any) => {
+      const branch = StorageService.getBranchById(branchId);
+      if (branch) { branch.status = status; await StorageService.saveBranch(branch); loadData(); }
+    },
+    handleSaveEscalation: async (e: EscalationTicket) => { await StorageService.saveEscalation(e); loadData(); },
+    handleDeleteEscalation: async (id: string) => { await StorageService.deleteEscalation(id); loadData(); }
   };
 };

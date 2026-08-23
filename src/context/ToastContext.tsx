@@ -24,74 +24,33 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const showToast = useCallback(
-    (message: string, type: ToastType = 'success', title?: string, duration = 3500) => {
-      const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      const newToast: ToastItem = { id, message, type, title };
-
-      setToasts((prev) => [...prev, newToast]);
-
-      if (duration > 0) {
-        setTimeout(() => {
-          removeToast(id);
-        }, duration);
-      }
-    },
-    [removeToast]
-  );
+  const showToast = useCallback((message: string, type: ToastType = 'success', title?: string, duration = 3500) => {
+    const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+    setToasts((prev) => [...prev, { id, message, type, title }]);
+    if (duration > 0) setTimeout(() => removeToast(id), duration);
+  }, [removeToast]);
 
   return (
     <ToastContext.Provider value={{ showToast, removeToast }}>
       {children}
-
-      {/* Floating Global Toast Container */}
       <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-3 sm:px-0">
         {toasts.map((toast) => {
-          const isSuccess = toast.type === 'success';
-          const isError = toast.type === 'error';
-          const isWarning = toast.type === 'warning';
-
+          const colorClass = toast.type === 'success' ? 'border-emerald-500/60 text-emerald-300'
+            : toast.type === 'error' ? 'border-rose-500/60 text-rose-300'
+            : toast.type === 'warning' ? 'border-amber-500/60 text-amber-300' : 'border-blue-500/60 text-blue-300';
           return (
-            <div
-              key={toast.id}
-              className={`pointer-events-auto p-3.5 sm:p-4 rounded-2xl shadow-2xl border backdrop-blur-md flex items-start gap-3 transition-all transform duration-300 animate-slide-in ${
-                isSuccess
-                  ? 'bg-slate-900/95 border-emerald-500/60 text-emerald-300 shadow-emerald-950/50'
-                  : isError
-                  ? 'bg-slate-900/95 border-rose-500/60 text-rose-300 shadow-rose-950/50'
-                  : isWarning
-                  ? 'bg-slate-900/95 border-amber-500/60 text-amber-300 shadow-amber-950/50'
-                  : 'bg-slate-900/95 border-blue-500/60 text-blue-300 shadow-blue-950/50'
-              }`}
-            >
-              {/* Icon */}
+            <div key={toast.id} className={`pointer-events-auto p-3.5 rounded-2xl shadow-2xl border backdrop-blur-md flex items-start gap-3 bg-slate-900/95 animate-slide-in ${colorClass}`}>
               <div className="flex-shrink-0 mt-0.5">
-                {isSuccess && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}
-                {isError && <XCircle className="w-5 h-5 text-rose-400" />}
-                {isWarning && <AlertTriangle className="w-5 h-5 text-amber-400" />}
+                {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}
+                {toast.type === 'error' && <XCircle className="w-5 h-5 text-rose-400" />}
+                {toast.type === 'warning' && <AlertTriangle className="w-5 h-5 text-amber-400" />}
                 {toast.type === 'info' && <Info className="w-5 h-5 text-blue-400" />}
               </div>
-
-              {/* Text Message */}
               <div className="flex-1 space-y-0.5 pr-1 text-xs">
-                {toast.title && (
-                  <div className="font-bold text-white tracking-tight text-[13px]">
-                    {toast.title}
-                  </div>
-                )}
-                <div className="text-slate-200 leading-relaxed font-medium">
-                  {toast.message}
-                </div>
+                {toast.title && <div className="font-bold text-white tracking-tight text-[13px]">{toast.title}</div>}
+                <div className="text-slate-200 leading-relaxed font-medium">{toast.message}</div>
               </div>
-
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={() => removeToast(toast.id)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors flex-shrink-0"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <button type="button" onClick={() => removeToast(toast.id)} className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 flex-shrink-0"><X className="w-4 h-4" /></button>
             </div>
           );
         })}
@@ -102,8 +61,6 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 export const useToast = () => {
   const context = useContext(ToastContext);
-  if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
-  }
+  if (!context) throw new Error('useToast must be used within a ToastProvider');
   return context;
 };

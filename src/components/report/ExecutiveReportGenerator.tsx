@@ -19,26 +19,19 @@ interface ExecutiveReportGeneratorProps {
 }
 
 export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> = ({
-  branches,
-  visits,
-  milestones,
-  performance,
-  currentUser
+  branches, visits, milestones, performance, currentUser
 }) => {
   const currentYm = new Date().toISOString().slice(0, 7);
   const [selectedMonth, setSelectedMonth] = useState<string>(currentYm);
   const [reportType, setReportType] = useState<'all' | 'single'>('all');
   const [selectedBranchId, setSelectedBranchId] = useState<string>(branches[0]?.id || '');
 
-  // Ekstrak daftar bulan dari data performa + 6 bulan terakhir
   const availableMonths = useMemo(() => {
     const set = new Set<string>();
     set.add(currentYm);
     performance.forEach((p) => { if (p.date && p.date.length >= 7) set.add(p.date.slice(0, 7)); });
     for (let i = 1; i <= 5; i++) {
-      const d = new Date();
-      d.setMonth(d.getMonth() - i);
-      set.add(d.toISOString().slice(0, 7));
+      const d = new Date(); d.setMonth(d.getMonth() - i); set.add(d.toISOString().slice(0, 7));
     }
     return Array.from(set).sort().reverse();
   }, [performance, currentYm]);
@@ -47,7 +40,6 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
   const authorName = currentUser?.fullName || fallback.name;
   const authorRole = currentUser?.roleTitle || fallback.roleTitle;
   const authorManager = currentUser?.businessManager || fallback.businessManager;
-
   const targetBranches = reportType === 'all' ? branches : branches.filter((b) => b.id === selectedBranchId);
 
   const calculateHealthScore = (factors?: RootCauseFactor[]) => {
@@ -57,51 +49,26 @@ export const ExecutiveReportGenerator: React.FC<ExecutiveReportGeneratorProps> =
 
   return (
     <div className="space-y-6">
-      <ReportHeaderBar
-        reportType={reportType}
-        onReportTypeChange={setReportType}
-        selectedBranchId={selectedBranchId}
-        onSelectBranch={setSelectedBranchId}
-        selectedMonth={selectedMonth}
-        onMonthChange={setSelectedMonth}
-        availableMonths={availableMonths}
-        branches={branches}
-        onPrint={() => window.print()}
-      />
-
+      <ReportHeaderBar reportType={reportType} onReportTypeChange={setReportType} selectedBranchId={selectedBranchId} onSelectBranch={setSelectedBranchId} selectedMonth={selectedMonth} onMonthChange={setSelectedMonth} availableMonths={availableMonths} branches={branches} onPrint={() => window.print()} />
       <div className="bg-white text-slate-900 p-8 sm:p-12 rounded-2xl shadow-2xl max-w-5xl mx-auto border border-slate-200 font-sans print:p-0 print:border-none print:shadow-none space-y-5 print:space-y-3">
-        <div className="border-b-2 border-slate-900 pb-3 print:pb-2">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 uppercase print:text-lg">Laporan Cabang DPK</h1>
-              <p className="text-xs font-bold text-slate-700 mt-0.5 uppercase tracking-wider print:text-[11px]">Departemen Bisnis & Marketing — {authorRole}</p>
-            </div>
-            <div className="text-right text-xs text-slate-600 print:text-[11px]">
-              <div>Tanggal: {formatDateIndo(new Date().toISOString())}</div>
-              <div className="font-semibold text-slate-800">Periode: {formatMonthYearIndo(selectedMonth)}</div>
-            </div>
+        <div className="border-b-2 border-slate-900 pb-3 print:pb-2 flex justify-between items-start">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950 uppercase print:text-lg">Laporan Cabang DPK</h1>
+            <p className="text-xs font-bold text-slate-700 mt-0.5 uppercase tracking-wider print:text-[11px]">Departemen Bisnis & Marketing — {authorRole}</p>
+          </div>
+          <div className="text-right text-xs text-slate-600 print:text-[11px]">
+            <div>Tanggal: {formatDateIndo(new Date().toISOString())}</div>
+            <div className="font-semibold text-slate-800">Periode: {formatMonthYearIndo(selectedMonth)}</div>
           </div>
         </div>
-
         <ReportSummaryTable branches={targetBranches} performance={performance} selectedMonth={selectedMonth} calculateHealthScore={calculateHealthScore} />
-
         <div className="space-y-2">
           <h3 className="text-sm font-black uppercase text-slate-950 mb-2 border-l-4 border-emerald-600 pl-2">II. Rincian Audit, Diagnosa, Akar Masalah & Aksi Perbaikan</h3>
           <div className="space-y-4 print:space-y-3">
-            {targetBranches.map((b) => (
-              <ReportBranchDetailCard key={b.id} branch={b} milestones={milestones} visits={visits} calculateHealthScore={calculateHealthScore} />
-            ))}
+            {targetBranches.map((b) => (<ReportBranchDetailCard key={b.id} branch={b} milestones={milestones} visits={visits} calculateHealthScore={calculateHealthScore} />))}
           </div>
         </div>
-
-        <ReportSignatures
-          authorName={authorName}
-          authorRole={authorRole}
-          authorManager={authorManager}
-          targetBranchCount={targetBranches.length}
-          singleBranchKtb={targetBranches.length === 1 ? targetBranches[0].kepalaToko : undefined}
-          singleBranchSpvArea={targetBranches.length === 1 ? targetBranches[0].spvArea : undefined}
-        />
+        <ReportSignatures authorName={authorName} authorRole={authorRole} authorManager={authorManager} targetBranchCount={targetBranches.length} singleBranchKtb={targetBranches.length === 1 ? targetBranches[0].kepalaToko : undefined} singleBranchSpvArea={targetBranches.length === 1 ? targetBranches[0].spvArea : undefined} />
       </div>
     </div>
   );

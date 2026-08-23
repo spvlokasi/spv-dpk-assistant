@@ -7,9 +7,7 @@ interface SettingsBackupRestoreProps {
   onDataChange: () => void;
 }
 
-export const SettingsBackupRestore: React.FC<SettingsBackupRestoreProps> = ({
-  onDataChange
-}) => {
+export const SettingsBackupRestore: React.FC<SettingsBackupRestoreProps> = ({ onDataChange }) => {
   const { showToast } = useToast();
 
   const handleExport = () => {
@@ -30,8 +28,7 @@ export const SettingsBackupRestore: React.FC<SettingsBackupRestoreProps> = ({
       const reader = new FileReader();
       reader.onload = (event) => {
         try {
-          const content = event.target?.result as string;
-          const success = StorageService.importAllData(content);
+          const success = StorageService.importAllData(event.target?.result as string);
           if (success) {
             showToast('Data Berhasil Diimpor & Dipulihkan!', 'success');
             onDataChange();
@@ -46,14 +43,6 @@ export const SettingsBackupRestore: React.FC<SettingsBackupRestoreProps> = ({
     }
   };
 
-  const handleResetData = () => {
-    if (window.confirm('PERINGATAN: Apakah Anda yakin ingin mereset seluruh data lokal ke kondisi bawaan awal?')) {
-      StorageService.resetToDefaults();
-      showToast('Database Lokal Berhasil Direset ke Default!', 'warning');
-      onDataChange();
-    }
-  };
-
   return (
     <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-xl">
       <div className="flex items-center gap-2.5">
@@ -65,34 +54,18 @@ export const SettingsBackupRestore: React.FC<SettingsBackupRestoreProps> = ({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800">
-        <button
-          type="button"
-          onClick={handleExport}
-          className="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition-all active:scale-95"
-        >
-          <Download className="w-4 h-4 text-emerald-400" />
-          <span>Ekspor Cadangan (Download JSON)</span>
+        <button type="button" onClick={handleExport} className="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition-all active:scale-95">
+          <Download className="w-4 h-4 text-emerald-400" /><span>Ekspor Cadangan (Download JSON)</span>
         </button>
-
         <label className="cursor-pointer p-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition-all active:scale-95">
-          <Upload className="w-4 h-4 text-blue-400" />
-          <span>Impor / Pulihkan dari File JSON</span>
+          <Upload className="w-4 h-4 text-blue-400" /><span>Impor / Pulihkan dari File JSON</span>
           <input type="file" accept=".json" onChange={handleImport} className="hidden" />
         </label>
       </div>
 
       <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
-        <div className="flex items-center gap-1.5 text-xs text-rose-400">
-          <AlertTriangle className="w-4 h-4" />
-          <span>Reset Database Lokal:</span>
-        </div>
-        <button
-          type="button"
-          onClick={handleResetData}
-          className="px-3 py-1.5 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 border border-rose-800/40 text-xs font-bold transition-colors"
-        >
-          Reset ke Data Awal
-        </button>
+        <div className="flex items-center gap-1.5 text-xs text-rose-400"><AlertTriangle className="w-4 h-4" /><span>Reset Database Lokal:</span></div>
+        <button type="button" onClick={() => { if (window.confirm('PERINGATAN: Reset seluruh data lokal ke kondisi bawaan awal?')) { StorageService.resetToDefaults(); showToast('Database Lokal Direset!', 'warning'); onDataChange(); } }} className="px-3 py-1.5 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 border border-rose-800/40 text-xs font-bold transition-colors">Reset ke Data Awal</button>
       </div>
     </div>
   );

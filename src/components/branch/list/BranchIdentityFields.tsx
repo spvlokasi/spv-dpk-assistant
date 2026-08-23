@@ -8,8 +8,7 @@ interface BranchIdentityFieldsProps {
 }
 
 export const BranchIdentityFields: React.FC<BranchIdentityFieldsProps> = ({
-  formData,
-  onFormDataChange
+  formData, onFormDataChange
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -21,12 +20,9 @@ export const BranchIdentityFields: React.FC<BranchIdentityFieldsProps> = ({
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 600;
-        const scale = MAX_WIDTH / img.width;
-        canvas.width = MAX_WIDTH;
-        canvas.height = img.height * scale;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const scale = 600 / img.width;
+        canvas.width = 600; canvas.height = img.height * scale;
+        canvas.getContext('2d')?.drawImage(img, 0, 0, canvas.width, canvas.height);
         onFormDataChange({ ...formData, imageUrl: canvas.toDataURL('image/jpeg', 0.6) });
       };
       img.src = event.target?.result as string;
@@ -50,19 +46,8 @@ export const BranchIdentityFields: React.FC<BranchIdentityFieldsProps> = ({
       <div>
         <label className="block text-slate-400 mb-1 font-semibold">Foto Depan Toko:</label>
         <div className="flex items-center gap-3">
-          {formData.imageUrl ? (
-            <div className="relative w-16 h-12 rounded-lg overflow-hidden border border-slate-700 flex-shrink-0">
-              <img src={formData.imageUrl} alt="Toko" className="w-full h-full object-cover" />
-            </div>
-          ) : (
-            <div className="w-16 h-12 rounded-lg bg-slate-800 border border-dashed border-slate-700 flex items-center justify-center text-slate-500 flex-shrink-0">
-              <ImageIcon className="w-5 h-5" />
-            </div>
-          )}
-          <button type="button" onClick={() => fileInputRef.current?.click()} className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold border border-slate-700 flex items-center gap-1.5">
-            <Upload className="w-3.5 h-3.5" />
-            <span>Pilih Foto Toko</span>
-          </button>
+          {formData.imageUrl ? (<div className="relative w-16 h-12 rounded-lg overflow-hidden border border-slate-700 flex-shrink-0"><img src={formData.imageUrl} alt="Toko" className="w-full h-full object-cover" /></div>) : (<div className="w-16 h-12 rounded-lg bg-slate-800 border border-dashed border-slate-700 flex items-center justify-center text-slate-500 flex-shrink-0"><ImageIcon className="w-5 h-5" /></div>)}
+          <button type="button" onClick={() => fileInputRef.current?.click()} className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold border border-slate-700 flex items-center gap-1.5"><Upload className="w-3.5 h-3.5" /><span>Pilih Foto Toko</span></button>
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageFileChange} className="hidden" />
         </div>
       </div>
