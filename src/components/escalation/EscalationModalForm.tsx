@@ -20,7 +20,6 @@ export const EscalationModalForm: React.FC<EscalationModalFormProps> = ({
   const [formData, setFormData] = useState<Partial<EscalationTicket>>({
     branchId: editingTicket?.branchId || branches[0]?.id || '',
     title: editingTicket?.title || '',
-    category: editingTicket?.category || 'sdm_rotasi',
     urgency: editingTicket?.urgency || 'tinggi',
     description: editingTicket?.description || '',
     proposedSolution: editingTicket?.proposedSolution || '',
@@ -35,14 +34,13 @@ export const EscalationModalForm: React.FC<EscalationModalFormProps> = ({
       showToast('Lengkapi judul dan deskripsi kendala', 'warning');
       return;
     }
-
     const branch = branches.find((b) => b.id === formData.branchId);
     const ticket: EscalationTicket = {
       id: editingTicket?.id || `esc-${Date.now()}`,
       branchId: formData.branchId || branches[0]?.id || '',
       branchName: branch?.name || 'Cabang Basmalah',
       title: formData.title.trim(),
-      category: formData.category as any,
+      category: (editingTicket?.category || 'sdm_rotasi') as any,
       urgency: formData.urgency as any,
       description: formData.description.trim(),
       proposedSolution: formData.proposedSolution?.trim() || '',
@@ -50,9 +48,8 @@ export const EscalationModalForm: React.FC<EscalationModalFormProps> = ({
       date: formData.date || new Date().toISOString().slice(0, 10),
       managerFeedback: formData.managerFeedback?.trim()
     };
-
     onSave(ticket);
-    showToast(editingTicket ? 'Tiket eskalasi berhasil diperbarui!' : 'Tiket eskalasi berhasil diajukan ke Manajer!', 'success');
+    showToast(editingTicket ? 'Tiket berhasil diperbarui!' : 'Tiket berhasil diajukan ke Manajer!', 'success');
     onClose();
   };
 
@@ -61,11 +58,11 @@ export const EscalationModalForm: React.FC<EscalationModalFormProps> = ({
       <div className="bg-slate-900 border border-slate-700/80 rounded-2xl max-w-xl w-full p-5 sm:p-6 space-y-4 shadow-2xl relative">
         <button type="button" onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"><X className="w-5 h-5" /></button>
         <div>
-          <h3 className="text-base font-bold text-white">{editingTicket ? 'Update Tiket Eskalasi' : 'Ajukan Eskalasi Kendala Berat ke Manajer'}</h3>
+          <h3 className="text-base font-bold text-white">{editingTicket ? 'Update Tiket Eskalasi' : 'Ajukan Eskalasi Kendala Berat'}</h3>
           <p className="text-xs text-slate-400">Untuk isu yang memerlukan wewenang Manajer Bisnis / Kantor Pusat.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-3 text-xs">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-slate-400 mb-1 font-semibold">Cabang Terkait:</label>
@@ -90,24 +87,24 @@ export const EscalationModalForm: React.FC<EscalationModalFormProps> = ({
 
           <div>
             <label className="block text-slate-400 mb-1 font-semibold">Rincian Kronologi & Fakta Lapangan:</label>
-            <textarea rows={3} value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Jelaskan detail kendala dan dampak kerugian..." className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500" />
+            <textarea rows={2} value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Jelaskan detail kendala dan dampak kerugian..." className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500" />
           </div>
 
           <div>
             <label className="block text-slate-400 mb-1 font-semibold">Usulan / Rekomendasi Solusi SPV:</label>
-            <textarea rows={2} value={formData.proposedSolution} onChange={(e) => setFormData({ ...formData, proposedSolution: e.target.value })} placeholder="Usulan tindakan yang diharapkan dari Manajer Bisnis..." className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500" />
+            <textarea rows={2} value={formData.proposedSolution} onChange={(e) => setFormData({ ...formData, proposedSolution: e.target.value })} placeholder="Usulan tindakan yang diharapkan..." className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500" />
           </div>
 
           {editingTicket && (
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Tanggapan / Catatan Manajer Bisnis:</label>
-              <textarea rows={2} value={formData.managerFeedback} onChange={(e) => setFormData({ ...formData, managerFeedback: e.target.value })} placeholder="Instruksi dari Manajer Bisnis..." className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-emerald-400 focus:outline-none focus:border-emerald-500" />
+              <label className="block text-slate-400 mb-1 font-semibold">Tanggapan / Disposisi Manajer:</label>
+              <textarea rows={2} value={formData.managerFeedback} onChange={(e) => setFormData({ ...formData, managerFeedback: e.target.value })} placeholder="Instruksi / persetujuan Manajer..." className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-emerald-400 focus:outline-none focus:border-emerald-500" />
             </div>
           )}
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
             <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold">Batal</button>
-            <button type="submit" className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold flex items-center gap-1.5 shadow-lg shadow-rose-950"><CheckCircle2 className="w-4 h-4" />Kirim Tiket Eskalasi</button>
+            <button type="submit" className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold flex items-center gap-1.5 shadow-lg shadow-rose-950"><CheckCircle2 className="w-4 h-4" />Simpan Tiket</button>
           </div>
         </form>
       </div>
