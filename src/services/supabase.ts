@@ -13,8 +13,8 @@ const getSupabaseConfig = () => {
   const customUrl = localStorage.getItem('spv_supabase_url');
   const customKey = localStorage.getItem('spv_supabase_anon_key');
 
-  const supabaseUrl = customUrl || import.meta.env.VITE_SUPABASE_URL || '';
-  const supabaseAnonKey = customKey || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+  const supabaseUrl = customUrl || import.meta.env.VITE_SUPABASE_URL || 'https://umtmjabmbbchxyvfrzrj.supabase.co';
+  const supabaseAnonKey = customKey || import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_edmE-mnVn581ArJNJCuKqw__O7OBWaX';
 
   return { supabaseUrl, supabaseAnonKey };
 };
