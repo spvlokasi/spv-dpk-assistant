@@ -1,4 +1,5 @@
 import { getSupabaseClient } from './supabaseClient';
+import { Branch, ActionPlanMilestone, FieldVisit, DailyPerformance, BranchGraduation, EscalationTicket } from '../../types';
 
 export const SupabaseFetch = {
   async fetchAllFromCloud() {
@@ -15,16 +16,51 @@ export const SupabaseFetch = {
         client.from('escalation_tickets').select('*')
       ]);
 
-      return {
-        branches: bRes.data || [],
-        milestones: mRes.data || [],
-        visits: vRes.data || [],
-        performance: pRes.data || [],
-        graduations: gRes.data || [],
-        escalations: eRes.data || []
-      };
+      const branches: Branch[] = (bRes.data || []).map((b: any) => ({
+        id: b.id, code: b.code, name: b.name, address: b.address || '', phone: b.phone || '',
+        kepalaToko: b.kepala_toko || '', spvArea: b.spv_area || '', manajerBisnis: b.manajer_bisnis || 'H. Bambang Irawan',
+        entryDate: b.entry_date || new Date().toISOString().slice(0, 10), targetGraduationDate: b.target_graduation_date || '',
+        category: b.category || 'sales_drop', status: b.status || 'kritis', urgencyLevel: b.urgency_level || 'tinggi',
+        targetSalesPerDay: Number(b.target_sales_per_day) || 1500000, targetMarginPct: Number(b.target_margin_pct) || 15.5,
+        targetMaxOpexPerMonth: Number(b.target_max_opex_per_month) || 22000000, rootCauses: b.root_causes || [],
+        diagnosisSummary: b.diagnosis_summary || '', recommendedStrategy: b.recommended_strategy || '', imageUrl: b.image_url || undefined
+      }));
+
+      const milestones: ActionPlanMilestone[] = (mRes.data || []).map((m: any) => ({
+        id: m.id, branchId: m.branch_id, weekNumber: m.week_number, title: m.title,
+        targetMetric: m.target_metric, status: m.status, tasks: m.tasks || []
+      }));
+
+      const visits: FieldVisit[] = (vRes.data || []).map((v: any) => ({
+        id: v.id, branchId: v.branch_id, date: v.visit_date, time: v.visit_time || '10:00',
+        spvName: v.spv_name, agenda: v.agenda, katokCoachingTopic: v.katok_coaching_topic,
+        katokCommitment: v.katok_commitment, crewCoachingTopic: v.crew_coaching_topic,
+        spvAreaCoordinationNote: v.spv_area_coordination_note, generalRating: v.general_rating,
+        summaryConclusion: v.summary_conclusion, issues: v.issues || []
+      }));
+
+      const performance: DailyPerformance[] = (pRes.data || []).map((p: any) => ({
+        id: p.id, branchId: p.branch_id, date: p.record_date, salesActual: Number(p.sales_actual) || 0,
+        salesTarget: Number(p.sales_target) || 0, marginPct: Number(p.margin_pct) || 0, opex: Number(p.opex) || 0,
+        trafficCount: Number(p.traffic_count) || 0, basketSize: Number(p.basket_size) || 0, notes: p.notes || ''
+      }));
+
+      const graduations: BranchGraduation[] = (gRes.data || []).map((g: any) => ({
+        branchId: g.branch_id, consecutiveMonthsHit: Number(g.consecutive_months_hit) || 0,
+        targetMonthsRequired: Number(g.target_months_required) || 3, checklists: g.checklists || [],
+        bestPracticeLearnings: g.best_practice_learnings || '', graduationDate: g.graduation_date,
+        approvedByManager: Boolean(g.approved_by_manager)
+      }));
+
+      const escalations: EscalationTicket[] = (eRes.data || []).map((e: any) => ({
+        id: e.id, branchId: e.branch_id, branchName: e.branch_name, date: e.ticket_date,
+        title: e.title, category: e.category, urgency: e.urgency, description: e.description,
+        proposedSolution: e.proposed_solution || '', status: e.status, managerFeedback: e.manager_feedback || ''
+      }));
+
+      return { branches, milestones, visits, performance, graduations, escalations };
     } catch (e) {
-      console.error('Gagal fetch data dari Supabase:', e);
+      console.error('Gagal fetch data langsung dari PostgreSQL Supabase:', e);
       return null;
     }
   }
