@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthSession } from './hooks/useAuthSession';
 import { useAppData } from './hooks/useAppData';
 import { LoginPage } from './components/auth/LoginPage';
@@ -13,12 +13,21 @@ import { PublicStoreView } from './components/catalog/public/PublicStoreView';
 export const App: React.FC = () => {
   const auth = useAuthSession();
   const data = useAppData(true);
+  const isKtb = auth.currentUser?.username.startsWith('ktb.') || auth.currentUser?.roleTitle === 'Kepala Toko';
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [isAddingBranch, setIsAddingBranch] = useState(false);
   const [isAddingVisit, setIsAddingVisit] = useState(false);
 
-  // Direct public access for shoppers via URL: ?katalog=M3017
+  useEffect(() => {
+    if (isKtb && auth.currentUser) {
+      const code = auth.currentUser.username.replace('ktb.', '').toUpperCase();
+      const userBranch = data.branches.find((b) => b.code.toUpperCase() === code);
+      if (userBranch) setSelectedBranchId(userBranch.id);
+      setActiveTab('catalog');
+    }
+  }, [auth.currentUser?.username, data.branches.length]);
+
   const params = new URLSearchParams(window.location.search);
   const publicCode = params.get('katalog') || params.get('promo');
   if (publicCode) {
@@ -35,14 +44,14 @@ export const App: React.FC = () => {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       <Navbar currentUser={auth.currentUser} onOpenProfileModal={() => auth.setShowProfileModal(true)} onLogout={() => auth.setShowLogoutConfirm(true)} />
       <div className="flex-1 flex max-w-7xl w-full mx-auto pb-20 md:pb-8">
-        <Sidebar activeTab={activeTab} setActiveTab={(tab) => { setSelectedBranchId(null); setActiveTab(tab); }} branchCount={data.branches.length} openIssuesCount={openIssuesCount} pendingEscalationCount={pendingEscalationsCount} />
+        <Sidebar activeTab={activeTab} setActiveTab={(tab) => setActiveTab(tab)} branchCount={data.branches.length} openIssuesCount={openIssuesCount} pendingEscalationCount={pendingEscalationsCount} currentUser={auth.currentUser} />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto">
           <MainContentRouter activeTab={activeTab} setActiveTab={setActiveTab} selectedBranchId={selectedBranchId} setSelectedBranchId={setSelectedBranchId} isAddingBranch={isAddingBranch} setIsAddingBranch={setIsAddingBranch} isAddingVisit={isAddingVisit} setIsAddingVisit={setIsAddingVisit} currentUser={auth.currentUser} data={data} handlers={{ ...data, onOpenProfileModal: () => auth.setShowProfileModal(true) }} />
         </main>
       </div>
       {auth.showProfileModal && <ProfileSettingsModal currentUser={auth.currentUser} onClose={() => auth.setShowProfileModal(false)} onProfileUpdated={auth.handleProfileUpdated} />}
       {auth.showLogoutConfirm && <LogoutModal onClose={() => auth.setShowLogoutConfirm(false)} onConfirmLogout={auth.handleLogout} />}
-      <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
+      <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} currentUser={auth.currentUser} />
     </div>
   );
 };

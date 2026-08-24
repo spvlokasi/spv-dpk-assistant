@@ -58,7 +58,7 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
     case 'map':
       return <BranchMapManager branches={data.branches} onNavigateToDetail={handleSelectBranch} />;
     case 'catalog':
-      return <CatalogAdminManager branches={data.branches} onOpenPublicCatalog={(code) => { setPublicBranchCode(code); setActiveTab('public_catalog'); }} />;
+      return <CatalogAdminManager branches={data.branches} selectedBranchId={selectedBranchId} currentUser={currentUser} onOpenPublicCatalog={(code) => { setPublicBranchCode(code); setActiveTab('public_catalog'); }} />;
     case 'actionplan':
       return <ActionPlanManager branches={data.branches} milestones={data.milestones} performance={data.performance} selectedBranchId={selectedBranchId || undefined} onSaveMilestone={handlers.handleSaveMilestone} onDeleteMilestone={handlers.handleDeleteMilestone} />;
     case 'fieldvisit':

@@ -1,27 +1,33 @@
 import React from 'react';
-import { 
-  LayoutDashboard, 
-  Store, 
-  Target, 
-  ClipboardCheck, 
-  TrendingUp, 
-  FileText 
-} from 'lucide-react';
+import { Target, ClipboardCheck, TrendingUp, ShoppingBag, AlertTriangle, LayoutDashboard, Store } from 'lucide-react';
+import { UserAccount } from '../../types/auth';
 
 interface MobileNavProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  currentUser?: UserAccount;
 }
 
-export const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab }) => {
-  const tabs = [
-    { id: 'dashboard', label: 'Home', icon: LayoutDashboard },
-    { id: 'branches', label: 'Cabang', icon: Store },
-    { id: 'fieldvisit', label: 'Kunjungan', icon: ClipboardCheck },
+export const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab, currentUser }) => {
+  const isKtb = currentUser?.username.startsWith('ktb.') || currentUser?.roleTitle === 'Kepala Toko';
+
+  const ktbTabs = [
+    { id: 'catalog', label: 'Promo', icon: ShoppingBag },
     { id: 'actionplan', label: 'Action Plan', icon: Target },
     { id: 'performance', label: 'Kinerja', icon: TrendingUp },
-    { id: 'reports', label: 'Laporan', icon: FileText }
+    { id: 'escalations', label: 'Eskalasi', icon: AlertTriangle },
+    { id: 'fieldvisit', label: 'Supervisi', icon: ClipboardCheck }
   ];
+
+  const spvTabs = [
+    { id: 'dashboard', label: 'Home', icon: LayoutDashboard },
+    { id: 'branches', label: 'Cabang', icon: Store },
+    { id: 'catalog', label: 'Promo', icon: ShoppingBag },
+    { id: 'actionplan', label: 'Action Plan', icon: Target },
+    { id: 'performance', label: 'Kinerja', icon: TrendingUp }
+  ];
+
+  const tabs = isKtb ? ktbTabs : spvTabs;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 md:hidden no-print">

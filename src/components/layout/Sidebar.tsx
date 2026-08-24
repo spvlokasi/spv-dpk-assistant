@@ -1,5 +1,6 @@
 import React from 'react';
 import { LayoutDashboard, Store, MapPin, Target, ClipboardCheck, TrendingUp, FileText, AlertTriangle, ShoppingBag, Settings } from 'lucide-react';
+import { UserAccount } from '../../types/auth';
 
 interface SidebarProps {
   activeTab: string;
@@ -7,21 +8,28 @@ interface SidebarProps {
   branchCount: number;
   openIssuesCount: number;
   pendingEscalationCount: number;
+  currentUser?: UserAccount;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, branchCount, openIssuesCount, pendingEscalationCount }) => {
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'branches', label: 'Cabang & Diagnosa', icon: Store, badge: branchCount || undefined, badgeColor: 'bg-slate-800 text-slate-300 border border-slate-700' },
-    { id: 'map', label: 'Peta & Rute Supervisi', icon: MapPin },
-    { id: 'catalog', label: 'Katalog & Promo Toko', icon: ShoppingBag },
-    { id: 'actionplan', label: 'Aksi Perbaikan', icon: Target },
-    { id: 'fieldvisit', label: 'Kunjungan & Coaching', icon: ClipboardCheck, badge: openIssuesCount || undefined, badgeColor: 'bg-amber-950/80 text-amber-300 border border-amber-700/60' },
-    { id: 'performance', label: 'Monitoring Kinerja', icon: TrendingUp },
-    { id: 'reports', label: 'Laporan Manajer Bisnis', icon: FileText },
-    { id: 'escalations', label: 'Eskalasi Kendala Berat', icon: AlertTriangle, badge: pendingEscalationCount || undefined, badgeColor: 'bg-rose-950/80 text-rose-300 border border-rose-700/60' },
-    { id: 'settings', label: 'Pengaturan & Data', icon: Settings }
+export const Sidebar: React.FC<SidebarProps> = ({
+  activeTab, setActiveTab, branchCount, openIssuesCount, pendingEscalationCount, currentUser
+}) => {
+  const isKtb = currentUser?.username.startsWith('ktb.') || currentUser?.roleTitle === 'Kepala Toko';
+
+  const allMenuItems = [
+    { id: 'dashboard', label: 'Dashboard SPV', icon: LayoutDashboard, spvOnly: true },
+    { id: 'branches', label: 'Cabang & Diagnosa', icon: Store, badge: branchCount || undefined, badgeColor: 'bg-slate-800 text-slate-300 border border-slate-700', spvOnly: true },
+    { id: 'map', label: 'Peta & Rute Supervisi', icon: MapPin, spvOnly: true },
+    { id: 'catalog', label: 'Katalog & Promo Toko', icon: ShoppingBag, spvOnly: false },
+    { id: 'actionplan', label: 'Aksi Perbaikan Toko', icon: Target, spvOnly: false },
+    { id: 'performance', label: 'Monitoring Kinerja', icon: TrendingUp, spvOnly: false },
+    { id: 'escalations', label: 'Eskalasi Kendala', icon: AlertTriangle, badge: pendingEscalationCount || undefined, badgeColor: 'bg-rose-950/80 text-rose-300 border border-rose-700/60', spvOnly: false },
+    { id: 'fieldvisit', label: 'Catatan Supervisi SPV', icon: ClipboardCheck, badge: openIssuesCount || undefined, badgeColor: 'bg-amber-950/80 text-amber-300 border border-amber-700/60', spvOnly: false },
+    { id: 'reports', label: 'Laporan Manajer Bisnis', icon: FileText, spvOnly: true },
+    { id: 'settings', label: 'Pengaturan & Data', icon: Settings, spvOnly: true }
   ];
+
+  const menuItems = isKtb ? allMenuItems.filter((m) => !m.spvOnly) : allMenuItems;
 
   return (
     <aside className="w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0 min-h-[calc(100vh-4rem)] p-4 hidden md:block no-print">
