@@ -13,8 +13,12 @@ import { PublicStoreView } from './components/catalog/public/PublicStoreView';
 export const App: React.FC = () => {
   const auth = useAuthSession();
   const data = useAppData(true);
-  const isKtb = auth.currentUser?.username.startsWith('ktb.') || auth.currentUser?.roleTitle === 'Kepala Toko';
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const isKtb = Boolean(auth.currentUser?.username.startsWith('ktb.') || auth.currentUser?.roleTitle === 'Kepala Toko');
+
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    const isKtbStored = auth.currentUser?.username.startsWith('ktb.') || auth.currentUser?.roleTitle === 'Kepala Toko';
+    return isKtbStored ? 'catalog' : 'dashboard';
+  });
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [isAddingBranch, setIsAddingBranch] = useState(false);
   const [isAddingVisit, setIsAddingVisit] = useState(false);
@@ -24,9 +28,9 @@ export const App: React.FC = () => {
       const code = auth.currentUser.username.replace('ktb.', '').toUpperCase();
       const userBranch = data.branches.find((b) => b.code.toUpperCase() === code);
       if (userBranch) setSelectedBranchId(userBranch.id);
-      setActiveTab('catalog');
+      setActiveTab((prev) => (prev === 'dashboard' || prev === 'branches' || prev === 'map' || prev === 'reports' || prev === 'settings' ? 'catalog' : prev));
     }
-  }, [auth.currentUser?.username, data.branches.length]);
+  }, [auth.currentUser?.username, data.branches.length, isKtb]);
 
   const params = new URLSearchParams(window.location.search);
   const publicCode = params.get('katalog') || params.get('promo');

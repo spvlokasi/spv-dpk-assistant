@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AuthService } from '../services/auth';
 import { UserAccount } from '../types/auth';
 
@@ -11,6 +11,7 @@ export const useAuthSession = () => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleLoginSuccess = (user: UserAccount) => {
+    AuthService.setSession(user);
     setCurrentUser(user);
   };
 
@@ -21,6 +22,7 @@ export const useAuthSession = () => {
   };
 
   const handleProfileUpdated = (updatedUser: UserAccount) => {
+    AuthService.setSession(updatedUser);
     setCurrentUser(updatedUser);
   };
 
