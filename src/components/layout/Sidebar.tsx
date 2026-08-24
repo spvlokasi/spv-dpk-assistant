@@ -23,8 +23,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'catalog', label: 'Katalog & Promo Toko', icon: ShoppingBag, spvOnly: false },
     { id: 'actionplan', label: 'Aksi Perbaikan Toko', icon: Target, spvOnly: false },
     { id: 'performance', label: 'Monitoring Kinerja', icon: TrendingUp, spvOnly: false },
-    { id: 'escalations', label: 'Eskalasi Kendala', icon: AlertTriangle, badge: pendingEscalationCount || undefined, badgeColor: 'bg-rose-950/80 text-rose-300 border border-rose-700/60', spvOnly: false },
     { id: 'fieldvisit', label: 'Catatan Supervisi SPV', icon: ClipboardCheck, badge: openIssuesCount || undefined, badgeColor: 'bg-amber-950/80 text-amber-300 border border-amber-700/60', spvOnly: false },
+    { id: 'escalations', label: 'Eskalasi Kendala', icon: AlertTriangle, badge: pendingEscalationCount || undefined, badgeColor: 'bg-rose-950/80 text-rose-300 border border-rose-700/60', spvOnly: true },
     { id: 'reports', label: 'Laporan Manajer Bisnis', icon: FileText, spvOnly: true },
     { id: 'settings', label: 'Pengaturan & Data', icon: Settings, spvOnly: true }
   ];

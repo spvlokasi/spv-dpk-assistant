@@ -1,5 +1,5 @@
 import React from 'react';
-import { Target, ClipboardCheck, TrendingUp, ShoppingBag, AlertTriangle, LayoutDashboard, Store } from 'lucide-react';
+import { Target, ClipboardCheck, TrendingUp, ShoppingBag, LayoutDashboard, Store } from 'lucide-react';
 import { UserAccount } from '../../types/auth';
 
 interface MobileNavProps {
@@ -15,7 +15,6 @@ export const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab, c
     { id: 'catalog', label: 'Promo', icon: ShoppingBag },
     { id: 'actionplan', label: 'Action Plan', icon: Target },
     { id: 'performance', label: 'Kinerja', icon: TrendingUp },
-    { id: 'escalations', label: 'Eskalasi', icon: AlertTriangle },
     { id: 'fieldvisit', label: 'Supervisi', icon: ClipboardCheck }
   ];
 
