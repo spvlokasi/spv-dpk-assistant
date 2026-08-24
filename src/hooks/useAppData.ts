@@ -11,7 +11,6 @@ export const useAppData = (isLoggedIn: boolean) => {
   const [escalations, setEscalations] = useState<EscalationTicket[]>([]);
 
   const loadData = useCallback(async () => {
-    // 1. Direct fetch from Supabase PostgreSQL as Primary Single Source of Truth
     const cloud = await StorageService.fetchLiveFromCloud();
     if (cloud) {
       setBranches(cloud.branches);
@@ -21,7 +20,6 @@ export const useAppData = (isLoggedIn: boolean) => {
       setGraduations(cloud.graduations);
       setEscalations(cloud.escalations);
     } else {
-      // 2. Offline fallback only if disconnected
       setBranches(StorageService.getBranches());
       setMilestones(StorageService.getMilestones());
       setVisits(StorageService.getVisits());
@@ -32,9 +30,7 @@ export const useAppData = (isLoggedIn: boolean) => {
   }, []);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      loadData();
-    }
+    if (isLoggedIn) loadData();
   }, [isLoggedIn, loadData]);
 
   return {
@@ -45,13 +41,20 @@ export const useAppData = (isLoggedIn: boolean) => {
     handleDeleteMilestone: async (id: string) => { await StorageService.deleteMilestone(id); await loadData(); },
     handleSaveVisit: async (v: FieldVisit) => { await StorageService.saveVisit(v); await loadData(); },
     handleDeleteVisit: async (id: string) => { await StorageService.deleteVisit(id); await loadData(); },
-    handleAddPerformance: async (p: DailyPerformance) => { await StorageService.addPerformanceEntry(p); await loadData(); },
-    handleDeletePerformance: async (id: string) => { await StorageService.deletePerformanceEntry(id); await loadData(); },
-    handleSaveGraduation: async (g: BranchGraduation) => { await StorageService.saveGraduation(g); await loadData(); },
-    handleUpdateBranchStatus: async (branchId: string, status: any) => {
-      const branch = StorageService.getBranchById(branchId);
-      if (branch) { branch.status = status; await StorageService.saveBranch(branch); await loadData(); }
+    handleAddPerformance: async (p: DailyPerformance) => {
+      setPerformance((prev) => {
+        const idx = prev.findIndex((x) => x.id === p.id || (x.branchId === p.branchId && x.date === p.date));
+        return idx >= 0 ? prev.map((x, i) => (i === idx ? p : x)) : [p, ...prev];
+      });
+      await StorageService.addPerformanceEntry(p);
+      await loadData();
     },
+    handleDeletePerformance: async (id: string) => {
+      setPerformance((prev) => prev.filter((x) => x.id !== id));
+      await StorageService.deletePerformanceEntry(id);
+      await loadData();
+    },
+    handleSaveGraduation: async (g: BranchGraduation) => { await StorageService.saveGraduation(g); await loadData(); },
     handleSaveEscalation: async (e: EscalationTicket) => { await StorageService.saveEscalation(e); await loadData(); },
     handleDeleteEscalation: async (id: string) => { await StorageService.deleteEscalation(id); await loadData(); }
   };
