@@ -8,7 +8,7 @@ interface CatalogShareLinkBarProps {
 
 export const CatalogShareLinkBar: React.FC<CatalogShareLinkBarProps> = ({ branch }) => {
   const [copied, setCopied] = useState(false);
-  const shareUrl = `https://basmalah-belanja-two.vercel.app/?toko=${branch?.code || 'M3017'}`;
+  const shareUrl = `https://basmalahbelanja.vercel.app/?toko=${branch?.code || 'M3017'}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
