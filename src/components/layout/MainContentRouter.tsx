@@ -39,6 +39,11 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
   activeTab, setActiveTab, selectedBranchId, setSelectedBranchId, isAddingBranch,
   setIsAddingBranch, isAddingVisit, setIsAddingVisit, currentUser, data, handlers
 }) => {
+  const isKtb = currentUser?.username.startsWith('ktb.') || currentUser?.roleTitle === 'Kepala Toko';
+  const ktbCode = currentUser?.username.replace('ktb.', '').toUpperCase();
+  const ktbBranch = isKtb ? (data.branches.find((b) => b.code.toUpperCase() === ktbCode) || data.branches.find((b) => b.id === selectedBranchId) || data.branches[0]) : null;
+  const filteredBranches = isKtb && ktbBranch ? [ktbBranch] : data.branches;
+
   const [publicBranchCode, setPublicBranchCode] = useState<string | null>(null);
   const currentSelectedBranch = selectedBranchId ? data.branches.find((b) => b.id === selectedBranchId) : null;
   const handleSelectBranch = (branchId: string) => { setSelectedBranchId(branchId); setActiveTab('branch_detail'); };
@@ -50,25 +55,25 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
 
   switch (activeTab) {
     case 'dashboard':
-      return <DashboardOverview branches={data.branches} visits={data.visits} milestones={data.milestones} performance={data.performance} escalations={data.escalations} onSelectBranch={handleSelectBranch} setActiveTab={setActiveTab} onNewVisit={() => { setIsAddingVisit(true); setActiveTab('fieldvisit'); }} onNewBranch={() => { setIsAddingBranch(true); setActiveTab('branches'); }} />;
+      return <DashboardOverview branches={filteredBranches} visits={data.visits} milestones={data.milestones} performance={data.performance} escalations={data.escalations} onSelectBranch={handleSelectBranch} setActiveTab={setActiveTab} onNewVisit={() => { setIsAddingVisit(true); setActiveTab('fieldvisit'); }} onNewBranch={() => { setIsAddingBranch(true); setActiveTab('branches'); }} />;
     case 'branches':
-      return <BranchList branches={data.branches} onSelectBranch={handleSelectBranch} onSaveBranch={handlers.handleSaveBranch} onDeleteBranch={async (id) => { await handlers.handleDeleteBranch(id); if (selectedBranchId === id) setSelectedBranchId(null); }} isAddingNew={isAddingBranch} onCloseNewModal={() => setIsAddingBranch(false)} />;
+      return <BranchList branches={filteredBranches} onSelectBranch={handleSelectBranch} onSaveBranch={handlers.handleSaveBranch} onDeleteBranch={async (id) => { await handlers.handleDeleteBranch(id); if (selectedBranchId === id) setSelectedBranchId(null); }} isAddingNew={isAddingBranch} onCloseNewModal={() => setIsAddingBranch(false)} />;
     case 'branch_detail':
       return currentSelectedBranch ? <BranchDetailAndRCA branch={currentSelectedBranch} onBack={() => setActiveTab('branches')} onSaveBranch={handlers.handleSaveBranch} onNavigateToTab={setActiveTab} /> : null;
     case 'map':
-      return <BranchMapManager branches={data.branches} onNavigateToDetail={handleSelectBranch} />;
+      return <BranchMapManager branches={filteredBranches} onNavigateToDetail={handleSelectBranch} />;
     case 'catalog':
-      return <CatalogAdminManager branches={data.branches} selectedBranchId={selectedBranchId} currentUser={currentUser} onOpenPublicCatalog={(code) => { setPublicBranchCode(code); setActiveTab('public_catalog'); }} />;
+      return <CatalogAdminManager branches={filteredBranches} selectedBranchId={ktbBranch?.id || selectedBranchId} currentUser={currentUser} onOpenPublicCatalog={(code) => { setPublicBranchCode(code); setActiveTab('public_catalog'); }} />;
     case 'actionplan':
-      return <ActionPlanManager branches={data.branches} milestones={data.milestones} performance={data.performance} selectedBranchId={selectedBranchId || undefined} onSaveMilestone={handlers.handleSaveMilestone} onDeleteMilestone={handlers.handleDeleteMilestone} />;
+      return <ActionPlanManager branches={filteredBranches} milestones={data.milestones} performance={data.performance} selectedBranchId={ktbBranch?.id || selectedBranchId || undefined} onSaveMilestone={handlers.handleSaveMilestone} onDeleteMilestone={handlers.handleDeleteMilestone} />;
     case 'fieldvisit':
-      return <FieldVisitLog branches={data.branches} visits={data.visits} selectedBranchId={selectedBranchId || undefined} onSaveVisit={handlers.handleSaveVisit} onDeleteVisit={handlers.handleDeleteVisit} isOpenNewModal={isAddingVisit} onCloseNewModal={() => setIsAddingVisit(false)} />;
+      return <FieldVisitLog branches={filteredBranches} visits={data.visits} selectedBranchId={ktbBranch?.id || selectedBranchId || undefined} onSaveVisit={handlers.handleSaveVisit} onDeleteVisit={handlers.handleDeleteVisit} isOpenNewModal={isAddingVisit} onCloseNewModal={() => setIsAddingVisit(false)} />;
     case 'performance':
-      return <PerformanceTracker branches={data.branches} performance={data.performance} selectedBranchId={selectedBranchId || undefined} onAddPerformance={handlers.handleAddPerformance} onDeletePerformance={handlers.handleDeletePerformance} />;
+      return <PerformanceTracker branches={filteredBranches} performance={data.performance} selectedBranchId={ktbBranch?.id || selectedBranchId || undefined} onAddPerformance={handlers.handleAddPerformance} onDeletePerformance={handlers.handleDeletePerformance} />;
     case 'reports':
-      return <ExecutiveReportGenerator branches={data.branches} visits={data.visits} milestones={data.milestones} performance={data.performance} graduations={data.graduations} escalations={data.escalations} currentUser={currentUser} />;
+      return <ExecutiveReportGenerator branches={filteredBranches} visits={data.visits} milestones={data.milestones} performance={data.performance} graduations={data.graduations} escalations={data.escalations} currentUser={currentUser} />;
     case 'escalations':
-      return <EscalationManager branches={data.branches} escalations={data.escalations} onSaveEscalation={handlers.handleSaveEscalation} onDeleteEscalation={handlers.handleDeleteEscalation} />;
+      return <EscalationManager branches={filteredBranches} escalations={data.escalations} onSaveEscalation={handlers.handleSaveEscalation} onDeleteEscalation={handlers.handleDeleteEscalation} />;
     case 'settings':
       return <SettingsAndData currentUser={currentUser} onDataChange={handlers.loadData} onOpenProfileModal={handlers.onOpenProfileModal} />;
     default:
