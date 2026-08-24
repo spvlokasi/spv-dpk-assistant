@@ -6,7 +6,7 @@ export const handleUserLogin = async (
   usernameInput: string,
   passwordInput: string
 ): Promise<{ success: boolean; message: string; user?: UserAccount }> => {
-  const cleanUser = usernameInput.trim();
+  const cleanUser = usernameInput.trim().toLowerCase();
   const cleanPass = passwordInput.trim();
 
   if (!cleanUser || !cleanPass) {
@@ -19,37 +19,35 @@ export const handleUserLogin = async (
       const { data, error } = await client
         .from('user_accounts')
         .select('*')
-        .eq('username', cleanUser)
+        .ilike('username', cleanUser)
         .single();
 
-      if (data && !error) {
-        if (data.password === cleanPass) {
-          const user: UserAccount = {
-            id: data.id,
-            username: data.username,
-            password: data.password,
-            fullName: data.full_name || 'Supervisor DPK',
-            roleTitle: data.role_title || 'Supervisor DPK',
-            department: data.department || 'Departemen Bisnis',
-            businessManager: data.business_manager || 'H. Bambang Irawan',
-            createdAt: data.created_at
-          };
-          AuthSessionStorage.saveLocalUser(user);
-          AuthSessionStorage.setSession(user);
-          return { success: true, message: 'Login Berhasil (Cloud Database)!', user };
-        } else {
-          return { success: false, message: 'Password salah. Silakan coba lagi.' };
-        }
+      if (data && !error && data.password === cleanPass) {
+        const user: UserAccount = {
+          id: data.id,
+          username: data.username,
+          password: data.password,
+          fullName: data.full_name || 'Kepala Toko',
+          roleTitle: data.role_title || 'Kepala Toko',
+          department: data.department || 'Operasional Toko',
+          businessManager: data.business_manager || 'H. Bambang Irawan',
+          branchCode: data.branch_code,
+          createdAt: data.created_at
+        };
+        AuthSessionStorage.saveLocalUser(user);
+        AuthSessionStorage.setSession(user);
+        return { success: true, message: 'Login Berhasil (Cloud Database)!', user };
       }
     } catch (e) {
-      console.warn('Supabase auth fallback to local:', e);
+      console.warn('Supabase auth fallback:', e);
     }
   }
 
-  const localUser = AuthSessionStorage.getLocalUser();
-  if (localUser.username === cleanUser && localUser.password === cleanPass) {
-    AuthSessionStorage.setSession(localUser);
-    return { success: true, message: 'Login Berhasil!', user: localUser };
+  const users = AuthSessionStorage.getLocalUsers();
+  const matched = users.find((u) => u.username.toLowerCase() === cleanUser && u.password === cleanPass);
+  if (matched) {
+    AuthSessionStorage.setSession(matched);
+    return { success: true, message: 'Login Berhasil!', user: matched };
   }
 
   return { success: false, message: 'Username atau password tidak sesuai.' };

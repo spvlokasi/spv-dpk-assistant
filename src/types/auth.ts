@@ -6,6 +6,7 @@ export interface UserAccount {
   roleTitle: string;
   department: string;
   businessManager: string;
+  branchCode?: string;
   createdAt?: string;
 }
 
