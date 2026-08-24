@@ -36,8 +36,7 @@ export const PerformanceStorage = {
           opex: Number(entry.opex) || 0,
           traffic_count: Number(entry.trafficCount) || 0,
           basket_size: Number(entry.basketSize) || 0,
-          notes: entry.notes || '',
-          updated_at: new Date().toISOString()
+          notes: entry.notes || ''
         });
       } catch (e) {
         console.warn('Auto-sync performance entry failed:', e);

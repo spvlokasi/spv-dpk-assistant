@@ -40,8 +40,7 @@ export const VisitStorage = {
           spv_area_coordination_note: visit.spvAreaCoordinationNote,
           general_rating: visit.generalRating,
           summary_conclusion: visit.summaryConclusion,
-          issues: visit.issues,
-          updated_at: new Date().toISOString()
+          issues: visit.issues
         });
       } catch (e) {
         console.warn('Auto-sync visit failed:', e);
