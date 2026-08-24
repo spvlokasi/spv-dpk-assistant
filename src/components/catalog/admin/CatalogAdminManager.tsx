@@ -13,11 +13,12 @@ interface CatalogAdminManagerProps {
   branches: Branch[];
   selectedBranchId?: string | null;
   currentUser?: UserAccount;
+  onRefreshBranch?: () => void;
   onOpenPublicCatalog?: (branchCode: string) => void;
 }
 
 export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
-  branches, selectedBranchId: propBranchId, currentUser, onOpenPublicCatalog
+  branches, selectedBranchId: propBranchId, currentUser, onRefreshBranch, onOpenPublicCatalog
 }) => {
   const isKtb = currentUser?.username.startsWith('ktb.') || currentUser?.roleTitle === 'Kepala Toko';
   const availableBranches = isKtb && propBranchId ? branches.filter((b) => b.id === propBranchId) : branches;
@@ -58,7 +59,7 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
         </div>
       </div>
 
-      <CatalogShareLinkBar branch={currentBranch} />
+      <CatalogShareLinkBar branch={currentBranch} onRefreshBranch={onRefreshBranch} />
 
       <div className="flex gap-2 border-b border-slate-800 pb-2">
         <button onClick={() => setActiveTab('products')} className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 ${activeTab === 'products' ? 'bg-emerald-600/20 text-emerald-300 border border-emerald-500/40' : 'text-slate-400 hover:text-slate-200'}`}><ShoppingBag className="w-3.5 h-3.5" /><span>Produk Promo ({products.length})</span></button>
