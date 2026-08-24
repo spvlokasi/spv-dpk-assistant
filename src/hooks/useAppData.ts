@@ -49,6 +49,19 @@ export const useAppData = (isLoggedIn: boolean) => {
       await StorageService.addPerformanceEntry(p);
       await loadData();
     },
+    handleBulkAddPerformance: async (entries: DailyPerformance[]) => {
+      setPerformance((prev) => {
+        const copy = [...prev];
+        entries.forEach((e) => {
+          const idx = copy.findIndex((x) => x.id === e.id || (x.branchId === e.branchId && x.date === e.date));
+          if (idx >= 0) copy[idx] = e;
+          else copy.unshift(e);
+        });
+        return copy;
+      });
+      await StorageService.bulkAddPerformance(entries);
+      await loadData();
+    },
     handleDeletePerformance: async (id: string) => {
       setPerformance((prev) => prev.filter((x) => x.id !== id));
       await StorageService.deletePerformanceEntry(id);

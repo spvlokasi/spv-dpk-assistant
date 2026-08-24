@@ -12,11 +12,12 @@ interface PerformanceTrackerProps {
   performance: DailyPerformance[];
   selectedBranchId?: string;
   onAddPerformance: (entry: DailyPerformance) => void;
+  onBulkAddPerformance?: (entries: DailyPerformance[]) => void;
   onDeletePerformance: (id: string) => void;
 }
 
 export const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
-  branches, performance, selectedBranchId, onAddPerformance, onDeletePerformance
+  branches, performance, selectedBranchId, onAddPerformance, onBulkAddPerformance, onDeletePerformance
 }) => {
   const [activeBranchId, setActiveBranchId] = useState<string>(selectedBranchId || branches[0]?.id || '');
   const currentMonthKey = new Date().toISOString().slice(0, 7);
@@ -52,13 +53,18 @@ export const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
   const avgTrafficPerDay = branchPerf.length > 0 ? Math.round(totalTraffic / branchPerf.length) : 0;
   const avgBasket = branchPerf.length > 0 ? Math.round(branchPerf.reduce((acc, p) => acc + p.basketSize, 0) / branchPerf.length) : 0;
 
+  const handleImport = (entries: DailyPerformance[]) => {
+    if (onBulkAddPerformance) onBulkAddPerformance(entries);
+    else entries.forEach((e) => onAddPerformance(e));
+  };
+
   return (
     <div className="space-y-6">
       <PerformanceFilterBar branches={branches} activeBranchId={targetBranchId} onSelectBranch={setActiveBranchId} selectedMonth={selectedMonth} onSelectMonth={setSelectedMonth} availableMonths={availableMonths} onOpenAddModal={() => setShowModal(true)} onOpenImportModal={() => setShowImportModal(true)} />
       <PerformanceKpiCards avgSales={avgSales} totalTraffic={totalTraffic} avgTrafficPerDay={avgTrafficPerDay} avgBasket={avgBasket} targetSalesPerDay={currentBranch?.targetSalesPerDay || 1500000} totalDays={branchPerf.length} />
       <PerformanceDataTable branchPerf={branchPerf} targetSalesPerDay={currentBranch?.targetSalesPerDay || 1500000} onDeletePerformance={onDeletePerformance} />
       {showModal && <PerformanceInputModal branch={currentBranch} onSave={onAddPerformance} onClose={() => setShowModal(false)} />}
-      {showImportModal && <PerformanceImportModal branches={branches} activeBranch={currentBranch} onImport={(entries) => entries.forEach(onAddPerformance)} onClose={() => setShowImportModal(false)} />}
+      {showImportModal && <PerformanceImportModal branches={branches} activeBranch={currentBranch} onImport={handleImport} onClose={() => setShowImportModal(false)} />}
     </div>
   );
 };

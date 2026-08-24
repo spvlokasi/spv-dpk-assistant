@@ -69,7 +69,7 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
     case 'fieldvisit':
       return <FieldVisitLog branches={filteredBranches} visits={data.visits} selectedBranchId={ktbBranch?.id || selectedBranchId || undefined} onSaveVisit={handlers.handleSaveVisit} onDeleteVisit={handlers.handleDeleteVisit} isOpenNewModal={isAddingVisit} onCloseNewModal={() => setIsAddingVisit(false)} />;
     case 'performance':
-      return <PerformanceTracker branches={filteredBranches} performance={data.performance} selectedBranchId={ktbBranch?.id || selectedBranchId || undefined} onAddPerformance={handlers.handleAddPerformance} onDeletePerformance={handlers.handleDeletePerformance} />;
+      return <PerformanceTracker branches={filteredBranches} performance={data.performance} selectedBranchId={ktbBranch?.id || selectedBranchId || undefined} onAddPerformance={handlers.handleAddPerformance} onBulkAddPerformance={handlers.handleBulkAddPerformance} onDeletePerformance={handlers.handleDeletePerformance} />;
     case 'reports':
       return <ExecutiveReportGenerator branches={filteredBranches} visits={data.visits} milestones={data.milestones} performance={data.performance} graduations={data.graduations} escalations={data.escalations} currentUser={currentUser} />;
     case 'escalations':

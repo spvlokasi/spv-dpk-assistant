@@ -17,16 +17,21 @@ export const PerformanceStorage = {
     }
   },
   async addPerformanceEntry(entry: DailyPerformance) {
+    return this.bulkAddPerformance([entry]);
+  },
+  async bulkAddPerformance(entries: DailyPerformance[]) {
     const all = this.getPerformance();
-    const index = all.findIndex((p) => p.id === entry.id || (p.branchId === entry.branchId && p.date === entry.date));
-    if (index >= 0) all[index] = entry;
-    else all.push(entry);
+    entries.forEach((entry) => {
+      const idx = all.findIndex((p) => p.id === entry.id || (p.branchId === entry.branchId && p.date === entry.date));
+      if (idx >= 0) all[idx] = entry;
+      else all.push(entry);
+    });
     this.savePerformance(all);
 
     const client = getSupabaseClient();
-    if (client) {
+    if (client && entries.length > 0) {
       try {
-        await client.from('daily_performance').upsert({
+        const payload = entries.map((entry) => ({
           id: entry.id,
           branch_id: entry.branchId,
           record_date: entry.date,
@@ -37,9 +42,10 @@ export const PerformanceStorage = {
           traffic_count: Number(entry.trafficCount) || 0,
           basket_size: Number(entry.basketSize) || 0,
           notes: entry.notes || ''
-        });
+        }));
+        await client.from('daily_performance').upsert(payload);
       } catch (e) {
-        console.warn('Auto-sync performance entry failed:', e);
+        console.warn('Auto-sync bulk performance failed:', e);
       }
     }
   },
