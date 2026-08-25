@@ -67,7 +67,7 @@ export const MainContentRouter: React.FC<MainContentRouterProps> = ({
     case 'actionplan':
       return <ActionPlanManager branches={filteredBranches} milestones={data.milestones} performance={data.performance} selectedBranchId={ktbBranch?.id || selectedBranchId || undefined} onSaveMilestone={handlers.handleSaveMilestone} onDeleteMilestone={handlers.handleDeleteMilestone} />;
     case 'fieldvisit':
-      return <FieldVisitLog branches={filteredBranches} visits={data.visits} selectedBranchId={ktbBranch?.id || selectedBranchId || undefined} onSaveVisit={handlers.handleSaveVisit} onDeleteVisit={handlers.handleDeleteVisit} isOpenNewModal={isAddingVisit} onCloseNewModal={() => setIsAddingVisit(false)} />;
+      return <FieldVisitLog branches={filteredBranches} visits={data.visits} selectedBranchId={ktbBranch?.id || selectedBranchId || undefined} onSaveVisit={handlers.handleSaveVisit} onDeleteVisit={handlers.handleDeleteVisit} isOpenNewModal={isAddingVisit} onCloseNewModal={() => setIsAddingVisit(false)} currentUser={currentUser} />;
     case 'performance':
       return <PerformanceTracker branches={filteredBranches} performance={data.performance} selectedBranchId={ktbBranch?.id || selectedBranchId || undefined} onAddPerformance={handlers.handleAddPerformance} onBulkAddPerformance={handlers.handleBulkAddPerformance} onDeletePerformance={handlers.handleDeletePerformance} />;
     case 'reports':

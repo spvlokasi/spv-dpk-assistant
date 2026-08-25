@@ -10,10 +10,11 @@ interface FieldVisitCardProps {
   onEdit: (visit: FieldVisit) => void;
   onDelete: (id: string) => void;
   onToggleIssueResolved: (visit: FieldVisit, issueId: string) => void;
+  isKtb?: boolean;
 }
 
 export const FieldVisitCard: React.FC<FieldVisitCardProps> = ({
-  visit, branch, onEdit, onDelete, onToggleIssueResolved
+  visit, branch, onEdit, onDelete, onToggleIssueResolved, isKtb = false
 }) => {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-xl hover:border-slate-700/80 transition-all">
@@ -28,14 +29,16 @@ export const FieldVisitCard: React.FC<FieldVisitCardProps> = ({
             <span>•</span>
             <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-slate-500" />{visit.time} WIB</span>
             <span>•</span>
-            <span className="flex items-center gap-1"><User className="w-3.5 h-3.5 text-slate-500" />{visit.spvName}</span>
+            <span className="flex items-center gap-1"><User className="w-3.5 h-3.5 text-slate-500" />SPV: {visit.spvName}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1">
-          <button type="button" onClick={() => onEdit(visit)} className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors" title="Edit Log Kunjungan"><Edit className="w-3.5 h-3.5" /></button>
-          <button type="button" onClick={() => onDelete(visit.id)} className="p-1.5 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 hover:text-rose-200 border border-rose-800/40 transition-colors" title="Hapus Log"><Trash2 className="w-3.5 h-3.5" /></button>
-        </div>
+        {!isKtb && (
+          <div className="flex items-center gap-1">
+            <button type="button" onClick={() => onEdit(visit)} className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors" title="Edit Log Kunjungan"><Edit className="w-3.5 h-3.5" /></button>
+            <button type="button" onClick={() => onDelete(visit.id)} className="p-1.5 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 hover:text-rose-200 border border-rose-800/40 transition-colors" title="Hapus Log"><Trash2 className="w-3.5 h-3.5" /></button>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
@@ -49,7 +52,7 @@ export const FieldVisitCard: React.FC<FieldVisitCardProps> = ({
         <div className="bg-slate-850/60 p-3 rounded-xl border border-slate-800/80 space-y-1.5">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">👥 Kru & Kesimpulan Lapangan:</span>
           <p className="text-slate-300">{visit.crewCoachingTopic || 'Tidak ada catatan kru'}</p>
-          <div className="text-slate-400 pt-1 border-t border-slate-800/80">📝 Kesimpulan: <span className="text-slate-200">{visit.summaryConclusion}</span></div>
+          <div className="text-slate-400 pt-1 border-t border-slate-800/80">📝 Kesimpulan SPV: <span className="text-slate-200">{visit.summaryConclusion}</span></div>
         </div>
       </div>
 
