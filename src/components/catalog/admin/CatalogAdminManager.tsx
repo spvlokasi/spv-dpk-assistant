@@ -60,20 +60,20 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Satu Control Bar Tunggal yang Rapi, Padat, & Elegan */}
-      <div className="bg-slate-900 border border-slate-800 p-3 sm:p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-lg">
+      {/* Satu Control Bar Tunggal yang Rapi, Padat, 1 Baris Penuh */}
+      <div className="bg-slate-900 border border-slate-800 p-2.5 sm:p-3 rounded-2xl flex flex-nowrap items-center justify-between gap-2 shadow-lg overflow-x-auto scrollbar-none">
         {/* Sisi Kiri: Identitas Toko, WA Kasir, & Salin Link Cepat */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-shrink-0">
           {!isKtb ? (
             <select
               value={selectedBranchId}
               onChange={(e) => setSelectedBranchId(e.target.value)}
-              className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-slate-100 text-xs font-bold focus:outline-none focus:border-emerald-500 shadow-sm"
+              className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-slate-100 text-xs font-bold focus:outline-none focus:border-emerald-500 shadow-sm flex-shrink-0"
             >
               {branches.map((b) => <option key={b.id} value={b.id}>[{b.code}] {b.name}</option>)}
             </select>
           ) : (
-            <div className="px-3 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-800/60 text-emerald-300 text-xs font-bold">
+            <div className="px-3 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-800/60 text-emerald-300 text-xs font-bold flex-shrink-0">
               [{currentBranch?.code}] {currentBranch?.name}
             </div>
           )}
@@ -82,7 +82,7 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
             <button
               type="button"
               onClick={() => setShowPhoneModal(true)}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-slate-700 transition-colors shadow-sm"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-slate-700 transition-colors shadow-sm flex-shrink-0"
               title="Klik untuk ubah nomor WhatsApp Kasir"
             >
               <svg className="w-3.5 h-3.5 text-emerald-400 fill-current" viewBox="0 0 24 24">
@@ -96,7 +96,7 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
           <button
             type="button"
             onClick={handleCopyLink}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-slate-700 transition-colors shadow-sm"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-slate-700 transition-colors shadow-sm flex-shrink-0"
             title="Salin Link Web Pembeli"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
@@ -105,11 +105,11 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
         </div>
 
         {/* Sisi Kanan: Tombol-tombol Aksi Cepat */}
-        <div className="flex items-center gap-2 flex-wrap ml-auto">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <button
             type="button"
             onClick={() => setIsFlyerOpen(true)}
-            className="px-3 py-1.5 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-amber-950/40 transition-all"
+            className="px-3 py-1.5 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-amber-950/40 transition-all flex-shrink-0"
           >
             <Printer className="w-3.5 h-3.5" />
             <span>Brosur Flyer</span>
@@ -119,7 +119,7 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
             <button
               type="button"
               onClick={() => onOpenPublicCatalog(currentBranch?.code || 'M3017')}
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors"
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors flex-shrink-0"
             >
               <ExternalLink className="w-3.5 h-3.5 text-emerald-400" />
               <span>Buka Web</span>
@@ -129,7 +129,7 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
           <button
             type="button"
             onClick={handleShareWA}
-            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-950/60 transition-all"
+            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-950/60 transition-all flex-shrink-0"
           >
             <Share2 className="w-3.5 h-3.5" />
             <span>Bagikan Promo</span>
