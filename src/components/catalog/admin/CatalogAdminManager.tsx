@@ -43,11 +43,8 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-lg">
-        <div>
-          <h2 className="text-base sm:text-lg font-extrabold text-white">Katalog Promo & E-Voucher</h2>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-lg">
+        <div className="flex items-center gap-2 flex-wrap ml-auto">
           {!isKtb && (
             <select value={selectedBranchId} onChange={(e) => setSelectedBranchId(e.target.value)} className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-slate-200 text-xs font-semibold focus:outline-none">
               {branches.map((b) => <option key={b.id} value={b.id}>[{b.code}] {b.name}</option>)}
