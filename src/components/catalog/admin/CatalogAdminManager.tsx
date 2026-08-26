@@ -44,9 +44,8 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
   return (
     <div className="space-y-4">
       <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-lg">
-        <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400"><ShoppingBag className="w-5 h-5" /></div>
-          <div><h2 className="text-base sm:text-lg font-extrabold text-white">Katalog Promo & E-Voucher</h2><p className="text-xs text-slate-400">{isKtb ? `Gerai: ${currentBranch?.name}` : 'Pilih cabang toko untuk mengelola promo'}</p></div>
+        <div>
+          <h2 className="text-base sm:text-lg font-extrabold text-white">Katalog Promo & E-Voucher</h2>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           {!isKtb && (
