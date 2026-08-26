@@ -83,10 +83,12 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
               type="button"
               onClick={() => setShowPhoneModal(true)}
               className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-slate-700 transition-colors shadow-sm"
-              title="Ubah Nomor WhatsApp Kasir"
+              title="Klik untuk ubah nomor WhatsApp Kasir"
             >
-              <Phone className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-[11px]">WA Kasir: <strong className="text-emerald-400 font-mono">{currentBranch.phone || 'Belum Diatur'}</strong></span>
+              <svg className="w-3.5 h-3.5 text-emerald-400 fill-current" viewBox="0 0 24 24">
+                <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.81 13.47 3.81 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.11 7.44C8.94 7.44 8.68 7.5 8.46 7.74C8.24 7.97 7.62 8.56 7.62 9.75C7.62 10.94 8.49 12.08 8.61 12.24C8.73 12.4 10.3 14.83 12.72 15.87C14.73 16.74 15.14 16.56 15.58 16.52C16.02 16.48 17 15.94 17.2 15.38C17.4 14.81 17.4 14.33 17.34 14.23C17.28 14.12 17.12 14.07 16.87 13.94C16.63 13.82 15.42 13.23 15.2 13.14C14.97 13.06 14.81 13.02 14.65 13.27C14.48 13.51 14.01 14.07 13.87 14.23C13.72 14.39 13.58 14.41 13.34 14.29C13.09 14.17 12.3 13.91 11.36 13.07C10.63 12.42 10.13 11.61 9.99 11.37C9.85 11.12 9.97 10.99 10.1 10.87C10.21 10.76 10.35 10.58 10.47 10.44C10.59 10.3 10.63 10.19 10.71 10.03C10.79 9.87 10.75 9.73 10.69 9.61C10.63 9.49 10.13 8.28 9.93 7.78C9.73 7.29 9.53 7.36 9.38 7.35C9.24 7.35 9.11 7.44 9.11 7.44Z"/>
+              </svg>
+              <strong className="text-emerald-400 font-mono text-[11px]">{currentBranch.phone || 'Atur WA'}</strong>
               <Edit2 className="w-2.5 h-2.5 text-slate-400" />
             </button>
           )}
