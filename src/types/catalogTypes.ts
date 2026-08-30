@@ -46,6 +46,9 @@ export interface OnlineOrderLog {
   branch_name?: string;
   buyer_name: string;
   address: string;
+  maps_url?: string | null;
+  lat?: number;
+  lng?: number;
   items: OnlineOrderItem[];
   subtotal: number;
   discount: number;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, CheckCircle2, Clock, Truck, MessageCircle, Copy, Check, Filter, Trash2, Search, RefreshCw, Send, DollarSign, Tag, ExternalLink } from 'lucide-react';
+import { ShoppingBag, CheckCircle2, Clock, Truck, MessageCircle, Copy, Check, Filter, Trash2, Search, RefreshCw, Send, DollarSign, Tag, ExternalLink, Navigation, MapPin } from 'lucide-react';
 import { OnlineOrderLog } from '../../../types/catalogTypes';
 import { Branch } from '../../../types';
 import { formatRupiah } from '../../../utils/formatters';
@@ -18,6 +18,7 @@ const DEFAULT_MOCK_ORDERS: OnlineOrderLog[] = [
     branch_name: 'TokoBASMALAH Bugih',
     buyer_name: 'Ibu Hj. Siti Aisyah',
     address: 'Jl. Jokotole No. 45 RT 02/RW 04 (Depan Masjid Al-Ikhlas), Pamekasan',
+    maps_url: 'https://maps.google.com/?q=-7.1595,113.4735',
     items: [
       { name: 'Beras Premium Basmalah 5 KG', qty: 1, price: 68500 },
       { name: 'Minyak Goreng Pouch 2 Liter', qty: 2, price: 33500 },
@@ -37,6 +38,7 @@ const DEFAULT_MOCK_ORDERS: OnlineOrderLog[] = [
     branch_name: 'TokoBASMALAH Bugih',
     buyer_name: 'Bpk. Ahmad Fauzi',
     address: 'Perum Bugih Indah Blok C3, Bugih',
+    maps_url: 'https://maps.google.com/?q=-7.1650,113.4800',
     items: [
       { name: 'Kanzler Singles Sausage Original', qty: 4, price: 6500 },
       { name: 'Gula Pasir Kristal Putih 1 KG', qty: 2, price: 16900 }
@@ -239,9 +241,23 @@ export const OnlineOrderLogManager: React.FC<OnlineOrderLogManagerProps> = ({ br
                         {isDone ? '✓ Selesai Terkirim' : '🛵 Siap Diantar (COD)'}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
-                      <span>📍 {o.address}</span>
-                    </p>
+                    <div className="flex items-center gap-2 flex-wrap mt-1">
+                      <p className="text-[11px] text-slate-400 flex items-center gap-1">
+                        <span>📍 {o.address}</span>
+                      </p>
+                      {o.maps_url && (
+                        <a
+                          href={o.maps_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-blue-950/80 border border-blue-800 text-blue-300 text-[10px] font-bold hover:bg-blue-900 transition-colors shadow-sm"
+                        >
+                          <Navigation className="w-2.5 h-2.5 text-blue-400" />
+                          <span>Rute Google Maps Kurir</span>
+                          <ExternalLink className="w-2.5 h-2.5" />
+                        </a>
+                      )}
+                    </div>
                   </div>
 
                   <div className="text-right">
