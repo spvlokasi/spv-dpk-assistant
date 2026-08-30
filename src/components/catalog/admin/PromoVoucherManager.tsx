@@ -1,7 +1,6 @@
 import React from 'react';
 import { Ticket } from 'lucide-react';
 import { Branch, PromoVoucher, UserAccount } from '../../../types';
-import { VoucherAuthorityBanner } from './voucher/VoucherAuthorityBanner';
 import { VoucherCreateForm } from './voucher/VoucherCreateForm';
 import { VoucherListItem } from './voucher/VoucherListItem';
 
@@ -16,11 +15,9 @@ interface PromoVoucherManagerProps {
 }
 
 export const PromoVoucherManager: React.FC<PromoVoucherManagerProps> = ({
-  vouchers, branchId, branches = [], currentUser,
-  onOpenProposalModal, onSaveVoucher, onDeleteVoucher
+  vouchers, branchId, branches = [], currentUser, onSaveVoucher, onDeleteVoucher
 }) => {
   const isSpv = !currentUser?.branchCode || currentUser?.roleTitle?.toLowerCase().includes('spv') || currentUser?.roleTitle?.toLowerCase().includes('supervisor');
-  const currentBranchObj = branches.find((b) => b.id === branchId);
 
   const toggleVoucherStatus = (v: PromoVoucher) => {
     onSaveVoucher({ ...v, isActive: !v.isActive });
@@ -39,7 +36,6 @@ export const PromoVoucherManager: React.FC<PromoVoucherManagerProps> = ({
 
   return (
     <div className="space-y-4">
-      <VoucherAuthorityBanner isSpv={isSpv} currentBranchObj={currentBranchObj} onOpenProposalModal={onOpenProposalModal} />
       <VoucherCreateForm isSpv={isSpv} branchId={branchId} branches={branches} onSaveVoucher={onSaveVoucher} />
 
       {vouchers.length === 0 ? (
