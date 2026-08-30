@@ -209,15 +209,15 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
           products={products}
           onAddNew={() => { setEditingProduct(null); setIsModalOpen(true); }}
           onEdit={(p) => { setEditingProduct(p); setIsModalOpen(true); }}
-          onDelete={(id) => setProducts(deletePromoProduct(id))}
-          onToggleStock={(p) => setProducts(savePromoProduct({ ...p, inStock: !p.inStock }))}
+          onDelete={(id) => setProducts(deletePromoProduct(id, selectedBranchId))}
+          onToggleStock={(p) => setProducts(savePromoProduct({ ...p, inStock: !p.inStock }, selectedBranchId))}
         />
       ) : activeTab === 'vouchers' ? (
         <PromoVoucherManager
           vouchers={vouchers}
           branchId={selectedBranchId}
-          onSaveVoucher={(v) => setVouchers(savePromoVoucher(v))}
-          onDeleteVoucher={(id) => setVouchers(deletePromoVoucher(id))}
+          onSaveVoucher={(v) => setVouchers(savePromoVoucher(v, selectedBranchId))}
+          onDeleteVoucher={(id) => setVouchers(deletePromoVoucher(id, selectedBranchId))}
         />
       ) : (
         <OnlineOrderLogManager branch={currentBranch} />
@@ -227,10 +227,11 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
         <PromoProductModal
           product={editingProduct}
           branchId={selectedBranchId}
-          onSave={(p) => setProducts(savePromoProduct(p))}
+          onSave={(p) => setProducts(savePromoProduct(p, selectedBranchId))}
           onClose={() => setIsModalOpen(false)}
         />
       )}
+
 
       {isFlyerOpen && currentBranch && (
         <FlyerGeneratorModal

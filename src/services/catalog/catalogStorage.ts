@@ -5,19 +5,27 @@ import { getSupabaseClient } from '../supabase';
 const PROD_KEY = 'spv_dpk_promo_products';
 const VOUCH_KEY = 'spv_dpk_promo_vouchers';
 
+// ==========================================
+// PROMO PRODUCTS
+// ==========================================
+
 export const loadPromoProducts = (branchId?: string): PromoProduct[] => {
   try {
     const raw = sessionStorage.getItem(PROD_KEY) || localStorage.getItem(PROD_KEY);
-    const list: PromoProduct[] = raw ? JSON.parse(raw) : DEFAULT_PROMO_PRODUCTS;
-    if (!branchId || branchId === 'all') return list;
-    const branchList = list.filter((p) => p.branchId === branchId || p.branchId === 'all');
-    return branchList.length > 0 ? branchList : DEFAULT_PROMO_PRODUCTS;
+    if (raw !== null) {
+      const list: PromoProduct[] = JSON.parse(raw);
+      if (!branchId || branchId === 'all') return list;
+      return list.filter((p) => p.branchId === branchId || p.branchId === 'all');
+    }
+    // Hanya fallback ke default jika storage belum pernah ada sama sekali (fresh install)
+    if (!branchId || branchId === 'all') return DEFAULT_PROMO_PRODUCTS;
+    return DEFAULT_PROMO_PRODUCTS.filter((p) => p.branchId === branchId || p.branchId === 'all');
   } catch {
-    return DEFAULT_PROMO_PRODUCTS;
+    return [];
   }
 };
 
-export const savePromoProduct = (product: PromoProduct): PromoProduct[] => {
+export const savePromoProduct = (product: PromoProduct, branchId?: string): PromoProduct[] => {
   const current = loadPromoProducts('all');
   const index = current.findIndex((p) => p.id === product.id);
   const updated = index >= 0 ? current.map((p) => (p.id === product.id ? product : p)) : [product, ...current];
@@ -41,10 +49,11 @@ export const savePromoProduct = (product: PromoProduct): PromoProduct[] => {
     }).then();
   }
 
-  return updated;
+  if (!branchId || branchId === 'all') return updated;
+  return updated.filter((p) => p.branchId === branchId || p.branchId === 'all');
 };
 
-export const deletePromoProduct = (id: string): PromoProduct[] => {
+export const deletePromoProduct = (id: string, branchId?: string): PromoProduct[] => {
   const current = loadPromoProducts('all');
   const updated = current.filter((p) => p.id !== id);
   sessionStorage.setItem(PROD_KEY, JSON.stringify(updated));
@@ -55,22 +64,31 @@ export const deletePromoProduct = (id: string): PromoProduct[] => {
     client.from('promo_products').delete().eq('id', id).then();
   }
 
-  return updated;
+  if (!branchId || branchId === 'all') return updated;
+  return updated.filter((p) => p.branchId === branchId || p.branchId === 'all');
 };
+
+// ==========================================
+// PROMO VOUCHERS
+// ==========================================
 
 export const loadPromoVouchers = (branchId?: string): PromoVoucher[] => {
   try {
     const raw = sessionStorage.getItem(VOUCH_KEY) || localStorage.getItem(VOUCH_KEY);
-    const list: PromoVoucher[] = raw ? JSON.parse(raw) : DEFAULT_PROMO_VOUCHERS;
-    if (!branchId || branchId === 'all') return list;
-    const branchList = list.filter((v) => v.branchId === branchId || v.branchId === 'all');
-    return branchList.length > 0 ? branchList : DEFAULT_PROMO_VOUCHERS;
+    if (raw !== null) {
+      const list: PromoVoucher[] = JSON.parse(raw);
+      if (!branchId || branchId === 'all') return list;
+      return list.filter((v) => v.branchId === branchId || v.branchId === 'all');
+    }
+    // Hanya fallback ke default jika storage belum pernah ada sama sekali (fresh install)
+    if (!branchId || branchId === 'all') return DEFAULT_PROMO_VOUCHERS;
+    return DEFAULT_PROMO_VOUCHERS.filter((v) => v.branchId === branchId || v.branchId === 'all');
   } catch {
-    return DEFAULT_PROMO_VOUCHERS;
+    return [];
   }
 };
 
-export const savePromoVoucher = (voucher: PromoVoucher): PromoVoucher[] => {
+export const savePromoVoucher = (voucher: PromoVoucher, branchId?: string): PromoVoucher[] => {
   const current = loadPromoVouchers('all');
   const index = current.findIndex((v) => v.id === voucher.id);
   const updated = index >= 0 ? current.map((v) => (v.id === voucher.id ? voucher : v)) : [voucher, ...current];
@@ -98,10 +116,11 @@ export const savePromoVoucher = (voucher: PromoVoucher): PromoVoucher[] => {
     }).then();
   }
 
-  return updated;
+  if (!branchId || branchId === 'all') return updated;
+  return updated.filter((v) => v.branchId === branchId || v.branchId === 'all');
 };
 
-export const deletePromoVoucher = (id: string): PromoVoucher[] => {
+export const deletePromoVoucher = (id: string, branchId?: string): PromoVoucher[] => {
   const current = loadPromoVouchers('all');
   const updated = current.filter((v) => v.id !== id);
   sessionStorage.setItem(VOUCH_KEY, JSON.stringify(updated));
@@ -112,7 +131,8 @@ export const deletePromoVoucher = (id: string): PromoVoucher[] => {
     client.from('promo_vouchers').delete().eq('id', id).then();
   }
 
-  return updated;
+  if (!branchId || branchId === 'all') return updated;
+  return updated.filter((v) => v.branchId === branchId || v.branchId === 'all');
 };
 
 // ==========================================
@@ -129,11 +149,12 @@ export const fetchPromoProductsFromCloud = async (branchId?: string): Promise<Pr
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error || !data || data.length === 0) {
+    if (error) {
+      console.warn('Gagal fetch live promo products dari Supabase:', error.message);
       return loadPromoProducts(branchId);
     }
 
-    const products: PromoProduct[] = data.map((p: any) => ({
+    const products: PromoProduct[] = (data || []).map((p: any) => ({
       id: p.id,
       branchId: p.branch_id || 'all',
       name: p.name,
@@ -151,8 +172,7 @@ export const fetchPromoProductsFromCloud = async (branchId?: string): Promise<Pr
     localStorage.setItem(PROD_KEY, JSON.stringify(products));
 
     if (!branchId || branchId === 'all') return products;
-    const branchList = products.filter((p) => p.branchId === branchId || p.branchId === 'all');
-    return branchList.length > 0 ? branchList : products;
+    return products.filter((p) => p.branchId === branchId || p.branchId === 'all');
   } catch (e) {
     console.warn('Gagal fetch live promo products dari Supabase:', e);
     return loadPromoProducts(branchId);
@@ -169,11 +189,12 @@ export const fetchPromoVouchersFromCloud = async (branchId?: string): Promise<Pr
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error || !data || data.length === 0) {
+    if (error) {
+      console.warn('Gagal fetch live promo vouchers dari Supabase:', error.message);
       return loadPromoVouchers(branchId);
     }
 
-    const vouchers: PromoVoucher[] = data.map((v: any) => ({
+    const vouchers: PromoVoucher[] = (data || []).map((v: any) => ({
       id: v.id,
       branchId: v.branch_id || 'all',
       code: v.code,
@@ -195,11 +216,11 @@ export const fetchPromoVouchersFromCloud = async (branchId?: string): Promise<Pr
     localStorage.setItem(VOUCH_KEY, JSON.stringify(vouchers));
 
     if (!branchId || branchId === 'all') return vouchers;
-    const branchList = vouchers.filter((v) => v.branchId === branchId || v.branchId === 'all');
-    return branchList.length > 0 ? branchList : vouchers;
+    return vouchers.filter((v) => v.branchId === branchId || v.branchId === 'all');
   } catch (e) {
     console.warn('Gagal fetch live promo vouchers dari Supabase:', e);
     return loadPromoVouchers(branchId);
   }
 };
+
 
