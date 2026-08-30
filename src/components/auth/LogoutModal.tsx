@@ -23,7 +23,7 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({ onClose, onConfirmLogo
         </div>
 
         <p className="text-xs text-slate-300 leading-relaxed">
-          Apakah Anda yakin ingin keluar dari sistem <strong>SPV DPK</strong>? Sesi login Anda akan diakhiri.
+          Apakah Anda yakin ingin keluar dari sistem <strong>DPK</strong>? Sesi login Anda akan diakhiri.
         </p>
 
         <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-800">
