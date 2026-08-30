@@ -17,7 +17,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentUser, onOpenProfileModal,
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="Logo Basmalah" className="h-10 w-auto object-contain" />
             <div>
-              <h1 className="text-base sm:text-lg font-extrabold text-white tracking-tight leading-none">DPK</h1>
+              <h1 className="text-xs sm:text-base md:text-lg font-extrabold text-white tracking-tight leading-tight sm:leading-none">Dalam Pengawasan Khusus</h1>
               <span className="text-[10px] font-semibold text-emerald-400 block tracking-wider uppercase mt-0.5">Sistem Digital Toko</span>
             </div>
           </div>
