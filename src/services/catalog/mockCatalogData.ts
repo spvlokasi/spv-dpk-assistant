@@ -36,12 +36,14 @@ export const DEFAULT_PROMO_PRODUCTS: PromoProduct[] = [
 export const DEFAULT_PROMO_VOUCHERS: PromoVoucher[] = [
   {
     id: 'vouch-1', branchId: 'all', code: 'BERKAH5K',
-    discountAmount: 5000, minSpend: 50000, validUntil: '2026-12-31', isActive: true,
+    discountAmount: 5000, minSpend: 50000, quota: 50, claimedCount: 8, usedCount: 4,
+    validUntil: '2026-12-31', isActive: true,
     description: 'Potongan Rp 5.000 belanja sembako minimal Rp 50.000'
   },
   {
     id: 'vouch-2', branchId: 'all', code: 'JUMATHEMAT',
-    discountAmount: 3000, minSpend: 35000, validUntil: '2026-12-31', isActive: true,
+    discountAmount: 3000, minSpend: 35000, quota: 30, claimedCount: 5, usedCount: 2,
+    validUntil: '2026-12-31', isActive: true,
     description: 'Voucher hemat belanja akhir pekan minimal Rp 35.000'
   }
 ];
