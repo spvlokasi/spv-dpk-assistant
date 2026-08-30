@@ -23,6 +23,8 @@ export interface PromoVoucher {
   validUntil: string;
   isActive: boolean;
   description: string;
+  fundingSource?: 'store' | 'supplier' | 'joint';
+  sponsorName?: string;
 }
 
 export interface CartItem {

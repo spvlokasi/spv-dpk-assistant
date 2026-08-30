@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Ticket, Printer, ExternalLink, Share2, Copy, Check, Phone, Edit2 } from 'lucide-react';
+import { ShoppingBag, Ticket, Printer, ExternalLink, Share2, Copy, Check, Phone, Edit2, FileText } from 'lucide-react';
 import { Branch, PromoProduct, PromoVoucher } from '../../../types';
 import { UserAccount } from '../../../types/auth';
 import { loadPromoProducts, savePromoProduct, deletePromoProduct, loadPromoVouchers, savePromoVoucher, deletePromoVoucher } from '../../../services/catalog/catalogStorage';
@@ -8,6 +8,7 @@ import { PromoProductModal } from './PromoProductModal';
 import { PromoVoucherManager } from './PromoVoucherManager';
 import { FlyerGeneratorModal } from './FlyerGeneratorModal';
 import { StorePhoneEditModal } from './StorePhoneEditModal';
+import { SupplierProposalModal } from './SupplierProposalModal';
 
 interface CatalogAdminManagerProps {
   branches: Branch[];
@@ -29,6 +30,7 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
   const [editingProduct, setEditingProduct] = useState<PromoProduct | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFlyerOpen, setIsFlyerOpen] = useState(false);
+  const [isProposalOpen, setIsProposalOpen] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -106,6 +108,16 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
 
         {/* Sisi Kanan: Tombol-tombol Aksi Cepat */}
         <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsProposalOpen(true)}
+            className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-950/40 transition-all flex-shrink-0"
+            title="Buat Proposal Kerjasama Supplier (Yakult, Kanzler, dll)"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>Proposal Supplier</span>
+          </button>
+
           <button
             type="button"
             onClick={() => setIsFlyerOpen(true)}
@@ -196,6 +208,14 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
           products={products}
           vouchers={vouchers}
           onClose={() => setIsFlyerOpen(false)}
+        />
+      )}
+
+      {isProposalOpen && currentBranch && (
+        <SupplierProposalModal
+          branch={currentBranch}
+          onApplyVoucherToStore={(v) => setVouchers(savePromoVoucher(v))}
+          onClose={() => setIsProposalOpen(false)}
         />
       )}
 
