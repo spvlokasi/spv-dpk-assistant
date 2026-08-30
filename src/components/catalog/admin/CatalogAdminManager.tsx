@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Ticket, Printer, ExternalLink, Share2, Copy, Check, Phone, Edit2, FileText } from 'lucide-react';
+import { ShoppingBag, Ticket, Printer, ExternalLink, Share2, Copy, Check, Phone, Edit2, FileText, Truck } from 'lucide-react';
 import { Branch, PromoProduct, PromoVoucher } from '../../../types';
 import { UserAccount } from '../../../types/auth';
 import { loadPromoProducts, savePromoProduct, deletePromoProduct, loadPromoVouchers, savePromoVoucher, deletePromoVoucher } from '../../../services/catalog/catalogStorage';
@@ -9,6 +9,7 @@ import { PromoVoucherManager } from './PromoVoucherManager';
 import { FlyerGeneratorModal } from './FlyerGeneratorModal';
 import { StorePhoneEditModal } from './StorePhoneEditModal';
 import { SupplierProposalModal } from './SupplierProposalModal';
+import { OnlineOrderLogManager } from './OnlineOrderLogManager';
 
 interface CatalogAdminManagerProps {
   branches: Branch[];
@@ -24,7 +25,7 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
   const isKtb = currentUser?.username.startsWith('ktb.') || currentUser?.roleTitle === 'Kepala Toko';
   const availableBranches = isKtb && propBranchId ? branches.filter((b) => b.id === propBranchId) : branches;
   const [selectedBranchId, setSelectedBranchId] = useState(propBranchId || branches[0]?.id || 'br-01');
-  const [activeTab, setActiveTab] = useState<'products' | 'vouchers'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'vouchers' | 'orders'>('products');
   const [products, setProducts] = useState<PromoProduct[]>([]);
   const [vouchers, setVouchers] = useState<PromoVoucher[]>([]);
   const [editingProduct, setEditingProduct] = useState<PromoProduct | null>(null);
@@ -151,11 +152,11 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
         </div>
       </div>
 
-      {/* Tab Navigasi Produk & Voucher */}
-      <div className="flex gap-2 border-b border-slate-800 pb-2">
+      {/* Tab Navigasi Produk, Voucher & Pesanan Online */}
+      <div className="flex gap-2 border-b border-slate-800 pb-2 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setActiveTab('products')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all flex-shrink-0 ${
             activeTab === 'products'
               ? 'bg-emerald-600/20 text-emerald-300 border border-emerald-500/40 shadow-sm'
               : 'text-slate-400 hover:text-slate-200'
@@ -166,7 +167,7 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
         </button>
         <button
           onClick={() => setActiveTab('vouchers')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all flex-shrink-0 ${
             activeTab === 'vouchers'
               ? 'bg-amber-600/20 text-amber-300 border border-amber-500/40 shadow-sm'
               : 'text-slate-400 hover:text-slate-200'
@@ -174,6 +175,17 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
         >
           <Ticket className="w-3.5 h-3.5" />
           <span>E-Voucher Diskon ({vouchers.length})</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('orders')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all flex-shrink-0 ${
+            activeTab === 'orders'
+              ? 'bg-blue-600/20 text-blue-300 border border-blue-500/40 shadow-sm'
+              : 'text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <Truck className="w-3.5 h-3.5" />
+          <span>📦 Pesanan Online (COD)</span>
         </button>
       </div>
 
@@ -186,13 +198,15 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
           onDelete={(id) => setProducts(deletePromoProduct(id))}
           onToggleStock={(p) => setProducts(savePromoProduct({ ...p, inStock: !p.inStock }))}
         />
-      ) : (
+      ) : activeTab === 'vouchers' ? (
         <PromoVoucherManager
           vouchers={vouchers}
           branchId={selectedBranchId}
           onSaveVoucher={(v) => setVouchers(savePromoVoucher(v))}
           onDeleteVoucher={(id) => setVouchers(deletePromoVoucher(id))}
         />
+      ) : (
+        <OnlineOrderLogManager branch={currentBranch} />
       )}
 
       {isModalOpen && (

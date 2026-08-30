@@ -31,3 +31,26 @@ export interface CartItem {
   product: PromoProduct;
   quantity: number;
 }
+
+export interface OnlineOrderItem {
+  name: string;
+  qty: number;
+  price: number;
+}
+
+export interface OnlineOrderLog {
+  id: string;
+  branch_id?: string;
+  branch_code?: string;
+  branch_name?: string;
+  buyer_name: string;
+  address: string;
+  items: OnlineOrderItem[];
+  subtotal: number;
+  discount: number;
+  voucher_code?: string | null;
+  grand_total: number;
+  created_at: string;
+  status: 'pending_delivery' | 'delivering' | 'completed' | 'cancelled';
+}
+
