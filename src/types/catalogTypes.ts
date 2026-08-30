@@ -23,7 +23,7 @@ export interface PromoVoucher {
   validUntil: string;
   isActive: boolean;
   description: string;
-  fundingSource?: 'store' | 'supplier' | 'joint';
+  fundingSource?: 'store' | 'sponsor' | 'dpk_turnaround' | 'supplier' | 'joint';
   sponsorName?: string;
   applicableCategory?: string;
 }

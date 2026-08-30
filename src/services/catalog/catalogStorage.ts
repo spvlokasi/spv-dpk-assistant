@@ -17,9 +17,7 @@ export const loadPromoProducts = (branchId?: string): PromoProduct[] => {
       if (!branchId || branchId === 'all') return list;
       return list.filter((p) => p.branchId === branchId || p.branchId === 'all');
     }
-    // Hanya fallback ke default jika storage belum pernah ada sama sekali (fresh install)
-    if (!branchId || branchId === 'all') return DEFAULT_PROMO_PRODUCTS;
-    return DEFAULT_PROMO_PRODUCTS.filter((p) => p.branchId === branchId || p.branchId === 'all');
+    return [];
   } catch {
     return [];
   }
@@ -80,9 +78,7 @@ export const loadPromoVouchers = (branchId?: string): PromoVoucher[] => {
       if (!branchId || branchId === 'all') return list;
       return list.filter((v) => v.branchId === branchId || v.branchId === 'all');
     }
-    // Hanya fallback ke default jika storage belum pernah ada sama sekali (fresh install)
-    if (!branchId || branchId === 'all') return DEFAULT_PROMO_VOUCHERS;
-    return DEFAULT_PROMO_VOUCHERS.filter((v) => v.branchId === branchId || v.branchId === 'all');
+    return [];
   } catch {
     return [];
   }

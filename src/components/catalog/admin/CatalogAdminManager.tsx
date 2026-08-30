@@ -216,6 +216,9 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
         <PromoVoucherManager
           vouchers={vouchers}
           branchId={selectedBranchId}
+          branches={branches}
+          currentUser={currentUser}
+          onOpenProposalModal={() => setIsProposalOpen(true)}
           onSaveVoucher={(v) => setVouchers(savePromoVoucher(v, selectedBranchId))}
           onDeleteVoucher={(id) => setVouchers(deletePromoVoucher(id, selectedBranchId))}
         />
