@@ -21,7 +21,7 @@ export const BranchMapLeaflet: React.FC<BranchMapLeafletProps> = ({
 
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
-    const map = L.map(mapContainerRef.current, { center: [-7.05, 113.3], zoom: 9 });
+    const map = L.map(mapContainerRef.current, { center: [-7.08, 113.35], zoom: 9 });
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
     markersRef.current = L.layerGroup().addTo(map);
     mapInstanceRef.current = map;
@@ -37,9 +37,22 @@ export const BranchMapLeaflet: React.FC<BranchMapLeafletProps> = ({
 
     const bounds = L.latLngBounds([]);
     const routeCoords: [number, number][] = [];
+    const seenMap: Record<string, number> = {};
 
     branches.forEach((b) => {
-      const { lat, lng } = getBranchCoordinates(b);
+      const coords = getBranchCoordinates(b);
+      let lat = coords.lat;
+      let lng = coords.lng;
+      const key = `${lat.toFixed(4)}_${lng.toFixed(4)}`;
+      if (seenMap[key] != null) {
+        seenMap[key] += 1;
+        const count = seenMap[key];
+        lat += Math.sin(count * 1.05) * (0.002 * count);
+        lng += Math.cos(count * 1.05) * (0.002 * count);
+      } else {
+        seenMap[key] = 0;
+      }
+
       const isSelected = b.id === selectedBranchId;
       const isCritical = b.status === 'akut' || b.status === 'kritis';
       const isProgress = b.status === 'dalam_progres';
@@ -67,7 +80,11 @@ export const BranchMapLeaflet: React.FC<BranchMapLeafletProps> = ({
       }
     }
 
-    if (branches.length > 0 && bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] });
+    if (branches.length > 1 && bounds.isValid()) {
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 13 });
+    } else if (branches.length === 1 && bounds.isValid()) {
+      map.setView(bounds.getCenter(), 13);
+    }
   }, [branches, selectedBranchId, routeBranchIds, onSelectBranch]);
 
   return <div ref={mapContainerRef} className="w-full h-full min-h-[420px] rounded-2xl overflow-hidden border border-slate-800 z-0" />;

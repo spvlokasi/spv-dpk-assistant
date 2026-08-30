@@ -1,6 +1,7 @@
 import { Branch } from '../../types';
 import { KEYS, safeParse } from './storageCore';
 import { getSupabaseClient } from '../supabase';
+import { getBranchCoordinates } from '../map/branchCoordinates';
 
 export const BranchStorage = {
   getBranchImages(): Record<string, string> {
@@ -42,8 +43,8 @@ export const BranchStorage = {
           address: branch.address || '',
           phone: branch.phone || '',
           city: branch.city || 'Jawa Timur',
-          lat: branch.latitude ?? -7.1595,
-          lng: branch.longitude ?? 113.4735,
+          lat: branch.latitude ?? getBranchCoordinates(branch).lat,
+          lng: branch.longitude ?? getBranchCoordinates(branch).lng,
           kepala_toko: branch.kepalaToko || '',
           spv_area: branch.spvArea || '',
           manajer_bisnis: branch.manajerBisnis || 'H. Bambang Irawan',
