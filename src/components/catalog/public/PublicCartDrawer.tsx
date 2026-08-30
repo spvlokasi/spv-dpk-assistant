@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { ShoppingBag, X, Plus, Minus, Send, Image as ImageIcon } from 'lucide-react';
+import React from 'react';
+import { ShoppingBag, X } from 'lucide-react';
 import { Branch, CartItem, PromoVoucher } from '../../../types';
-import { formatRupiah } from '../../../utils/formatters';
-import { getSupabaseClient } from '../../../services/supabase';
+import { CartItemList } from './CartItemList';
+import { CartCheckoutForm } from './CartCheckoutForm';
 
 interface PublicCartDrawerProps {
   branch: Branch;
@@ -15,115 +15,21 @@ interface PublicCartDrawerProps {
 export const PublicCartDrawer: React.FC<PublicCartDrawerProps> = ({
   branch, items, appliedVoucher, onUpdateQty, onClose
 }) => {
-  const [buyerName, setBuyerName] = useState('');
-  const [address, setAddress] = useState('');
-
-  const subtotal = items.reduce((sum, i) => sum + i.product.promoPrice * i.quantity, 0);
-  const discount = appliedVoucher && subtotal >= appliedVoucher.minSpend ? appliedVoucher.discountAmount : 0;
-  const grandTotal = Math.max(0, subtotal - discount);
-
-  const handleCheckoutWA = () => {
-    if (!buyerName.trim() || !address.trim()) {
-      alert('Silakan masukkan nama dan alamat antar Anda terlebih dahulu.');
-      return;
-    }
-    const lines = items.map((i) => `• ${i.quantity}x ${i.product.name} (${formatRupiah(i.product.promoPrice * i.quantity)})`);
-    let msg = `*PESANAN BELANJA ONLINE TOKOBASMALAH*\n` +
-      `🏪 Cabang: ${branch.name}\n` +
-      `👤 Pembeli: ${buyerName.trim()}\n` +
-      `📍 Alamat Antar: ${address.trim()}\n\n` +
-      `*Daftar Barang:*\n${lines.join('\n')}\n\n` +
-      `Subtotal: ${formatRupiah(subtotal)}\n`;
-    if (discount > 0) msg += `🎟️ Voucher (${appliedVoucher?.code}): -${formatRupiah(discount)}\n`;
-    msg += `*TOTAL BAYAR: ${formatRupiah(grandTotal)} (COD/Bayar di Tempat)*\n\n` +
-      `Mohon segera diproses dan diantar ya TokoBasmalah. Terima kasih!`;
-
-    // 1. Simpan otomatis pesanan ke Supabase Cloud (online_orders)
-    const client = getSupabaseClient();
-    const orderId = `ord-${Date.now()}`;
-    const orderPayload = {
-      id: orderId,
-      branch_id: branch.id,
-      branch_code: branch.code,
-      branch_name: branch.name,
-      buyer_name: buyerName.trim(),
-      address: address.trim(),
-      items: items.map((i) => ({
-        id: i.product.id,
-        name: i.product.name,
-        unit: i.product.unit,
-        quantity: i.quantity,
-        promoPrice: i.product.promoPrice
-      })),
-      subtotal,
-      discount,
-      voucher_code: appliedVoucher?.code || '',
-      grand_total: grandTotal,
-      status: 'pending_delivery',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    };
-
-    if (client) {
-      client.from('online_orders').insert(orderPayload).then();
-      if (appliedVoucher) {
-        client.from('promo_vouchers').update({
-          used_count: (appliedVoucher.usedCount || 0) + 1,
-          updated_at: new Date().toISOString()
-        }).eq('id', appliedVoucher.id).then();
-      }
-    }
-
-    // 2. Simpan ke local cache juga
-    try {
-      const STORAGE_ORDERS_KEY = 'basmalah_customer_orders';
-      const raw = localStorage.getItem(STORAGE_ORDERS_KEY);
-      const existing = raw ? JSON.parse(raw) : [];
-      localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify([orderPayload, ...existing]));
-    } catch {}
-
-    const phone = (branch.phone || '6281234567890').replace(/\D/g, '');
-    const cleanPhone = phone.startsWith('0') ? '62' + phone.slice(1) : phone;
-    window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
-  };
-
-
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-end">
       <div className="bg-slate-900 border-l border-slate-800 w-full max-w-md h-full flex flex-col justify-between p-4 sm:p-5 shadow-2xl animate-in slide-in-from-right">
         <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-          <div className="flex items-center gap-2"><ShoppingBag className="w-5 h-5 text-emerald-400" /><h3 className="text-sm font-bold text-white">Keranjang Belanja ({items.length})</h3></div>
-          <button onClick={onClose} className="text-slate-400 hover:text-white p-1"><X className="w-4 h-4" /></button>
+          <div className="flex items-center gap-2">
+            <ShoppingBag className="w-5 h-5 text-emerald-400" />
+            <h3 className="text-sm font-bold text-white">Keranjang Belanja ({items.length})</h3>
+          </div>
+          <button onClick={onClose} className="text-slate-400 hover:text-white p-1">
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto py-3 space-y-2.5">
-          {items.length === 0 ? <p className="text-center text-xs text-slate-500 py-10">Keranjang masih kosong.</p> : items.map((i) => (
-            <div key={i.product.id} className="bg-slate-850 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                {i.product.imageUrl ? (
-                  <img src={i.product.imageUrl} alt={i.product.name} className="w-11 h-11 rounded-lg object-cover border border-slate-700 flex-shrink-0" />
-                ) : (
-                  <div className="w-11 h-11 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-500 flex-shrink-0"><ImageIcon className="w-4 h-4" /></div>
-                )}
-                <div className="min-w-0 flex-1"><h5 className="text-xs font-bold text-slate-200 truncate">{i.product.name}</h5><div className="text-[11px] text-emerald-400 font-mono">{formatRupiah(i.product.promoPrice)}</div></div>
-              </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <button onClick={() => onUpdateQty(i.product.id, i.quantity - 1)} className="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white"><Minus className="w-3 h-3" /></button>
-                <span className="text-xs font-bold text-white font-mono min-w-[14px] text-center">{i.quantity}</span>
-                <button onClick={() => onUpdateQty(i.product.id, i.quantity + 1)} className="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white"><Plus className="w-3 h-3" /></button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="pt-3 border-t border-slate-800 space-y-2.5 text-xs">
-          <input type="text" value={buyerName} onChange={(e) => setBuyerName(e.target.value)} placeholder="Nama Lengkap Anda..." className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500" />
-          <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Alamat Pengiriman (Jalan, RT/RW, Patokan)..." className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500" />
-          <div className="flex justify-between text-slate-400"><span>Subtotal:</span><strong className="text-slate-200 font-mono">{formatRupiah(subtotal)}</strong></div>
-          {discount > 0 && <div className="flex justify-between text-emerald-400"><span>Voucher ({appliedVoucher?.code}):</span><strong className="font-mono">-{formatRupiah(discount)}</strong></div>}
-          <div className="flex justify-between text-sm font-bold text-white pt-1 border-t border-slate-800"><span>Total Tagihan:</span><strong className="text-emerald-400 font-mono text-base">{formatRupiah(grandTotal)}</strong></div>
-          <button onClick={handleCheckoutWA} disabled={items.length === 0} className="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/60 active:scale-95 transition-all"><Send className="w-4 h-4" /><span>Kirim Pesanan via WhatsApp</span></button>
-        </div>
+        <CartItemList items={items} onUpdateQty={onUpdateQty} />
+        <CartCheckoutForm branch={branch} items={items} appliedVoucher={appliedVoucher} />
       </div>
     </div>
   );

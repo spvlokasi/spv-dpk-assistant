@@ -25,11 +25,7 @@ export const PublicStoreView: React.FC<PublicStoreViewProps> = ({ branch, onBack
 
   useEffect(() => {
     let isMounted = true;
-    const fetchLive = async () => {
-      const [liveProds, liveVouchs] = await Promise.all([
-        fetchPromoProductsFromCloud(branch.id),
-        fetchPromoVouchersFromCloud(branch.id)
-      ]);
+    Promise.all([fetchPromoProductsFromCloud(branch.id), fetchPromoVouchersFromCloud(branch.id)]).then(([liveProds, liveVouchs]) => {
       if (isMounted) {
         setProducts(liveProds);
         setVouchers(liveVouchs);
@@ -37,11 +33,9 @@ export const PublicStoreView: React.FC<PublicStoreViewProps> = ({ branch, onBack
           setAppliedVoucher((prev) => prev ? liveVouchs.find((v) => v.id === prev.id) || liveVouchs[0] : liveVouchs[0]);
         }
       }
-    };
-    fetchLive();
+    });
     return () => { isMounted = false; };
   }, [branch.id]);
-
 
   const handleAddToCart = (product: PromoProduct) => {
     const existing = cart.find((i) => i.product.id === product.id);
@@ -62,19 +56,15 @@ export const PublicStoreView: React.FC<PublicStoreViewProps> = ({ branch, onBack
     <div className="min-h-screen bg-slate-950 text-slate-100 pb-20">
       <PublicCatalogHeader branch={branch} onBackToApp={onBackToApp} />
       <main className="max-w-4xl mx-auto p-4 sm:p-6 space-y-4">
-        {/* Baris Badge Ringkas (Opsi 2) */}
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 text-[11px] font-semibold text-slate-300">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-950/50 border border-emerald-800/60 text-emerald-300 flex-shrink-0 shadow-sm">
-            <span>🚚</span>
-            <span>Bayar di Tempat (COD)</span>
+            <span>🚚</span><span>Bayar di Tempat (COD)</span>
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-950/40 border border-amber-800/60 text-amber-300 flex-shrink-0 shadow-sm">
-            <span>🏷️</span>
-            <span>Harga Coret Promo</span>
+            <span>🏷️</span><span>Harga Coret Promo</span>
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-950/40 border border-teal-800/60 text-teal-300 flex-shrink-0 shadow-sm">
-            <span>💬</span>
-            <span>Pesan Cepat via WA</span>
+            <span>💬</span><span>Pesan Cepat via WA</span>
           </div>
         </div>
 

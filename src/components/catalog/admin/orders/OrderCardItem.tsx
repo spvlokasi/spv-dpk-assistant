@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { CheckCircle2, MessageCircle, Trash2, Navigation, ExternalLink } from 'lucide-react';
 import { OnlineOrderLog } from '../../../../types/catalogTypes';
 import { formatRupiah } from '../../../../utils/formatters';
@@ -12,7 +12,7 @@ interface OrderCardItemProps {
 }
 
 export const OrderCardItem: React.FC<OrderCardItemProps> = ({
-  order, isSelectedForReply, onToggleReply, onUpdateStatus, onDelete
+  order, isSelectedForReply: _reply, onToggleReply, onUpdateStatus, onDelete
 }) => {
   const isDone = order.status === 'completed';
 
@@ -25,24 +25,15 @@ export const OrderCardItem: React.FC<OrderCardItemProps> = ({
           <div className="flex items-center gap-2">
             <span className="font-mono font-black text-xs text-emerald-400">{order.id}</span>
             <span className="text-xs font-bold text-white">• {order.buyer_name}</span>
-            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
-              isDone ? 'bg-teal-950 text-teal-300 border border-teal-800' : 'bg-amber-950 text-amber-300 border border-amber-800'
-            }`}>
+            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${isDone ? 'bg-teal-950 text-teal-300 border border-teal-800' : 'bg-amber-950 text-amber-300 border border-amber-800'}`}>
               {isDone ? '✓ Selesai Terkirim' : '🛵 Siap Diantar (COD)'}
             </span>
           </div>
           <div className="flex items-center gap-2 flex-wrap mt-1">
             <p className="text-[11px] text-slate-400 flex items-center gap-1">📍 {order.address}</p>
             {order.maps_url && (
-              <a
-                href={order.maps_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-blue-950/80 border border-blue-800 text-blue-300 text-[10px] font-bold hover:bg-blue-900 transition-colors"
-              >
-                <Navigation className="w-2.5 h-2.5 text-blue-400" />
-                <span>Rute Google Maps Kurir</span>
-                <ExternalLink className="w-2.5 h-2.5" />
+              <a href={order.maps_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-blue-950/80 border border-blue-800 text-blue-300 text-[10px] font-bold hover:bg-blue-900">
+                <Navigation className="w-2.5 h-2.5 text-blue-400" /><span>Rute Kurir</span><ExternalLink className="w-2.5 h-2.5" />
               </a>
             )}
           </div>
@@ -57,37 +48,22 @@ export const OrderCardItem: React.FC<OrderCardItemProps> = ({
         <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Daftar Barang Belanjaan:</div>
         {order.items?.map((item, idx) => (
           <div key={idx} className="flex justify-between text-slate-300 text-[11px]">
-            <span>• {item.qty}x {item.name}</span>
-            <span className="font-mono text-slate-400">{formatRupiah(item.price * item.qty)}</span>
+            <span>• {item.qty}x {item.name}</span><span className="font-mono text-slate-400">{formatRupiah(item.price * item.qty)}</span>
           </div>
         ))}
       </div>
 
       <div className="flex items-center justify-between gap-2 flex-wrap pt-1 border-t border-slate-800/60">
         <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={onToggleReply}
-            className="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1 border border-slate-700"
-          >
-            <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Template Balasan WA</span>
+          <button type="button" onClick={onToggleReply} className="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1 border border-slate-700">
+            <MessageCircle className="w-3.5 h-3.5 text-emerald-400" /><span>Template Balasan WA</span>
           </button>
           {!isDone ? (
-            <button
-              type="button"
-              onClick={() => onUpdateStatus('completed')}
-              className="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1 shadow-md"
-            >
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Tandai Selesai Diantar</span>
+            <button type="button" onClick={() => onUpdateStatus('completed')} className="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1 shadow-md">
+              <CheckCircle2 className="w-3.5 h-3.5" /><span>Tandai Selesai Diantar</span>
             </button>
           ) : (
-            <button
-              type="button"
-              onClick={() => onUpdateStatus('pending_delivery')}
-              className="px-2.5 py-1 rounded-xl bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-semibold"
-            >
+            <button type="button" onClick={() => onUpdateStatus('pending_delivery')} className="px-2.5 py-1 rounded-xl bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-semibold">
               Batal Selesai
             </button>
           )}
