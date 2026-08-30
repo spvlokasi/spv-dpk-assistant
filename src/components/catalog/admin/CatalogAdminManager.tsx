@@ -108,15 +108,17 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
 
         {/* Sisi Kanan: Tombol-tombol Aksi Cepat */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          <button
-            type="button"
-            onClick={() => setIsProposalOpen(true)}
-            className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-950/40 transition-all flex-shrink-0"
-            title="Buat Proposal Kerjasama Supplier (Yakult, Kanzler, dll)"
-          >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Proposal Supplier</span>
-          </button>
+          {!isKtb && (
+            <button
+              type="button"
+              onClick={() => setIsProposalOpen(true)}
+              className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-950/40 transition-all flex-shrink-0"
+              title="Buat Proposal Kerjasama Supplier (Yakult, Kanzler, dll)"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Proposal Supplier</span>
+            </button>
+          )}
 
           <button
             type="button"
