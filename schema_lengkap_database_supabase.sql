@@ -31,12 +31,14 @@ VALUES
   ('usr-m1025', 'ktb.m1025', 'basmalah1025', 'Somad (KTB Tengket)', 'Kepala Toko', 'Operasional Toko', 'Rusli Hitami', 'M1025'),
   ('usr-m1026', 'ktb.m1026', 'basmalah1026', 'KTB TokoBASMALAH Tlangoh', 'Kepala Toko', 'Operasional Toko', 'Rusli Hitami', 'M1026'),
   ('usr-w1001', 'ktb.w1001', 'basmalah1001', 'Mughni (KTB Sidayu)', 'Kepala Toko', 'Operasional Toko', 'Rusli Hitami', 'W1001')
-ON CONFLICT (id) DO UPDATE SET 
-  username = EXCLUDED.username,
+ON CONFLICT (username) DO UPDATE SET 
   full_name = EXCLUDED.full_name,
   role_title = EXCLUDED.role_title,
+  department = EXCLUDED.department,
   business_manager = EXCLUDED.business_manager,
-  branch_code = EXCLUDED.branch_code;
+  branch_code = EXCLUDED.branch_code,
+  updated_at = NOW();
+
 
 
 
