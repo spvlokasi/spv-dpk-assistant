@@ -13,14 +13,31 @@ CREATE TABLE IF NOT EXISTS user_accounts (
   role_title TEXT NOT NULL,
   department TEXT NOT NULL,
   business_manager TEXT NOT NULL,
+  branch_code TEXT DEFAULT '',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Insert Akun Default jika belum ada
-INSERT INTO user_accounts (id, username, password, full_name, role_title, department, business_manager)
-VALUES ('usr-admin-01', 'spvdpk', 'spvdpk1745', 'Supervisor DPK (Turnaround)', 'Supervisor DPK', 'Departemen Bisnis', 'H. Bambang Irawan')
-ON CONFLICT (id) DO NOTHING;
+ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS branch_code TEXT DEFAULT '';
+
+-- Insert Akun Default SPV & Kepala Toko (KTB)
+INSERT INTO user_accounts (id, username, password, full_name, role_title, department, business_manager, branch_code)
+VALUES 
+  ('usr-spv', 'spvdpk', 'spvdpk1745', 'M.Maskur', 'Supervisor DPK', 'Departemen Bisnis', 'Rusli Hitami', ''),
+  ('usr-m3017', 'ktb.m3017', 'basmalah3017', 'Baida''i (KTB Bugih)', 'Kepala Toko', 'Operasional Toko', 'Rusli Hitami', 'M3017'),
+  ('usr-m3019', 'ktb.m3019', 'basmalah3019', 'Surur (KTB Pademawu)', 'Kepala Toko', 'Operasional Toko', 'Rusli Hitami', 'M3019'),
+  ('usr-m3021', 'ktb.m3021', 'basmalah3021', 'Khoirul (KTB Sotabar)', 'Kepala Toko', 'Operasional Toko', 'Rusli Hitami', 'M3021'),
+  ('usr-m4016', 'ktb.m4016', 'basmalah4016', 'Herman (KTB Kalianget)', 'Kepala Toko', 'Operasional Toko', 'Rusli Hitami', 'M4016'),
+  ('usr-m1025', 'ktb.m1025', 'basmalah1025', 'Somad (KTB Tengket)', 'Kepala Toko', 'Operasional Toko', 'Rusli Hitami', 'M1025'),
+  ('usr-m1026', 'ktb.m1026', 'basmalah1026', 'KTB TokoBASMALAH Tlangoh', 'Kepala Toko', 'Operasional Toko', 'Rusli Hitami', 'M1026'),
+  ('usr-w1001', 'ktb.w1001', 'basmalah1001', 'Mughni (KTB Sidayu)', 'Kepala Toko', 'Operasional Toko', 'Rusli Hitami', 'W1001')
+ON CONFLICT (id) DO UPDATE SET 
+  username = EXCLUDED.username,
+  full_name = EXCLUDED.full_name,
+  role_title = EXCLUDED.role_title,
+  business_manager = EXCLUDED.business_manager,
+  branch_code = EXCLUDED.branch_code;
+
 
 
 -- 2. TABEL CABANG TOKO DPK (BRANCHES)
