@@ -32,7 +32,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       <div className="w-full max-w-md space-y-6 relative z-10">
         <div className="text-center space-y-2">
           <img src="/logo.png" alt="Logo Basmalah" className="h-24 w-auto max-w-[180px] object-contain drop-shadow-2xl mx-auto hover:scale-105 transition-transform" />
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">SPV DPK</h1>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-snug">Dalam Pengawasan Khusus</h1>
           <p className="text-xs font-semibold text-emerald-400 uppercase tracking-widest">Sistem Digital Toko</p>
         </div>
 
