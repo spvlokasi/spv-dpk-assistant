@@ -25,6 +25,7 @@ export interface PromoVoucher {
   description: string;
   fundingSource?: 'store' | 'supplier' | 'joint';
   sponsorName?: string;
+  applicableCategory?: string;
 }
 
 export interface CartItem {

@@ -18,6 +18,8 @@ export const PromoVoucherManager: React.FC<PromoVoucherManagerProps> = ({
   const [minSpend, setMinSpend] = useState(50000);
   const [quota, setQuota] = useState(50);
   const [validUntil, setValidUntil] = useState('2026-12-31');
+  const [applicableCategory, setApplicableCategory] = useState('all');
+  const [sponsorName, setSponsorName] = useState('');
   const [desc, setDesc] = useState('');
 
   const handleAdd = (e: React.FormEvent) => {
@@ -34,10 +36,14 @@ export const PromoVoucherManager: React.FC<PromoVoucherManagerProps> = ({
       usedCount: 0,
       validUntil: validUntil || '2026-12-31',
       isActive: true,
+      applicableCategory: applicableCategory || 'all',
+      sponsorName: sponsorName.trim() || undefined,
       description: desc.trim() || `Potongan ${formatRupiah(discountAmount)} min belanja ${formatRupiah(minSpend)}`
     });
     setCode('');
     setDesc('');
+    setSponsorName('');
+    setApplicableCategory('all');
   };
 
   const toggleVoucherStatus = (v: PromoVoucher) => {
@@ -91,6 +97,33 @@ export const PromoVoucherManager: React.FC<PromoVoucherManagerProps> = ({
                 onChange={(e) => setMinSpend(Number(e.target.value))}
                 placeholder="50000"
                 className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label className="block text-[11px] text-slate-400 mb-1 font-semibold">Berlaku Untuk Kategori Produk:</label>
+              <select
+                value={applicableCategory}
+                onChange={(e) => setApplicableCategory(e.target.value)}
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 font-semibold focus:outline-none focus:border-amber-500"
+              >
+                <option value="all">Semua Produk (Belanja Umum Bebas)</option>
+                <option value="sembako">Khusus Sembako (Beras, Minyak, Gula)</option>
+                <option value="minuman_snack">Khusus Minuman & Snack (Yakult, Kanzler, dll)</option>
+                <option value="kebersihan">Khusus Kebersihan & Rumah Tangga</option>
+                <option value="promo_kasir">Khusus Tebus Murah Kasir</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-[11px] text-slate-400 mb-1 font-semibold">Nama Brand Sponsor (Opsional)</label>
+              <input
+                type="text"
+                value={sponsorName}
+                onChange={(e) => setSponsorName(e.target.value)}
+                placeholder="Misal: Yakult / Kanzler (Kosongkan jika umum)"
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-amber-500"
               />
             </div>
           </div>
