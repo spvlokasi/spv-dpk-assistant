@@ -211,3 +211,89 @@ BEGIN
   DROP POLICY IF EXISTS "Public access escalation_tickets" ON escalation_tickets;
   CREATE POLICY "Public access escalation_tickets" ON escalation_tickets FOR ALL USING (true) WITH CHECK (true);
 END $$;
+
+
+-- ==============================================================================
+-- 9. TABEL TAMBAHAN MODUL E-KATALOG & TRANSAKSI ONLINE TOKOBASMALAH
+-- ==============================================================================
+
+-- A. Tambah Kolom GPS & Phone pada Tabel Branches
+ALTER TABLE branches ADD COLUMN IF NOT EXISTS phone TEXT DEFAULT '081234567890';
+ALTER TABLE branches ADD COLUMN IF NOT EXISTS city TEXT DEFAULT 'Jawa Timur';
+ALTER TABLE branches ADD COLUMN IF NOT EXISTS lat NUMERIC DEFAULT -7.1595;
+ALTER TABLE branches ADD COLUMN IF NOT EXISTS lng NUMERIC DEFAULT 113.4735;
+
+-- B. Tabel Produk Promo (promo_products)
+CREATE TABLE IF NOT EXISTS promo_products (
+  id TEXT PRIMARY KEY,
+  branch_id TEXT NOT NULL DEFAULT 'all',
+  name TEXT NOT NULL,
+  category TEXT NOT NULL DEFAULT 'sembako',
+  original_price NUMERIC NOT NULL DEFAULT 0,
+  promo_price NUMERIC NOT NULL DEFAULT 0,
+  unit TEXT NOT NULL DEFAULT 'Pcs',
+  image_url TEXT DEFAULT '',
+  in_stock BOOLEAN DEFAULT TRUE,
+  is_featured BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- C. Tabel E-Voucher Diskon (promo_vouchers)
+CREATE TABLE IF NOT EXISTS promo_vouchers (
+  id TEXT PRIMARY KEY,
+  branch_id TEXT NOT NULL DEFAULT 'all',
+  code TEXT NOT NULL UNIQUE,
+  discount_amount NUMERIC NOT NULL DEFAULT 0,
+  min_spend NUMERIC NOT NULL DEFAULT 0,
+  quota INTEGER NOT NULL DEFAULT 50,
+  claimed_count INTEGER NOT NULL DEFAULT 0,
+  used_count INTEGER NOT NULL DEFAULT 0,
+  valid_until TEXT NOT NULL DEFAULT '2026-12-31',
+  is_active BOOLEAN DEFAULT TRUE,
+  description TEXT DEFAULT '',
+  funding_source TEXT DEFAULT 'store',
+  sponsor_name TEXT DEFAULT '',
+  applicable_category TEXT DEFAULT 'all',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- D. Tabel Riwayat Pesanan Masuk Online (online_orders)
+CREATE TABLE IF NOT EXISTS online_orders (
+  id TEXT PRIMARY KEY,
+  branch_id TEXT DEFAULT '',
+  branch_code TEXT DEFAULT '',
+  branch_name TEXT DEFAULT '',
+  buyer_name TEXT NOT NULL,
+  address TEXT NOT NULL,
+  maps_url TEXT DEFAULT '',
+  lat NUMERIC,
+  lng NUMERIC,
+  items JSONB NOT NULL DEFAULT '[]'::jsonb,
+  subtotal NUMERIC NOT NULL DEFAULT 0,
+  discount NUMERIC NOT NULL DEFAULT 0,
+  voucher_code TEXT DEFAULT '',
+  grand_total NUMERIC NOT NULL DEFAULT 0,
+  status TEXT DEFAULT 'pending_delivery',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- E. Enable Row Level Security (RLS) & Policies
+ALTER TABLE promo_products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE promo_vouchers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE online_orders ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Public access promo_products" ON promo_products;
+  CREATE POLICY "Public access promo_products" ON promo_products FOR ALL USING (true) WITH CHECK (true);
+
+  DROP POLICY IF EXISTS "Public access promo_vouchers" ON promo_vouchers;
+  CREATE POLICY "Public access promo_vouchers" ON promo_vouchers FOR ALL USING (true) WITH CHECK (true);
+
+  DROP POLICY IF EXISTS "Public access online_orders" ON online_orders;
+  CREATE POLICY "Public access online_orders" ON online_orders FOR ALL USING (true) WITH CHECK (true);
+END $$;
+

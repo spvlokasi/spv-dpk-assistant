@@ -23,6 +23,24 @@ export const savePromoProduct = (product: PromoProduct): PromoProduct[] => {
   const updated = index >= 0 ? current.map((p) => (p.id === product.id ? product : p)) : [product, ...current];
   sessionStorage.setItem(PROD_KEY, JSON.stringify(updated));
   localStorage.setItem(PROD_KEY, JSON.stringify(updated));
+
+  const client = getSupabaseClient();
+  if (client) {
+    client.from('promo_products').upsert({
+      id: product.id,
+      branch_id: product.branchId,
+      name: product.name,
+      category: product.category,
+      original_price: product.originalPrice,
+      promo_price: product.promoPrice,
+      unit: product.unit,
+      image_url: product.imageUrl || '',
+      in_stock: product.inStock,
+      is_featured: product.isFeatured ?? true,
+      updated_at: new Date().toISOString()
+    }).then();
+  }
+
   return updated;
 };
 
@@ -31,6 +49,12 @@ export const deletePromoProduct = (id: string): PromoProduct[] => {
   const updated = current.filter((p) => p.id !== id);
   sessionStorage.setItem(PROD_KEY, JSON.stringify(updated));
   localStorage.setItem(PROD_KEY, JSON.stringify(updated));
+
+  const client = getSupabaseClient();
+  if (client) {
+    client.from('promo_products').delete().eq('id', id).then();
+  }
+
   return updated;
 };
 
@@ -52,6 +76,28 @@ export const savePromoVoucher = (voucher: PromoVoucher): PromoVoucher[] => {
   const updated = index >= 0 ? current.map((v) => (v.id === voucher.id ? voucher : v)) : [voucher, ...current];
   sessionStorage.setItem(VOUCH_KEY, JSON.stringify(updated));
   localStorage.setItem(VOUCH_KEY, JSON.stringify(updated));
+
+  const client = getSupabaseClient();
+  if (client) {
+    client.from('promo_vouchers').upsert({
+      id: voucher.id,
+      branch_id: voucher.branchId,
+      code: voucher.code,
+      discount_amount: voucher.discountAmount,
+      min_spend: voucher.minSpend,
+      quota: voucher.quota,
+      claimed_count: voucher.claimedCount || 0,
+      used_count: voucher.usedCount || 0,
+      valid_until: voucher.validUntil,
+      is_active: voucher.isActive,
+      description: voucher.description,
+      funding_source: voucher.fundingSource || 'store',
+      sponsor_name: voucher.sponsorName || '',
+      applicable_category: voucher.applicableCategory || 'all',
+      updated_at: new Date().toISOString()
+    }).then();
+  }
+
   return updated;
 };
 
@@ -60,5 +106,11 @@ export const deletePromoVoucher = (id: string): PromoVoucher[] => {
   const updated = current.filter((v) => v.id !== id);
   sessionStorage.setItem(VOUCH_KEY, JSON.stringify(updated));
   localStorage.setItem(VOUCH_KEY, JSON.stringify(updated));
+
+  const client = getSupabaseClient();
+  if (client) {
+    client.from('promo_vouchers').delete().eq('id', id).then();
+  }
+
   return updated;
 };

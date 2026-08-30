@@ -3,6 +3,7 @@ import { ShoppingBag, CheckCircle2, Clock, Truck, MessageCircle, Copy, Check, Fi
 import { OnlineOrderLog } from '../../../types/catalogTypes';
 import { Branch } from '../../../types';
 import { formatRupiah } from '../../../utils/formatters';
+import { getSupabaseClient } from '../../../services/supabase';
 
 interface OnlineOrderLogManagerProps {
   branch: Branch;
@@ -68,6 +69,23 @@ export const OnlineOrderLogManager: React.FC<OnlineOrderLogManagerProps> = ({ br
   const [copiedTemplateId, setCopiedTemplateId] = useState<string | null>(null);
   const [selectedOrderForQuickReply, setSelectedOrderForQuickReply] = useState<OnlineOrderLog | null>(null);
 
+  // Ambil data pesanan langsung dari Supabase Cloud
+  useEffect(() => {
+    const client = getSupabaseClient();
+    if (client) {
+      client
+        .from('online_orders')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .then(({ data, error }) => {
+          if (!error && data && data.length > 0) {
+            setOrders(data as OnlineOrderLog[]);
+            localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify(data));
+          }
+        });
+    }
+  }, [branch.id]);
+
   const saveOrders = (newOrders: OnlineOrderLog[]) => {
     setOrders(newOrders);
     try {
@@ -80,12 +98,22 @@ export const OnlineOrderLogManager: React.FC<OnlineOrderLogManagerProps> = ({ br
   const handleUpdateStatus = (orderId: string, newStatus: 'pending_delivery' | 'delivering' | 'completed' | 'cancelled') => {
     const updated = orders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o));
     saveOrders(updated);
+
+    const client = getSupabaseClient();
+    if (client) {
+      client.from('online_orders').update({ status: newStatus }).eq('id', orderId).then();
+    }
   };
 
   const handleDeleteOrder = (orderId: string) => {
     if (confirm('Hapus riwayat pesanan ini?')) {
       const updated = orders.filter((o) => o.id !== orderId);
       saveOrders(updated);
+
+      const client = getSupabaseClient();
+      if (client) {
+        client.from('online_orders').delete().eq('id', orderId).then();
+      }
     }
   };
 
