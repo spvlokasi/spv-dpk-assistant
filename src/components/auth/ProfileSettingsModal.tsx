@@ -16,6 +16,11 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   onProfileUpdated
 }) => {
   const [activeTab, setActiveTab] = useState<'profile' | 'security'>('profile');
+  const isKtb = Boolean(
+    currentUser?.username.toLowerCase().startsWith('ktb.') ||
+    currentUser?.roleTitle?.toLowerCase().includes('kepala toko') ||
+    currentUser?.roleTitle?.toLowerCase().includes('ktb')
+  );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
@@ -29,7 +34,7 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
         </button>
 
         <div>
-          <h3 className="text-base font-bold text-white">Pengaturan Akun & Profil SPV</h3>
+          <h3 className="text-base font-bold text-white">Pengaturan Akun & Profil</h3>
           <p className="text-xs text-slate-400">Kelola identitas penugasan dan kredensial login</p>
         </div>
 
@@ -45,7 +50,7 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
             }`}
           >
             <User className="w-3.5 h-3.5" />
-            <span>Profil SPV</span>
+            <span>{isKtb ? 'Profil KTB' : 'Profil SPV'}</span>
           </button>
 
           <button

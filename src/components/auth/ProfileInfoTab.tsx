@@ -19,13 +19,19 @@ export const ProfileInfoTab: React.FC<ProfileInfoTabProps> = ({
   const [businessManager, setBusinessManager] = useState(currentUser.businessManager);
   const [isLoading, setIsLoading] = useState(false);
 
+  const isKtb = Boolean(
+    currentUser?.username.toLowerCase().startsWith('ktb.') ||
+    currentUser?.roleTitle?.toLowerCase().includes('kepala toko') ||
+    currentUser?.roleTitle?.toLowerCase().includes('ktb')
+  );
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     const res = await AuthService.updateAccount({ fullName, roleTitle, department, businessManager });
     setIsLoading(false);
     if (res.success && res.user) {
-      showToast('Data profil identitas SPV berhasil diperbarui!', 'success');
+      showToast(isKtb ? 'Data profil identitas Kepala Toko berhasil diperbarui!' : 'Data profil identitas SPV berhasil diperbarui!', 'success');
       onProfileUpdated(res.user);
     } else {
       showToast(res.message, 'error');
@@ -35,7 +41,9 @@ export const ProfileInfoTab: React.FC<ProfileInfoTabProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
       <div>
-        <label className="block text-slate-400 mb-1 font-semibold">Nama Lengkap Supervisor:</label>
+        <label className="block text-slate-400 mb-1 font-semibold">
+          {isKtb ? 'Nama Lengkap Kepala Toko Basmalah:' : 'Nama Lengkap Supervisor:'}
+        </label>
         <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 font-medium" />
       </div>
 

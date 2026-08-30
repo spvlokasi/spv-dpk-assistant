@@ -66,7 +66,7 @@ export const SettingsAndData: React.FC<SettingsAndDataProps> = ({
           className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-all"
         >
           <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          <span>Pengaturan Akun & SPV</span>
+          <span>Pengaturan Akun & Profil</span>
         </button>
       </div>
 
