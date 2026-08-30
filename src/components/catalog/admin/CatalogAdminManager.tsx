@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Ticket, Printer, ExternalLink, Share2, Copy, Check, Phone, Edit2, FileText, Truck } from 'lucide-react';
 import { Branch, PromoProduct, PromoVoucher } from '../../../types';
 import { UserAccount } from '../../../types/auth';
-import { loadPromoProducts, savePromoProduct, deletePromoProduct, loadPromoVouchers, savePromoVoucher, deletePromoVoucher } from '../../../services/catalog/catalogStorage';
+import { loadPromoProducts, savePromoProduct, deletePromoProduct, loadPromoVouchers, savePromoVoucher, deletePromoVoucher, fetchPromoProductsFromCloud, fetchPromoVouchersFromCloud } from '../../../services/catalog/catalogStorage';
 import { PromoProductList } from './PromoProductList';
 import { PromoProductModal } from './PromoProductModal';
 import { PromoVoucherManager } from './PromoVoucherManager';
@@ -26,8 +26,8 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
   const availableBranches = isKtb && propBranchId ? branches.filter((b) => b.id === propBranchId) : branches;
   const [selectedBranchId, setSelectedBranchId] = useState(propBranchId || branches[0]?.id || 'br-01');
   const [activeTab, setActiveTab] = useState<'products' | 'vouchers' | 'orders'>('products');
-  const [products, setProducts] = useState<PromoProduct[]>([]);
-  const [vouchers, setVouchers] = useState<PromoVoucher[]>([]);
+  const [products, setProducts] = useState<PromoProduct[]>(() => loadPromoProducts(selectedBranchId));
+  const [vouchers, setVouchers] = useState<PromoVoucher[]>(() => loadPromoVouchers(selectedBranchId));
   const [editingProduct, setEditingProduct] = useState<PromoProduct | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFlyerOpen, setIsFlyerOpen] = useState(false);
@@ -43,9 +43,23 @@ export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
   }, [propBranchId]);
 
   useEffect(() => {
+    let isMounted = true;
     setProducts(loadPromoProducts(selectedBranchId));
     setVouchers(loadPromoVouchers(selectedBranchId));
+
+    Promise.all([
+      fetchPromoProductsFromCloud(selectedBranchId),
+      fetchPromoVouchersFromCloud(selectedBranchId)
+    ]).then(([liveProds, liveVouchs]) => {
+      if (isMounted) {
+        setProducts(liveProds);
+        setVouchers(liveVouchs);
+      }
+    });
+
+    return () => { isMounted = false; };
   }, [selectedBranchId]);
+
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);

@@ -114,3 +114,92 @@ export const deletePromoVoucher = (id: string): PromoVoucher[] => {
 
   return updated;
 };
+
+// ==========================================
+// ASYNC CLOUD FETCH (LIVE ALWAYS-FRESH DATA)
+// ==========================================
+
+export const fetchPromoProductsFromCloud = async (branchId?: string): Promise<PromoProduct[]> => {
+  const client = getSupabaseClient();
+  if (!client) return loadPromoProducts(branchId);
+
+  try {
+    const { data, error } = await client
+      .from('promo_products')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return loadPromoProducts(branchId);
+    }
+
+    const products: PromoProduct[] = data.map((p: any) => ({
+      id: p.id,
+      branchId: p.branch_id || 'all',
+      name: p.name,
+      category: p.category || 'sembako',
+      originalPrice: Number(p.original_price) || 0,
+      promoPrice: Number(p.promo_price) || 0,
+      unit: p.unit || 'Pcs',
+      imageUrl: p.image_url || '',
+      inStock: p.in_stock ?? true,
+      isFeatured: p.is_featured ?? true
+    }));
+
+    // Update local cache
+    sessionStorage.setItem(PROD_KEY, JSON.stringify(products));
+    localStorage.setItem(PROD_KEY, JSON.stringify(products));
+
+    if (!branchId || branchId === 'all') return products;
+    const branchList = products.filter((p) => p.branchId === branchId || p.branchId === 'all');
+    return branchList.length > 0 ? branchList : products;
+  } catch (e) {
+    console.warn('Gagal fetch live promo products dari Supabase:', e);
+    return loadPromoProducts(branchId);
+  }
+};
+
+export const fetchPromoVouchersFromCloud = async (branchId?: string): Promise<PromoVoucher[]> => {
+  const client = getSupabaseClient();
+  if (!client) return loadPromoVouchers(branchId);
+
+  try {
+    const { data, error } = await client
+      .from('promo_vouchers')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return loadPromoVouchers(branchId);
+    }
+
+    const vouchers: PromoVoucher[] = data.map((v: any) => ({
+      id: v.id,
+      branchId: v.branch_id || 'all',
+      code: v.code,
+      discountAmount: Number(v.discount_amount) || 0,
+      minSpend: Number(v.min_spend) || 0,
+      quota: Number(v.quota) || 50,
+      claimedCount: Number(v.claimed_count) || 0,
+      usedCount: Number(v.used_count) || 0,
+      validUntil: v.valid_until || '2026-12-31',
+      isActive: v.is_active ?? true,
+      description: v.description || '',
+      fundingSource: v.funding_source || 'store',
+      sponsorName: v.sponsor_name || '',
+      applicableCategory: v.applicable_category || 'all'
+    }));
+
+    // Update local cache
+    sessionStorage.setItem(VOUCH_KEY, JSON.stringify(vouchers));
+    localStorage.setItem(VOUCH_KEY, JSON.stringify(vouchers));
+
+    if (!branchId || branchId === 'all') return vouchers;
+    const branchList = vouchers.filter((v) => v.branchId === branchId || v.branchId === 'all');
+    return branchList.length > 0 ? branchList : vouchers;
+  } catch (e) {
+    console.warn('Gagal fetch live promo vouchers dari Supabase:', e);
+    return loadPromoVouchers(branchId);
+  }
+};
+

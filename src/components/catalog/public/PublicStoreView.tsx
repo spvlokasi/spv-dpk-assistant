@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag } from 'lucide-react';
 import { Branch, PromoProduct, PromoVoucher, CartItem } from '../../../types';
-import { loadPromoProducts, loadPromoVouchers } from '../../../services/catalog/catalogStorage';
+import { loadPromoProducts, loadPromoVouchers, fetchPromoProductsFromCloud, fetchPromoVouchersFromCloud } from '../../../services/catalog/catalogStorage';
 import { PublicCatalogHeader } from './PublicCatalogHeader';
 import { PublicVoucherBanner } from './PublicVoucherBanner';
 import { PublicProductGrid } from './PublicProductGrid';
@@ -14,18 +14,34 @@ interface PublicStoreViewProps {
 }
 
 export const PublicStoreView: React.FC<PublicStoreViewProps> = ({ branch, onBackToApp }) => {
-  const [products, setProducts] = useState<PromoProduct[]>([]);
-  const [vouchers, setVouchers] = useState<PromoVoucher[]>([]);
+  const [products, setProducts] = useState<PromoProduct[]>(() => loadPromoProducts(branch.id));
+  const [vouchers, setVouchers] = useState<PromoVoucher[]>(() => loadPromoVouchers(branch.id));
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [appliedVoucher, setAppliedVoucher] = useState<PromoVoucher | null>(null);
+  const [appliedVoucher, setAppliedVoucher] = useState<PromoVoucher | null>(() => {
+    const initialVouchers = loadPromoVouchers(branch.id);
+    return initialVouchers.length > 0 ? initialVouchers[0] : null;
+  });
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   useEffect(() => {
-    setProducts(loadPromoProducts(branch.id));
-    const loadedVouchers = loadPromoVouchers(branch.id);
-    setVouchers(loadedVouchers);
-    if (loadedVouchers.length > 0) setAppliedVoucher(loadedVouchers[0]);
+    let isMounted = true;
+    const fetchLive = async () => {
+      const [liveProds, liveVouchs] = await Promise.all([
+        fetchPromoProductsFromCloud(branch.id),
+        fetchPromoVouchersFromCloud(branch.id)
+      ]);
+      if (isMounted) {
+        setProducts(liveProds);
+        setVouchers(liveVouchs);
+        if (liveVouchs.length > 0) {
+          setAppliedVoucher((prev) => prev ? liveVouchs.find((v) => v.id === prev.id) || liveVouchs[0] : liveVouchs[0]);
+        }
+      }
+    };
+    fetchLive();
+    return () => { isMounted = false; };
   }, [branch.id]);
+
 
   const handleAddToCart = (product: PromoProduct) => {
     const existing = cart.find((i) => i.product.id === product.id);
