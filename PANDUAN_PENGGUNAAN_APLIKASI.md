@@ -9,7 +9,7 @@ Dokumen ini berisi panduan operasional langkah demi langkah (*Standar Operasiona
 
 ### A. Membuka Aplikasi
 Aplikasi dapat dibuka melalui browser (Google Chrome, Microsoft Edge, Safari) di Laptop maupun Smartphone melalui tautan:
-- **Tautan Live**: [https://spvdpk.vercel.app](https://spvdpk.vercel.app)
+- **Tautan Live**: [https://dpkdc02.vercel.app](https://dpkdc02.vercel.app)
 - **Akses Lokal Laptop**: `http://localhost:3000`
 
 ### B. Akun Masuk Bawaan (Default):
