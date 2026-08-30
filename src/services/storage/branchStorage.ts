@@ -36,13 +36,31 @@ export const BranchStorage = {
     if (client) {
       try {
         await client.from('branches').upsert({
-          id: branch.id, code: branch.code, name: branch.name, address: branch.address || '', phone: branch.phone || '',
-          kepala_toko: branch.kepalaToko || '', spv_area: branch.spvArea || '', manajer_bisnis: branch.manajerBisnis || 'H. Bambang Irawan',
-          entry_date: branch.entryDate || new Date().toISOString().slice(0, 10), target_graduation_date: branch.targetGraduationDate || null,
-          category: branch.category || 'sales_drop', status: branch.status || 'kritis', urgency_level: branch.urgencyLevel || 'tinggi',
-          target_sales_per_day: Number(branch.targetSalesPerDay) || 1500000, target_margin_pct: Number(branch.targetMarginPct) || 15.5,
-          target_max_opex_per_month: Number(branch.targetMaxOpexPerMonth) || 22000000, root_causes: branch.rootCauses || [],
-          diagnosis_summary: branch.diagnosisSummary || '', recommended_strategy: branch.recommendedStrategy || '', image_url: branch.imageUrl || null,
+          id: branch.id,
+          code: branch.code,
+          name: branch.name,
+          address: branch.address || '',
+          phone: branch.phone || '',
+          city: branch.city || 'Jawa Timur',
+          lat: branch.latitude ?? -7.1595,
+          lng: branch.longitude ?? 113.4735,
+          kepala_toko: branch.kepalaToko || '',
+          spv_area: branch.spvArea || '',
+          manajer_bisnis: branch.manajerBisnis || 'H. Bambang Irawan',
+          entry_date: branch.entryDate || new Date().toISOString().slice(0, 10),
+          target_graduation_date: branch.targetGraduationDate || null,
+          diagnosis_start_date: branch.diagnosisStartDate || null,
+          diagnosis_end_date: branch.diagnosisEndDate || null,
+          category: branch.category || 'sales_drop',
+          status: branch.status || 'kritis',
+          urgency_level: branch.urgencyLevel || 'tinggi',
+          target_sales_per_day: Number(branch.targetSalesPerDay) || 1500000,
+          target_margin_pct: Number(branch.targetMarginPct) || 15.5,
+          target_max_opex_per_month: Number(branch.targetMaxOpexPerMonth) || 22000000,
+          root_causes: branch.rootCauses || [],
+          diagnosis_summary: branch.diagnosisSummary || '',
+          recommended_strategy: branch.recommendedStrategy || '',
+          image_url: branch.imageUrl || null,
           updated_at: new Date().toISOString()
         });
       } catch (e) { console.warn('Auto-sync branch failed:', e); }

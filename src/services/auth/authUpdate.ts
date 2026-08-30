@@ -5,7 +5,8 @@ import { AuthSessionStorage } from './authSession';
 export const handleUpdateAccount = async (
   updatedData: Partial<UserAccount>
 ): Promise<{ success: boolean; message: string; user?: UserAccount }> => {
-  const currentUser = AuthSessionStorage.getLocalUser();
+  const currentSession = AuthSessionStorage.getSession();
+  const currentUser = currentSession?.user || AuthSessionStorage.getLocalUser();
   const newUser: UserAccount = {
     ...currentUser,
     ...updatedData
@@ -25,6 +26,7 @@ export const handleUpdateAccount = async (
         role_title: newUser.roleTitle,
         department: newUser.department,
         business_manager: newUser.businessManager,
+        branch_code: newUser.branchCode || null,
         updated_at: new Date().toISOString()
       });
     } catch (e) {
@@ -34,3 +36,4 @@ export const handleUpdateAccount = async (
 
   return { success: true, message: 'Profil dan Akun Berhasil Diperbarui!', user: newUser };
 };
+

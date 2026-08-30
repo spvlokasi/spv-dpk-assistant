@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ShoppingBag, X, Plus, Minus, Send, Image as ImageIcon } from 'lucide-react';
 import { Branch, CartItem, PromoVoucher } from '../../../types';
 import { formatRupiah } from '../../../utils/formatters';
+import { getSupabaseClient } from '../../../services/supabase';
 
 interface PublicCartDrawerProps {
   branch: Branch;
@@ -37,10 +38,55 @@ export const PublicCartDrawer: React.FC<PublicCartDrawerProps> = ({
     msg += `*TOTAL BAYAR: ${formatRupiah(grandTotal)} (COD/Bayar di Tempat)*\n\n` +
       `Mohon segera diproses dan diantar ya TokoBasmalah. Terima kasih!`;
 
+    // 1. Simpan otomatis pesanan ke Supabase Cloud (online_orders)
+    const client = getSupabaseClient();
+    const orderId = `ord-${Date.now()}`;
+    const orderPayload = {
+      id: orderId,
+      branch_id: branch.id,
+      branch_code: branch.code,
+      branch_name: branch.name,
+      buyer_name: buyerName.trim(),
+      address: address.trim(),
+      items: items.map((i) => ({
+        id: i.product.id,
+        name: i.product.name,
+        unit: i.product.unit,
+        quantity: i.quantity,
+        promoPrice: i.product.promoPrice
+      })),
+      subtotal,
+      discount,
+      voucher_code: appliedVoucher?.code || '',
+      grand_total: grandTotal,
+      status: 'pending_delivery',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    if (client) {
+      client.from('online_orders').insert(orderPayload).then();
+      if (appliedVoucher) {
+        client.from('promo_vouchers').update({
+          used_count: (appliedVoucher.usedCount || 0) + 1,
+          updated_at: new Date().toISOString()
+        }).eq('id', appliedVoucher.id).then();
+      }
+    }
+
+    // 2. Simpan ke local cache juga
+    try {
+      const STORAGE_ORDERS_KEY = 'basmalah_customer_orders';
+      const raw = localStorage.getItem(STORAGE_ORDERS_KEY);
+      const existing = raw ? JSON.parse(raw) : [];
+      localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify([orderPayload, ...existing]));
+    } catch {}
+
     const phone = (branch.phone || '6281234567890').replace(/\D/g, '');
     const cleanPhone = phone.startsWith('0') ? '62' + phone.slice(1) : phone;
     window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
   };
+
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-end">

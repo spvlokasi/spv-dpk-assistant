@@ -7,6 +7,10 @@ import { useToast } from '../../context/ToastContext';
 import { SettingsSyncStatus } from './SettingsSyncStatus';
 import { SettingsBackupRestore } from './SettingsBackupRestore';
 
+import { loadPromoProducts, loadPromoVouchers } from '../../services/catalog/catalogStorage';
+import { safeParse } from '../../services/storage/storageCore';
+import { DiagnosisLog } from '../../types';
+
 interface SettingsAndDataProps {
   currentUser: UserAccount;
   onDataChange: () => void;
@@ -30,13 +34,17 @@ export const SettingsAndData: React.FC<SettingsAndDataProps> = ({
       visits: StorageService.getVisits(),
       performance: StorageService.getPerformance(),
       graduations: StorageService.getGraduations(),
-      escalations: StorageService.getEscalations()
+      escalations: StorageService.getEscalations(),
+      diagnosisLogs: safeParse<DiagnosisLog[]>('spv_dpk_diagnosis_logs', []),
+      promoProducts: loadPromoProducts('all'),
+      promoVouchers: loadPromoVouchers('all')
     };
     const res = await SupabaseService.syncLocalToCloud(payload);
     setIsSyncing(false);
     showToast(res.message, res.success ? 'success' : 'error');
     onDataChange();
   };
+
 
   return (
     <div className="space-y-6 max-w-4xl">
