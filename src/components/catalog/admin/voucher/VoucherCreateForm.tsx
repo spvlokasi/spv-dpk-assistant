@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Ticket, Plus, Sparkles, Users, Calendar } from 'lucide-react';
+import { Ticket, Plus, Users, Calendar } from 'lucide-react';
 import { Branch, PromoVoucher } from '../../../../types';
 import { formatRupiah } from '../../../../utils/formatters';
 import { VoucherSpvScopeSection } from './VoucherSpvScopeSection';
@@ -52,14 +52,11 @@ export const VoucherCreateForm: React.FC<VoucherCreateFormProps> = ({
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div className="border-b border-slate-800 pb-3">
         <h4 className="text-sm font-bold text-white flex items-center gap-2">
           <Ticket className="w-4 h-4 text-amber-400" />
           <span>{isSpv ? 'Terbitkan Voucher Promo / Sponsor Baru' : 'Buat Kupon Diskon Cabang'}</span>
         </h4>
-        <span className="text-[11px] text-emerald-400 font-semibold bg-emerald-950/60 px-2.5 py-0.5 rounded-lg border border-emerald-800/60 flex items-center gap-1">
-          <Sparkles className="w-3 h-3 text-emerald-400" /><span>Sinkronisasi Otomatis ke Cloud</span>
-        </span>
       </div>
 
       <form onSubmit={handleAdd} className="space-y-3.5 text-xs">
