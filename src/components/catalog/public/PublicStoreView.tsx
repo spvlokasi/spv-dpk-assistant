@@ -45,7 +45,23 @@ export const PublicStoreView: React.FC<PublicStoreViewProps> = ({ branch, onBack
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 pb-20">
       <PublicCatalogHeader branch={branch} onBackToApp={onBackToApp} />
-      <main className="max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
+      <main className="max-w-4xl mx-auto p-4 sm:p-6 space-y-4">
+        {/* Baris Badge Ringkas (Opsi 2) */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 text-[11px] font-semibold text-slate-300">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-950/50 border border-emerald-800/60 text-emerald-300 flex-shrink-0 shadow-sm">
+            <span>🚚</span>
+            <span>Bayar di Tempat (COD)</span>
+          </div>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-950/40 border border-amber-800/60 text-amber-300 flex-shrink-0 shadow-sm">
+            <span>🏷️</span>
+            <span>Harga Coret Promo</span>
+          </div>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-950/40 border border-teal-800/60 text-teal-300 flex-shrink-0 shadow-sm">
+            <span>💬</span>
+            <span>Pesan Cepat via WA</span>
+          </div>
+        </div>
+
         <PublicVoucherBanner vouchers={vouchers} appliedVoucherCode={appliedVoucher?.code || null} onApplyVoucher={(v) => setAppliedVoucher(v)} />
         <div className="space-y-3">
           <h3 className="text-sm font-extrabold text-white">🔥 Produk Sembako & Promo Hemat Hari Ini:</h3>
