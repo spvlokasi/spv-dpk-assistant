@@ -3,6 +3,9 @@
 -- Jalankan script ini di menu "SQL Editor" pada Supabase Dashboard Anda.
 -- ==============================================================================
 
+-- 0. Aktifkan Ekstensi GraphQL Bawaan Supabase
+CREATE EXTENSION IF NOT EXISTS pg_graphql;
+
 -- 1. Tabel Produk Promo (promo_products)
 CREATE TABLE IF NOT EXISTS promo_products (
   id TEXT PRIMARY KEY,
