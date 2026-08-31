@@ -2,7 +2,7 @@ export interface PromoProduct {
   id: string;
   branchId: string;
   name: string;
-  category: 'sembako' | 'minuman_snack' | 'kebersihan' | 'fresh_dairy' | 'promo_kasir';
+  category: string;
   originalPrice: number;
   promoPrice: number;
   unit: string;
@@ -26,6 +26,7 @@ export interface PromoVoucher {
   fundingSource?: 'store' | 'sponsor' | 'dpk_turnaround' | 'supplier' | 'joint';
   sponsorName?: string;
   applicableCategory?: string;
+  applicableProductIds?: string[];
 }
 
 export interface CartItem {
@@ -57,4 +58,3 @@ export interface OnlineOrderLog {
   created_at: string;
   status: 'pending_delivery' | 'delivering' | 'completed' | 'cancelled';
 }
-

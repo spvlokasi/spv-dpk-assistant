@@ -43,6 +43,7 @@ export const savePromoVoucher = (voucher: PromoVoucher, branchId?: string): Prom
       funding_source: voucher.fundingSource || 'store',
       sponsor_name: voucher.sponsorName || '',
       applicable_category: voucher.applicableCategory || 'all',
+      applicable_product_ids: voucher.applicableProductIds || [],
       updated_at: new Date().toISOString()
     }).then(({ error }) => {
       if (error) console.error('Error upserting promo_voucher:', error);

@@ -35,6 +35,9 @@ export const PublicProductGrid: React.FC<PublicProductGridProps> = ({
 
             <div className="p-3 space-y-2 flex-1 flex flex-col justify-between">
               <div>
+                <div className="flex items-center gap-1 mb-1">
+                  <span className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 text-[9px] font-semibold uppercase">{p.category || 'Promo'}</span>
+                </div>
                 <h4 className="text-xs font-bold text-white line-clamp-2 leading-tight">{p.name}</h4>
                 <span className="text-[10px] text-slate-400 block mt-0.5">{p.unit}</span>
               </div>

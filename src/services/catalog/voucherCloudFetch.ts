@@ -32,7 +32,8 @@ export const fetchPromoVouchersFromCloud = async (branchId?: string): Promise<Pr
         description: v.description || '',
         fundingSource: v.funding_source || 'store',
         sponsorName: v.sponsor_name || '',
-        applicableCategory: v.applicable_category || 'all'
+        applicableCategory: v.applicable_category || 'all',
+        applicableProductIds: v.applicable_product_ids || undefined
       }))
     );
 

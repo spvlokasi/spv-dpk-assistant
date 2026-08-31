@@ -17,7 +17,19 @@ export const CartCheckoutForm: React.FC<CartCheckoutFormProps> = ({
   const [address, setAddress] = useState('');
 
   const subtotal = items.reduce((sum, i) => sum + i.product.promoPrice * i.quantity, 0);
-  const discount = appliedVoucher && subtotal >= appliedVoucher.minSpend ? appliedVoucher.discountAmount : 0;
+  
+  let isVoucherValid = false;
+  if (appliedVoucher && subtotal >= appliedVoucher.minSpend) {
+    if (appliedVoucher.applicableProductIds && appliedVoucher.applicableProductIds.length > 0) {
+      isVoucherValid = items.some((i) => appliedVoucher.applicableProductIds!.includes(i.product.id));
+    } else if (appliedVoucher.applicableCategory && appliedVoucher.applicableCategory !== 'all') {
+      isVoucherValid = items.some((i) => i.product.category === appliedVoucher.applicableCategory);
+    } else {
+      isVoucherValid = true;
+    }
+  }
+
+  const discount = isVoucherValid && appliedVoucher ? appliedVoucher.discountAmount : 0;
   const grandTotal = Math.max(0, subtotal - discount);
 
   const handleCheckoutWA = () => {
@@ -48,7 +60,7 @@ export const CartCheckoutForm: React.FC<CartCheckoutFormProps> = ({
 
     if (client) {
       client.from('online_orders').insert(orderPayload).then();
-      if (appliedVoucher) {
+      if (appliedVoucher && discount > 0) {
         client.from('promo_vouchers').update({ used_count: (appliedVoucher.usedCount || 0) + 1, updated_at: new Date().toISOString() }).eq('id', appliedVoucher.id).then();
       }
     }
