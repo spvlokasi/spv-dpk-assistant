@@ -48,24 +48,42 @@ export const fetchPromoVouchersFromCloud = async (branchId?: string): Promise<Pr
     const allLocal = loadPromoVouchers('all');
     if (allLocal.length > 0) {
       allLocal.forEach((v) => {
-        client.from('promo_vouchers').upsert({
+        const fullPayload: Record<string, any> = {
           id: v.id,
-          branch_id: v.branchId,
+          branch_id: v.branchId || 'all',
           code: v.code,
-          discount_amount: v.discountAmount,
-          min_spend: v.minSpend,
-          quota: v.quota,
-          claimed_count: v.claimedCount || 0,
-          used_count: v.usedCount || 0,
-          valid_until: v.validUntil,
-          is_active: v.isActive,
-          description: v.description,
+          discount_amount: Number(v.discountAmount) || 0,
+          min_spend: Number(v.minSpend) || 0,
+          quota: Number(v.quota) || 50,
+          claimed_count: Number(v.claimedCount) || 0,
+          used_count: Number(v.usedCount) || 0,
+          valid_until: v.validUntil || '2026-12-31',
+          is_active: v.isActive ?? true,
+          description: v.description || '',
           funding_source: v.fundingSource || 'store',
           sponsor_name: v.sponsorName || '',
           applicable_category: v.applicableCategory || 'all',
           applicable_product_ids: v.applicableProductIds || [],
           updated_at: new Date().toISOString()
-        }).then();
+        };
+        client.from('promo_vouchers').upsert(fullPayload).then(({ error }) => {
+          if (error) {
+            const basePayload = {
+              id: v.id,
+              branch_id: v.branchId || 'all',
+              code: v.code,
+              discount_amount: Number(v.discountAmount) || 0,
+              min_spend: Number(v.minSpend) || 0,
+              quota: Number(v.quota) || 50,
+              claimed_count: Number(v.claimedCount) || 0,
+              used_count: Number(v.usedCount) || 0,
+              valid_until: v.validUntil || '2026-12-31',
+              is_active: v.isActive ?? true,
+              description: v.description || ''
+            };
+            client.from('promo_vouchers').upsert(basePayload).then();
+          }
+        });
       });
     }
 

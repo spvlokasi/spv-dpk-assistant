@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCRIPT SQL DATABASE UNTUK KATALOG PRODUK PROMO & VOUCHER (SUPABASE)
+-- SCRIPT SQL DATABASE UNTUK KATALOG PRODUK PROMO, VOUCHER & PESANAN (SUPABASE)
 -- Jalankan script ini di menu "SQL Editor" pada Supabase Dashboard Anda.
 -- ==============================================================================
 
@@ -18,6 +18,18 @@ CREATE TABLE IF NOT EXISTS promo_products (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Pastikan semua kolom promo_products ada jika tabel sebelumnya sudah dibuat
+ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS branch_id TEXT NOT NULL DEFAULT 'all';
+ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS name TEXT NOT NULL DEFAULT '';
+ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS category TEXT NOT NULL DEFAULT 'sembako';
+ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS original_price NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS promo_price NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS unit TEXT NOT NULL DEFAULT 'Pcs';
+ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS image_url TEXT DEFAULT '';
+ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS in_stock BOOLEAN DEFAULT TRUE;
+ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT TRUE;
+ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
 
 -- 2. Tabel E-Voucher Diskon (promo_vouchers)
 CREATE TABLE IF NOT EXISTS promo_vouchers (
@@ -40,8 +52,21 @@ CREATE TABLE IF NOT EXISTS promo_vouchers (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Tambahkan kolom applicable_product_ids jika tabel promo_vouchers sudah ada sebelumnya
+-- Pastikan semua kolom promo_vouchers ada jika tabel sebelumnya sudah dibuat
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS branch_id TEXT NOT NULL DEFAULT 'all';
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS discount_amount NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS min_spend NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS quota INTEGER NOT NULL DEFAULT 50;
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS claimed_count INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS used_count INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS valid_until TEXT NOT NULL DEFAULT '2026-12-31';
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE;
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS description TEXT DEFAULT '';
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS funding_source TEXT DEFAULT 'store';
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS sponsor_name TEXT DEFAULT '';
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS applicable_category TEXT DEFAULT 'all';
 ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS applicable_product_ids JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE promo_vouchers ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
 
 -- 3. Tabel Riwayat Pesanan Masuk Online (online_orders)
 CREATE TABLE IF NOT EXISTS online_orders (
@@ -80,3 +105,9 @@ BEGIN
   DROP POLICY IF EXISTS "Public access online_orders" ON online_orders;
   CREATE POLICY "Public access online_orders" ON online_orders FOR ALL USING (true) WITH CHECK (true);
 END $$;
+
+-- 5. Aktifkan Realtime Replication untuk Sinkronisasi Instan Antar-Aplikasi
+ALTER PUBLICATION supabase_realtime ADD TABLE promo_products;
+ALTER PUBLICATION supabase_realtime ADD TABLE promo_vouchers;
+ALTER PUBLICATION supabase_realtime ADD TABLE online_orders;
+

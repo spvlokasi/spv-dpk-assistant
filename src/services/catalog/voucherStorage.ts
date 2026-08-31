@@ -26,25 +26,48 @@ export const savePromoVoucher = (voucher: PromoVoucher, branchId?: string): Prom
 
   const client = getSupabaseClient();
   if (client) {
-    client.from('promo_vouchers').upsert({
+    const fullPayload: Record<string, any> = {
       id: voucher.id,
-      branch_id: voucher.branchId,
+      branch_id: voucher.branchId || 'all',
       code: voucher.code,
-      discount_amount: voucher.discountAmount,
-      min_spend: voucher.minSpend,
-      quota: voucher.quota,
-      claimed_count: voucher.claimedCount || 0,
-      used_count: voucher.usedCount || 0,
-      valid_until: voucher.validUntil,
-      is_active: voucher.isActive,
-      description: voucher.description,
+      discount_amount: Number(voucher.discountAmount) || 0,
+      min_spend: Number(voucher.minSpend) || 0,
+      quota: Number(voucher.quota) || 50,
+      claimed_count: Number(voucher.claimedCount) || 0,
+      used_count: Number(voucher.usedCount) || 0,
+      valid_until: voucher.validUntil || '2026-12-31',
+      is_active: voucher.isActive ?? true,
+      description: voucher.description || '',
       funding_source: voucher.fundingSource || 'store',
       sponsor_name: voucher.sponsorName || '',
       applicable_category: voucher.applicableCategory || 'all',
       applicable_product_ids: voucher.applicableProductIds || [],
       updated_at: new Date().toISOString()
-    }).then(({ error }) => {
-      if (error) console.error('Error upserting promo_voucher:', error);
+    };
+
+    client.from('promo_vouchers').upsert(fullPayload).then(({ error }) => {
+      if (error) {
+        console.warn('Gagal upsert promo_voucher dengan kolom lengkap, mencoba fallback dasar:', error.message);
+        const basePayload = {
+          id: voucher.id,
+          branch_id: voucher.branchId || 'all',
+          code: voucher.code,
+          discount_amount: Number(voucher.discountAmount) || 0,
+          min_spend: Number(voucher.minSpend) || 0,
+          quota: Number(voucher.quota) || 50,
+          claimed_count: Number(voucher.claimedCount) || 0,
+          used_count: Number(voucher.usedCount) || 0,
+          valid_until: voucher.validUntil || '2026-12-31',
+          is_active: voucher.isActive ?? true,
+          description: voucher.description || ''
+        };
+        client.from('promo_vouchers').upsert(basePayload).then(({ error: retryError }) => {
+          if (retryError) console.error('Gagal upsert promo_voucher fallback ke Supabase:', retryError);
+          else console.log('Berhasil sync promo_voucher ke Supabase (fallback mode)');
+        });
+      } else {
+        console.log('Berhasil sync promo_voucher ke Supabase:', voucher.code);
+      }
     });
   }
 
@@ -61,7 +84,8 @@ export const deletePromoVoucher = (id: string, branchId?: string): PromoVoucher[
   const client = getSupabaseClient();
   if (client) {
     client.from('promo_vouchers').delete().eq('id', id).then(({ error }) => {
-      if (error) console.error('Error deleting promo_voucher:', error);
+      if (error) console.error('Error deleting promo_voucher dari Supabase:', error);
+      else console.log('Berhasil menghapus promo_voucher dari Supabase:', id);
     });
   }
 

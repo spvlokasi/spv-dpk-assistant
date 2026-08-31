@@ -43,19 +43,35 @@ export const fetchPromoProductsFromCloud = async (branchId?: string): Promise<Pr
     const allLocal = loadPromoProducts('all');
     if (allLocal.length > 0) {
       allLocal.forEach((p) => {
-        client.from('promo_products').upsert({
+        const fullPayload: Record<string, any> = {
           id: p.id,
-          branch_id: p.branchId,
+          branch_id: p.branchId || 'all',
           name: p.name,
-          category: p.category,
-          original_price: p.originalPrice,
-          promo_price: p.promoPrice,
-          unit: p.unit,
+          category: p.category || 'sembako',
+          original_price: Number(p.originalPrice) || 0,
+          promo_price: Number(p.promoPrice) || 0,
+          unit: p.unit || 'Pcs',
           image_url: p.imageUrl || '',
-          in_stock: p.inStock,
+          in_stock: p.inStock ?? true,
           is_featured: p.isFeatured ?? true,
           updated_at: new Date().toISOString()
-        }).then();
+        };
+        client.from('promo_products').upsert(fullPayload).then(({ error }) => {
+          if (error) {
+            const basePayload = {
+              id: p.id,
+              branch_id: p.branchId || 'all',
+              name: p.name,
+              category: p.category || 'sembako',
+              original_price: Number(p.originalPrice) || 0,
+              promo_price: Number(p.promoPrice) || 0,
+              unit: p.unit || 'Pcs',
+              image_url: p.imageUrl || '',
+              in_stock: p.inStock ?? true
+            };
+            client.from('promo_products').upsert(basePayload).then();
+          }
+        });
       });
     }
 

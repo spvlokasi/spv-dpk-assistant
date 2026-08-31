@@ -26,20 +26,42 @@ export const savePromoProduct = (product: PromoProduct, branchId?: string): Prom
 
   const client = getSupabaseClient();
   if (client) {
-    client.from('promo_products').upsert({
+    const fullPayload: Record<string, any> = {
       id: product.id,
-      branch_id: product.branchId,
+      branch_id: product.branchId || 'all',
       name: product.name,
-      category: product.category,
-      original_price: product.originalPrice,
-      promo_price: product.promoPrice,
-      unit: product.unit,
+      category: product.category || 'sembako',
+      original_price: Number(product.originalPrice) || 0,
+      promo_price: Number(product.promoPrice) || 0,
+      unit: product.unit || 'Pcs',
       image_url: product.imageUrl || '',
-      in_stock: product.inStock,
+      in_stock: product.inStock ?? true,
       is_featured: product.isFeatured ?? true,
       updated_at: new Date().toISOString()
-    }).then(({ error }) => {
-      if (error) console.error('Error upserting promo_product:', error);
+    };
+
+    client.from('promo_products').upsert(fullPayload).then(({ error }) => {
+      if (error) {
+        console.warn('Gagal upsert promo_product dengan kolom lengkap, mencoba fallback dasar:', error.message);
+        // Fallback jika is_featured atau updated_at belum ada di schema database
+        const basePayload = {
+          id: product.id,
+          branch_id: product.branchId || 'all',
+          name: product.name,
+          category: product.category || 'sembako',
+          original_price: Number(product.originalPrice) || 0,
+          promo_price: Number(product.promoPrice) || 0,
+          unit: product.unit || 'Pcs',
+          image_url: product.imageUrl || '',
+          in_stock: product.inStock ?? true
+        };
+        client.from('promo_products').upsert(basePayload).then(({ error: retryError }) => {
+          if (retryError) console.error('Gagal upsert promo_product fallback ke Supabase:', retryError);
+          else console.log('Berhasil sync promo_product ke Supabase (fallback mode)');
+        });
+      } else {
+        console.log('Berhasil sync promo_product ke Supabase:', product.name);
+      }
     });
   }
 
@@ -56,7 +78,8 @@ export const deletePromoProduct = (id: string, branchId?: string): PromoProduct[
   const client = getSupabaseClient();
   if (client) {
     client.from('promo_products').delete().eq('id', id).then(({ error }) => {
-      if (error) console.error('Error deleting promo_product:', error);
+      if (error) console.error('Error deleting promo_product dari Supabase:', error);
+      else console.log('Berhasil menghapus promo_product dari Supabase:', id);
     });
   }
 
