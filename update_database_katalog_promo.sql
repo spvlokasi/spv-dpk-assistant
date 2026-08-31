@@ -31,6 +31,11 @@ ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS in_stock BOOLEAN DEFAULT TRU
 ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT TRUE;
 ALTER TABLE promo_products ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
 
+-- Lepas foreign key constraint jika sebelumnya pernah terpasang agar promo bisa berlaku untuk 'all' (semua toko)
+ALTER TABLE promo_products DROP CONSTRAINT IF EXISTS promo_products_branch_id_fkey;
+ALTER TABLE promo_vouchers DROP CONSTRAINT IF EXISTS promo_vouchers_branch_id_fkey;
+ALTER TABLE online_orders DROP CONSTRAINT IF EXISTS online_orders_branch_id_fkey;
+
 -- 2. Tabel E-Voucher Diskon (promo_vouchers)
 CREATE TABLE IF NOT EXISTS promo_vouchers (
   id TEXT PRIMARY KEY,
