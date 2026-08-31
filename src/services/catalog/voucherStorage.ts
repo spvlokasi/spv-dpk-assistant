@@ -17,6 +17,23 @@ export const loadPromoVouchers = (branchId?: string): PromoVoucher[] => {
   }
 };
 
+const safeUpsertVoucher = async (client: any, payload: Record<string, any>, attempts = 0): Promise<void> => {
+  if (attempts > 5) return;
+  const { error } = await client.from('promo_vouchers').upsert(payload);
+  if (error) {
+    console.warn(`Upsert promo_voucher error (attempt ${attempts + 1}):`, error.message);
+    const match = error.message.match(/Could not find the '([^']+)' column/i);
+    if (match && match[1]) {
+      const badCol = match[1];
+      const nextPayload = { ...payload };
+      delete nextPayload[badCol];
+      return safeUpsertVoucher(client, nextPayload, attempts + 1);
+    }
+  } else {
+    console.log('Berhasil sync promo_voucher ke Supabase:', payload.code);
+  }
+};
+
 export const savePromoVoucher = (voucher: PromoVoucher, branchId?: string): PromoVoucher[] => {
   const current = loadPromoVouchers('all');
   const index = current.findIndex((v) => v.id === voucher.id);
@@ -45,30 +62,7 @@ export const savePromoVoucher = (voucher: PromoVoucher, branchId?: string): Prom
       updated_at: new Date().toISOString()
     };
 
-    client.from('promo_vouchers').upsert(fullPayload).then(({ error }) => {
-      if (error) {
-        console.warn('Gagal upsert promo_voucher dengan kolom lengkap, mencoba fallback dasar:', error.message);
-        const basePayload = {
-          id: voucher.id,
-          branch_id: voucher.branchId || 'all',
-          code: voucher.code,
-          discount_amount: Number(voucher.discountAmount) || 0,
-          min_spend: Number(voucher.minSpend) || 0,
-          quota: Number(voucher.quota) || 50,
-          claimed_count: Number(voucher.claimedCount) || 0,
-          used_count: Number(voucher.usedCount) || 0,
-          valid_until: voucher.validUntil || '2026-12-31',
-          is_active: voucher.isActive ?? true,
-          description: voucher.description || ''
-        };
-        client.from('promo_vouchers').upsert(basePayload).then(({ error: retryError }) => {
-          if (retryError) console.error('Gagal upsert promo_voucher fallback ke Supabase:', retryError);
-          else console.log('Berhasil sync promo_voucher ke Supabase (fallback mode)');
-        });
-      } else {
-        console.log('Berhasil sync promo_voucher ke Supabase:', voucher.code);
-      }
-    });
+    safeUpsertVoucher(client, fullPayload);
   }
 
   if (!branchId || branchId === 'all') return updated;

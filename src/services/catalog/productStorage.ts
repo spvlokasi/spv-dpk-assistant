@@ -17,6 +17,23 @@ export const loadPromoProducts = (branchId?: string): PromoProduct[] => {
   }
 };
 
+const safeUpsertProduct = async (client: any, payload: Record<string, any>, attempts = 0): Promise<void> => {
+  if (attempts > 5) return;
+  const { error } = await client.from('promo_products').upsert(payload);
+  if (error) {
+    console.warn(`Upsert promo_product error (attempt ${attempts + 1}):`, error.message);
+    const match = error.message.match(/Could not find the '([^']+)' column/i);
+    if (match && match[1]) {
+      const badCol = match[1];
+      const nextPayload = { ...payload };
+      delete nextPayload[badCol];
+      return safeUpsertProduct(client, nextPayload, attempts + 1);
+    }
+  } else {
+    console.log('Berhasil sync promo_product ke Supabase:', payload.name);
+  }
+};
+
 export const savePromoProduct = (product: PromoProduct, branchId?: string): PromoProduct[] => {
   const current = loadPromoProducts('all');
   const index = current.findIndex((p) => p.id === product.id);
@@ -40,29 +57,7 @@ export const savePromoProduct = (product: PromoProduct, branchId?: string): Prom
       updated_at: new Date().toISOString()
     };
 
-    client.from('promo_products').upsert(fullPayload).then(({ error }) => {
-      if (error) {
-        console.warn('Gagal upsert promo_product dengan kolom lengkap, mencoba fallback dasar:', error.message);
-        // Fallback jika is_featured atau updated_at belum ada di schema database
-        const basePayload = {
-          id: product.id,
-          branch_id: product.branchId || 'all',
-          name: product.name,
-          category: product.category || 'sembako',
-          original_price: Number(product.originalPrice) || 0,
-          promo_price: Number(product.promoPrice) || 0,
-          unit: product.unit || 'Pcs',
-          image_url: product.imageUrl || '',
-          in_stock: product.inStock ?? true
-        };
-        client.from('promo_products').upsert(basePayload).then(({ error: retryError }) => {
-          if (retryError) console.error('Gagal upsert promo_product fallback ke Supabase:', retryError);
-          else console.log('Berhasil sync promo_product ke Supabase (fallback mode)');
-        });
-      } else {
-        console.log('Berhasil sync promo_product ke Supabase:', product.name);
-      }
-    });
+    safeUpsertProduct(client, fullPayload);
   }
 
   if (!branchId || branchId === 'all') return updated;

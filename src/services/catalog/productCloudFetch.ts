@@ -1,6 +1,6 @@
 import { PromoProduct } from '../../types';
 import { getSupabaseClient } from '../supabase';
-import { PROD_KEY, loadPromoProducts } from './productStorage';
+import { PROD_KEY, loadPromoProducts, savePromoProduct } from './productStorage';
 
 export const fetchPromoProductsFromCloud = async (branchId?: string): Promise<PromoProduct[]> => {
   const localList = loadPromoProducts(branchId);
@@ -43,35 +43,7 @@ export const fetchPromoProductsFromCloud = async (branchId?: string): Promise<Pr
     const allLocal = loadPromoProducts('all');
     if (allLocal.length > 0) {
       allLocal.forEach((p) => {
-        const fullPayload: Record<string, any> = {
-          id: p.id,
-          branch_id: p.branchId || 'all',
-          name: p.name,
-          category: p.category || 'sembako',
-          original_price: Number(p.originalPrice) || 0,
-          promo_price: Number(p.promoPrice) || 0,
-          unit: p.unit || 'Pcs',
-          image_url: p.imageUrl || '',
-          in_stock: p.inStock ?? true,
-          is_featured: p.isFeatured ?? true,
-          updated_at: new Date().toISOString()
-        };
-        client.from('promo_products').upsert(fullPayload).then(({ error }) => {
-          if (error) {
-            const basePayload = {
-              id: p.id,
-              branch_id: p.branchId || 'all',
-              name: p.name,
-              category: p.category || 'sembako',
-              original_price: Number(p.originalPrice) || 0,
-              promo_price: Number(p.promoPrice) || 0,
-              unit: p.unit || 'Pcs',
-              image_url: p.imageUrl || '',
-              in_stock: p.inStock ?? true
-            };
-            client.from('promo_products').upsert(basePayload).then();
-          }
-        });
+        savePromoProduct(p);
       });
     }
 
