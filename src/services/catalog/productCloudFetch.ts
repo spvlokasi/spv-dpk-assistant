@@ -1,10 +1,11 @@
 import { PromoProduct } from '../../types';
 import { getSupabaseClient } from '../supabase';
-import { PROD_KEY, sanitizeProducts, loadPromoProducts } from './productStorage';
+import { PROD_KEY, loadPromoProducts } from './productStorage';
 
 export const fetchPromoProductsFromCloud = async (branchId?: string): Promise<PromoProduct[]> => {
+  const localList = loadPromoProducts(branchId);
   const client = getSupabaseClient();
-  if (!client) return loadPromoProducts(branchId);
+  if (!client) return localList;
 
   try {
     const { data, error } = await client
@@ -14,11 +15,11 @@ export const fetchPromoProductsFromCloud = async (branchId?: string): Promise<Pr
 
     if (error) {
       console.warn('Gagal fetch live promo products dari Supabase:', error.message);
-      return loadPromoProducts(branchId);
+      return localList;
     }
 
-    const products: PromoProduct[] = sanitizeProducts(
-      (data || []).map((p: any) => ({
+    if (data && data.length > 0) {
+      const cloudProducts: PromoProduct[] = data.map((p: any) => ({
         id: p.id,
         branchId: p.branch_id || 'all',
         name: p.name,
@@ -29,16 +30,38 @@ export const fetchPromoProductsFromCloud = async (branchId?: string): Promise<Pr
         imageUrl: p.image_url || '',
         inStock: p.in_stock ?? true,
         isFeatured: p.is_featured ?? true
-      }))
-    );
+      }));
 
-    sessionStorage.setItem(PROD_KEY, JSON.stringify(products));
-    localStorage.setItem(PROD_KEY, JSON.stringify(products));
+      localStorage.setItem(PROD_KEY, JSON.stringify(cloudProducts));
+      sessionStorage.setItem(PROD_KEY, JSON.stringify(cloudProducts));
 
-    if (!branchId || branchId === 'all') return products;
-    return products.filter((p) => p.branchId === branchId || p.branchId === 'all');
+      if (!branchId || branchId === 'all') return cloudProducts;
+      return cloudProducts.filter((p) => p.branchId === branchId || p.branchId === 'all');
+    }
+
+    // Jika cloud belum ada data tapi di local ada, push local ke cloud
+    const allLocal = loadPromoProducts('all');
+    if (allLocal.length > 0) {
+      allLocal.forEach((p) => {
+        client.from('promo_products').upsert({
+          id: p.id,
+          branch_id: p.branchId,
+          name: p.name,
+          category: p.category,
+          original_price: p.originalPrice,
+          promo_price: p.promoPrice,
+          unit: p.unit,
+          image_url: p.imageUrl || '',
+          in_stock: p.inStock,
+          is_featured: p.isFeatured ?? true,
+          updated_at: new Date().toISOString()
+        }).then();
+      });
+    }
+
+    return localList;
   } catch (e) {
     console.warn('Gagal fetch live promo products dari Supabase:', e);
-    return loadPromoProducts(branchId);
+    return localList;
   }
 };

@@ -1,10 +1,11 @@
 import { PromoVoucher } from '../../types';
 import { getSupabaseClient } from '../supabase';
-import { VOUCH_KEY, sanitizeVouchers, loadPromoVouchers } from './voucherStorage';
+import { VOUCH_KEY, loadPromoVouchers } from './voucherStorage';
 
 export const fetchPromoVouchersFromCloud = async (branchId?: string): Promise<PromoVoucher[]> => {
+  const localList = loadPromoVouchers(branchId);
   const client = getSupabaseClient();
-  if (!client) return loadPromoVouchers(branchId);
+  if (!client) return localList;
 
   try {
     const { data, error } = await client
@@ -14,11 +15,11 @@ export const fetchPromoVouchersFromCloud = async (branchId?: string): Promise<Pr
 
     if (error) {
       console.warn('Gagal fetch live promo vouchers dari Supabase:', error.message);
-      return loadPromoVouchers(branchId);
+      return localList;
     }
 
-    const vouchers: PromoVoucher[] = sanitizeVouchers(
-      (data || []).map((v: any) => ({
+    if (data && data.length > 0) {
+      const vouchers: PromoVoucher[] = data.map((v: any) => ({
         id: v.id,
         branchId: v.branch_id || 'all',
         code: v.code,
@@ -34,16 +35,43 @@ export const fetchPromoVouchersFromCloud = async (branchId?: string): Promise<Pr
         sponsorName: v.sponsor_name || '',
         applicableCategory: v.applicable_category || 'all',
         applicableProductIds: v.applicable_product_ids || undefined
-      }))
-    );
+      }));
 
-    sessionStorage.setItem(VOUCH_KEY, JSON.stringify(vouchers));
-    localStorage.setItem(VOUCH_KEY, JSON.stringify(vouchers));
+      localStorage.setItem(VOUCH_KEY, JSON.stringify(vouchers));
+      sessionStorage.setItem(VOUCH_KEY, JSON.stringify(vouchers));
 
-    if (!branchId || branchId === 'all') return vouchers;
-    return vouchers.filter((v) => v.branchId === branchId || v.branchId === 'all');
+      if (!branchId || branchId === 'all') return vouchers;
+      return vouchers.filter((v) => v.branchId === branchId || v.branchId === 'all');
+    }
+
+    // Jika cloud belum ada data tapi di local ada, push local ke cloud
+    const allLocal = loadPromoVouchers('all');
+    if (allLocal.length > 0) {
+      allLocal.forEach((v) => {
+        client.from('promo_vouchers').upsert({
+          id: v.id,
+          branch_id: v.branchId,
+          code: v.code,
+          discount_amount: v.discountAmount,
+          min_spend: v.minSpend,
+          quota: v.quota,
+          claimed_count: v.claimedCount || 0,
+          used_count: v.usedCount || 0,
+          valid_until: v.validUntil,
+          is_active: v.isActive,
+          description: v.description,
+          funding_source: v.fundingSource || 'store',
+          sponsor_name: v.sponsorName || '',
+          applicable_category: v.applicableCategory || 'all',
+          applicable_product_ids: v.applicableProductIds || [],
+          updated_at: new Date().toISOString()
+        }).then();
+      });
+    }
+
+    return localList;
   } catch (e) {
     console.warn('Gagal fetch live promo vouchers dari Supabase:', e);
-    return loadPromoVouchers(branchId);
+    return localList;
   }
 };

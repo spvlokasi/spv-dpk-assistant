@@ -3,15 +3,13 @@ import { getSupabaseClient } from '../supabase';
 
 export const PROD_KEY = 'spv_dpk_promo_products';
 
-export const sanitizeProducts = (list: PromoProduct[]): PromoProduct[] => {
-  return list.filter((p) => !['prod-1', 'prod-2', 'prod-3', 'prod-4', 'prod-5'].includes(p.id));
-};
+export const sanitizeProducts = (list: PromoProduct[]): PromoProduct[] => list;
 
 export const loadPromoProducts = (branchId?: string): PromoProduct[] => {
   try {
-    const raw = sessionStorage.getItem(PROD_KEY) || localStorage.getItem(PROD_KEY);
+    const raw = localStorage.getItem(PROD_KEY) || sessionStorage.getItem(PROD_KEY);
     if (!raw) return [];
-    const list: PromoProduct[] = sanitizeProducts(JSON.parse(raw));
+    const list: PromoProduct[] = JSON.parse(raw);
     if (!branchId || branchId === 'all') return list;
     return list.filter((p) => p.branchId === branchId || p.branchId === 'all');
   } catch {
@@ -23,8 +21,8 @@ export const savePromoProduct = (product: PromoProduct, branchId?: string): Prom
   const current = loadPromoProducts('all');
   const index = current.findIndex((p) => p.id === product.id);
   const updated = index >= 0 ? current.map((p) => (p.id === product.id ? product : p)) : [product, ...current];
-  sessionStorage.setItem(PROD_KEY, JSON.stringify(updated));
   localStorage.setItem(PROD_KEY, JSON.stringify(updated));
+  sessionStorage.setItem(PROD_KEY, JSON.stringify(updated));
 
   const client = getSupabaseClient();
   if (client) {
@@ -52,8 +50,8 @@ export const savePromoProduct = (product: PromoProduct, branchId?: string): Prom
 export const deletePromoProduct = (id: string, branchId?: string): PromoProduct[] => {
   const current = loadPromoProducts('all');
   const updated = current.filter((p) => p.id !== id);
-  sessionStorage.setItem(PROD_KEY, JSON.stringify(updated));
   localStorage.setItem(PROD_KEY, JSON.stringify(updated));
+  sessionStorage.setItem(PROD_KEY, JSON.stringify(updated));
 
   const client = getSupabaseClient();
   if (client) {
