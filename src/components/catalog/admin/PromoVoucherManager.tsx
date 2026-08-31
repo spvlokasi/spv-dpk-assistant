@@ -40,20 +40,20 @@ export const PromoVoucherManager: React.FC<PromoVoucherManagerProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="bg-slate-900 border border-slate-800 p-3 sm:p-4 rounded-2xl flex items-center justify-between gap-3 shadow-lg">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-            <Ticket className="w-5 h-5" />
+      {isSpv && (
+        <div className="bg-slate-900 border border-slate-800 p-3 sm:p-4 rounded-2xl flex items-center justify-between gap-3 shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <Ticket className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-white leading-tight">E-Voucher & Kupon Belanja</h4>
+              <p className="text-[11px] text-slate-400">
+                Total {vouchers.length} voucher aktif terdaftar
+              </p>
+            </div>
           </div>
-          <div>
-            <h4 className="text-sm font-bold text-white leading-tight">E-Voucher & Kupon Belanja</h4>
-            <p className="text-[11px] text-slate-400">
-              {isSpv ? `Total ${vouchers.length} voucher aktif terdaftar` : `Toko memiliki ${vouchers.length} kupon diskon aktif`}
-            </p>
-          </div>
-        </div>
 
-        {isSpv ? (
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
@@ -62,13 +62,8 @@ export const PromoVoucherManager: React.FC<PromoVoucherManagerProps> = ({
             <Plus className="w-4 h-4" />
             <span>Terbitkan Voucher Baru</span>
           </button>
-        ) : (
-          <span className="px-2.5 py-1 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-semibold flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Wewenang Penerbitan: SPV DPK</span>
-          </span>
-        )}
-      </div>
+        </div>
+      )}
 
       {isSpv && (
         <VoucherCreateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} isSpv={isSpv} branchId={branchId} branches={branches} onSaveVoucher={onSaveVoucher} />
