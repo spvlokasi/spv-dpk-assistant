@@ -13,7 +13,12 @@ interface CatalogAdminActionsProps {
 export const CatalogAdminActions: React.FC<CatalogAdminActionsProps> = ({
   isKtb, currentBranch, onOpenProposalModal, onOpenFlyerModal, onOpenPublicCatalog
 }) => {
-  const shareUrl = `https://belanja.dpk.my.id/?toko=${currentBranch?.code || 'M3017'}`;
+  const getOfficialStoreParam = (b?: Branch) => {
+    if (!b?.name) return 'TokoBasmalahBugih';
+    const clean = b.name.replace(/\s+/g, '').replace(/tokobasmalah/i, '');
+    return `TokoBasmalah${clean.charAt(0).toUpperCase() + clean.slice(1)}`;
+  };
+  const shareUrl = `https://belanja.dpk.my.id/?toko=${getOfficialStoreParam(currentBranch)}`;
 
   const handleShareWA = () => {
     const text = `*PROMO HEMAT TOKOBASMALAH ${currentBranch?.name?.toUpperCase()}!*\n` +

@@ -19,8 +19,12 @@ export const CatalogAdminHeader: React.FC<CatalogAdminHeaderProps> = ({
   isKtb, branches, currentBranch, selectedBranchId, onSelectBranch,
   onOpenPhoneModal, onOpenProposalModal, onOpenFlyerModal, onOpenPublicCatalog
 }) => {
-  const [copied, setCopied] = useState(false);
-  const shareUrl = `https://belanja.dpk.my.id/?toko=${currentBranch?.code || 'M3017'}`;
+  const getOfficialStoreParam = (b?: Branch) => {
+    if (!b?.name) return 'TokoBasmalahBugih';
+    const clean = b.name.replace(/\s+/g, '').replace(/tokobasmalah/i, '');
+    return `TokoBasmalah${clean.charAt(0).toUpperCase() + clean.slice(1)}`;
+  };
+  const shareUrl = `https://belanja.dpk.my.id/?toko=${getOfficialStoreParam(currentBranch)}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
