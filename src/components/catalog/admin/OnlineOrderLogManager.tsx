@@ -30,15 +30,35 @@ export const OnlineOrderLogManager: React.FC<OnlineOrderLogManagerProps> = ({ br
 
   useEffect(() => {
     const client = getSupabaseClient();
-    if (client) {
-      client.from('online_orders').select('*').order('created_at', { ascending: false }).then(({ data, error }) => {
-        if (!error && data && data.length > 0) {
+    if (!client) return;
+
+    const fetchOrders = () => {
+      let query = client.from('online_orders').select('*').order('created_at', { ascending: false });
+      if (branch.id && branch.id !== 'all' && branch.id !== 'all-branches') {
+        query = query.or(`branch_id.eq.${branch.id},branch_code.eq.${branch.code}`);
+      }
+      query.then(({ data, error }) => {
+        if (!error && data) {
           setOrders(data as OnlineOrderLog[]);
           localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify(data));
         }
       });
-    }
-  }, [branch.id]);
+    };
+
+    fetchOrders();
+
+    // Realtime listener: pesanan baru langsung muncul seketika di layar SPV / KTB
+    const channel = client
+      .channel(`spv_orders_realtime_${branch.id || 'all'}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'online_orders' }, () => {
+        fetchOrders();
+      })
+      .subscribe();
+
+    return () => {
+      client.removeChannel(channel);
+    };
+  }, [branch.id, branch.code]);
 
   const saveOrders = (newOrders: OnlineOrderLog[]) => {
     setOrders(newOrders);
