@@ -20,7 +20,7 @@ export const CatalogAdminHeader: React.FC<CatalogAdminHeaderProps> = ({
   onOpenPhoneModal, onOpenProposalModal, onOpenFlyerModal, onOpenPublicCatalog
 }) => {
   const [copied, setCopied] = useState(false);
-  const shareUrl = `https://basmalahbelanja.vercel.app/?toko=${currentBranch?.code || 'M3017'}`;
+  const shareUrl = `https://belanja.dpk.my.id/?toko=${currentBranch?.code || 'M3017'}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);

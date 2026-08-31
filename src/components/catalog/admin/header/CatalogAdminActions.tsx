@@ -13,7 +13,7 @@ interface CatalogAdminActionsProps {
 export const CatalogAdminActions: React.FC<CatalogAdminActionsProps> = ({
   isKtb, currentBranch, onOpenProposalModal, onOpenFlyerModal, onOpenPublicCatalog
 }) => {
-  const shareUrl = `https://basmalahbelanja.vercel.app/?toko=${currentBranch?.code || 'M3017'}`;
+  const shareUrl = `https://belanja.dpk.my.id/?toko=${currentBranch?.code || 'M3017'}`;
 
   const handleShareWA = () => {
     const text = `*PROMO HEMAT TOKOBASMALAH ${currentBranch?.name?.toUpperCase()}!*\n` +

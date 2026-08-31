@@ -57,7 +57,7 @@ export const ProposalPreviewDoc: React.FC<ProposalPreviewDocProps> = ({
           </div>
         </div>
         <ul className="list-disc list-inside text-slate-700 space-y-1 pl-1">
-          <li>Penempatan produk di <strong>Banner Utama Katalog Online</strong> (basmalahbelanja.vercel.app).</li>
+          <li>Penempatan produk di <strong>Banner Utama Katalog Online</strong> (belanja.dpk.my.id).</li>
           <li>Pemberian <strong>Kupon Voucher Diskon Eksklusif</strong> dengan masa reservasi 24 jam untuk menciptakan urgensi belanja.</li>
           <li>Sosialisasi masif via <strong>Broadcast WhatsApp Kasir & Status Toko</strong> ke seluruh pelanggan sekitar gerai.</li>
         </ul>
