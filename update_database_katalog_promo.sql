@@ -119,3 +119,7 @@ ALTER PUBLICATION supabase_realtime ADD TABLE promo_products;
 ALTER PUBLICATION supabase_realtime ADD TABLE promo_vouchers;
 ALTER PUBLICATION supabase_realtime ADD TABLE online_orders;
 
+-- 6. Kolom Jam Operasional Antar Toko (branches)
+ALTER TABLE branches ADD COLUMN IF NOT EXISTS delivery_hours TEXT DEFAULT '07:00 - 20:30';
+
+

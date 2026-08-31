@@ -9,6 +9,9 @@ interface CatalogShareLinkBarProps {
 }
 
 export const CatalogShareLinkBar: React.FC<CatalogShareLinkBarProps> = ({ branch, onRefreshBranch }) => {
+  const [copied, setCopied] = useState(false);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
+
   const getOfficialStoreParam = (b?: Branch) => {
     if (!b?.name) return 'TokoBasmalahBugih';
     const clean = b.name.replace(/\s+/g, '').replace(/tokobasmalah/i, '');

@@ -19,6 +19,8 @@ export const CatalogAdminHeader: React.FC<CatalogAdminHeaderProps> = ({
   isKtb, branches, currentBranch, selectedBranchId, onSelectBranch,
   onOpenPhoneModal, onOpenProposalModal, onOpenFlyerModal, onOpenPublicCatalog
 }) => {
+  const [copied, setCopied] = useState(false);
+
   const getOfficialStoreParam = (b?: Branch) => {
     if (!b?.name) return 'TokoBasmalahBugih';
     const clean = b.name.replace(/\s+/g, '').replace(/tokobasmalah/i, '');

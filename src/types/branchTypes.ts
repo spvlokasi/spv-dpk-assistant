@@ -43,6 +43,7 @@ export interface Branch {
   longitude?: number;
   city?: string;
   areaCluster?: string;
+  deliveryHours?: string;
 }
 
 export interface DiagnosisLog {
