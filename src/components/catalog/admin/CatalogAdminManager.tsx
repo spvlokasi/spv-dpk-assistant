@@ -23,7 +23,12 @@ interface CatalogAdminManagerProps {
 export const CatalogAdminManager: React.FC<CatalogAdminManagerProps> = ({
   branches, selectedBranchId: propBranchId, currentUser, onRefreshBranch, onOpenPublicCatalog
 }) => {
-  const isKtb = currentUser?.username.startsWith('ktb.') || currentUser?.roleTitle === 'Kepala Toko';
+  const isKtb = Boolean(
+    currentUser?.username?.toLowerCase().startsWith('ktb.') ||
+    currentUser?.roleTitle?.toLowerCase().includes('kepala toko') ||
+    currentUser?.roleTitle?.toLowerCase().includes('ktb') ||
+    (currentUser?.branchCode && currentUser.branchCode.length > 0)
+  );
   const availableBranches = isKtb && propBranchId ? branches.filter((b) => b.id === propBranchId) : branches;
   const [selectedBranchId, setSelectedBranchId] = useState(propBranchId || branches[0]?.id || 'br-01');
   const [activeTab, setActiveTab] = useState<'products' | 'vouchers' | 'orders'>('products');

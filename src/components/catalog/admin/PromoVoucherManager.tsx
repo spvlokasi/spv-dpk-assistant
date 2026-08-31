@@ -18,7 +18,13 @@ export const PromoVoucherManager: React.FC<PromoVoucherManagerProps> = ({
   vouchers, branchId, branches = [], currentUser, onSaveVoucher, onDeleteVoucher
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const isSpv = !currentUser?.branchCode || currentUser?.roleTitle?.toLowerCase().includes('spv') || currentUser?.roleTitle?.toLowerCase().includes('supervisor');
+  const isKtb = Boolean(
+    currentUser?.username?.toLowerCase().startsWith('ktb.') ||
+    currentUser?.roleTitle?.toLowerCase().includes('kepala toko') ||
+    currentUser?.roleTitle?.toLowerCase().includes('ktb') ||
+    (currentUser?.branchCode && currentUser.branchCode.length > 0)
+  );
+  const isSpv = !isKtb;
 
   const toggleVoucherStatus = (v: PromoVoucher) => {
     if (!isSpv) return;
@@ -54,7 +60,7 @@ export const PromoVoucherManager: React.FC<PromoVoucherManagerProps> = ({
             className="py-2 px-3.5 sm:px-4 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-extrabold rounded-xl shadow-md shadow-amber-950/60 flex items-center gap-1.5 transition-all text-xs"
           >
             <Plus className="w-4 h-4" />
-            <span>+ Terbitkan Voucher Baru</span>
+            <span>Terbitkan Voucher Baru</span>
           </button>
         ) : (
           <span className="px-2.5 py-1 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-semibold flex items-center gap-1">
