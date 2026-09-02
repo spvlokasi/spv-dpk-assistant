@@ -35,14 +35,12 @@ export const BranchStorage = {
 
     const client = getSupabaseClient();
     if (client) {
-      try {
-        await client.from('branches').upsert({
+        const { error } = await client.from('branches').upsert({
           id: branch.id,
           code: branch.code,
           name: branch.name,
           address: branch.address || '',
           phone: branch.phone || '',
-          delivery_hours: branch.deliveryHours || '07:00 - 20:30',
           city: branch.city || 'Jawa Timur',
           lat: branch.latitude ?? getBranchCoordinates(branch).lat,
           lng: branch.longitude ?? getBranchCoordinates(branch).lng,
@@ -65,6 +63,9 @@ export const BranchStorage = {
           image_url: branch.imageUrl || null,
           updated_at: new Date().toISOString()
         });
+        if (error) {
+          console.warn('Auto-sync branch upsert error:', error);
+        }
       } catch (e) { console.warn('Auto-sync branch failed:', e); }
     }
   },

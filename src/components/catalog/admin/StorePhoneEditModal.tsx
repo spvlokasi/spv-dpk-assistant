@@ -4,6 +4,8 @@ import { Branch } from '../../../types';
 import { StorageService } from '../../../services/storage';
 import { useToast } from '../../../context/ToastContext';
 
+import { getSupabaseClient } from '../../../services/supabase';
+
 interface StorePhoneEditModalProps {
   branch: Branch;
   onSaved: () => void;
@@ -24,12 +26,17 @@ export const StorePhoneEditModal: React.FC<StorePhoneEditModalProps> = ({
     e.preventDefault();
     setSaving(true);
     try {
+      const cleanPhone = phone.trim();
       const updated: Branch = {
         ...branch,
-        phone: phone.trim(),
+        phone: cleanPhone,
         deliveryHours: `${openTime.trim()} - ${closeTime.trim()}`
       };
       await StorageService.saveBranch(updated);
+      const client = getSupabaseClient();
+      if (client) {
+        await client.from('branches').update({ phone: cleanPhone }).eq('id', branch.id);
+      }
       showToast('No. WhatsApp & Jam Antar Toko berhasil disimpan!', 'success');
       onSaved();
       onClose();
