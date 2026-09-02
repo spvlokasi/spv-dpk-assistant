@@ -6,7 +6,7 @@ export const getTodayStr = () => {
 };
 
 export const getAutoStatus = (factors: RootCauseFactor[], currentStatus: DpkStatus): DpkStatus => {
-  if (currentStatus === 'lulus_dpk') return 'lulus_dpk';
+  if (currentStatus === 'lulus_dpk' || currentStatus === 'existing' || currentStatus === 'cabang_baru') return currentStatus;
   if (!factors || factors.length === 0) return currentStatus;
   const avg = factors.reduce((acc, curr) => acc + curr.score, 0) / factors.length;
   if (avg <= 2.5) return 'kritis';

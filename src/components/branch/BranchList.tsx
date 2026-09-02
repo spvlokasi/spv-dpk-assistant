@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Branch } from '../../types';
+import { Branch, DpkStatus } from '../../types';
 import { useToast } from '../../context/ToastContext';
 import { sortBranchesByStatus } from '../../utils/formatters';
 import { BranchSearchBar } from './list/BranchSearchBar';
@@ -15,11 +15,29 @@ interface BranchListProps {
   onCloseNewModal?: () => void;
 }
 
-const DEFAULT_FORM: Partial<Branch> = {
-  code: '', name: '', address: '', phone: '', kepalaToko: '', spvArea: '', manajerBisnis: 'Rusli Hitami',
-  entryDate: new Date().toISOString().slice(0, 10), targetGraduationDate: new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10),
-  status: 'kritis', urgencyLevel: 'tinggi', targetSalesPerDay: 1500000, targetMarginPct: 15.0, targetMaxOpexPerMonth: 20000000,
-  diagnosisSummary: '', recommendedStrategy: '', imageUrl: '', rootCauses: []
+const DEFAULT_FORM: Branch = {
+  id: '',
+  code: '',
+  name: '',
+  address: '',
+  phone: '',
+  kepalaToko: '',
+  spvArea: '',
+  manajerBisnis: 'Rusli Hitami',
+  entryDate: new Date().toISOString().slice(0, 10),
+  targetGraduationDate: new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10),
+  diagnosisStartDate: '',
+  diagnosisEndDate: '',
+  category: 'sales_drop',
+  status: 'kritis',
+  urgencyLevel: 'tinggi',
+  targetSalesPerDay: 1500000,
+  targetMarginPct: 15.0,
+  targetMaxOpexPerMonth: 20000000,
+  diagnosisSummary: '',
+  recommendedStrategy: '',
+  imageUrl: '',
+  rootCauses: []
 };
 
 export const BranchList: React.FC<BranchListProps> = ({
@@ -32,19 +50,30 @@ export const BranchList: React.FC<BranchListProps> = ({
   const [editingBranch, setEditingBranch] = useState<Branch | null>(null);
   const [formData, setFormData] = useState<Partial<Branch>>(DEFAULT_FORM);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.code || !formData.kepalaToko) {
       showToast('Isi nama cabang, kode cabang, dan nama KTB!', 'warning'); return;
     }
-    onSaveBranch({
-      ...DEFAULT_FORM, ...formData, id: editingBranch ? editingBranch.id : `br-${Date.now()}`,
-      code: formData.code!.trim().toUpperCase(), name: formData.name!.trim(), kepalaToko: formData.kepalaToko!.trim(),
-      targetSalesPerDay: Number(formData.targetSalesPerDay) || 1500000, targetMarginPct: Number(formData.targetMarginPct) || 15.0,
+    const updatedBranch: Branch = {
+      ...DEFAULT_FORM,
+      ...(editingBranch || {}),
+      ...(formData as Branch),
+      id: editingBranch ? editingBranch.id : (formData.id || `br-${Date.now()}`),
+      code: (formData.code || editingBranch?.code || '').trim().toUpperCase(),
+      name: (formData.name || editingBranch?.name || '').trim(),
+      address: formData.address ?? editingBranch?.address ?? '',
+      phone: formData.phone ?? editingBranch?.phone ?? '',
+      kepalaToko: (formData.kepalaToko || editingBranch?.kepalaToko || '').trim(),
+      status: (formData.status || editingBranch?.status || 'kritis') as DpkStatus,
+      targetSalesPerDay: Number(formData.targetSalesPerDay) || 1500000,
+      targetMarginPct: Number(formData.targetMarginPct) || 15.0,
       targetMaxOpexPerMonth: Number(formData.targetMaxOpexPerMonth) || 20000000
-    } as Branch);
+    };
+    await onSaveBranch(updatedBranch);
     showToast(editingBranch ? 'Perubahan cabang disimpan!' : 'Cabang baru didaftarkan!', 'success');
-    setShowModal(false); if (onCloseNewModal) onCloseNewModal();
+    setShowModal(false);
+    if (onCloseNewModal) onCloseNewModal();
   };
 
   const sortedAndFilteredBranches = useMemo(() => {
