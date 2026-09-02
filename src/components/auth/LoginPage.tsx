@@ -64,10 +64,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             </button>
           </form>
         </div>
-
-        <div className="text-center text-xs text-slate-500">
-          Departemen Bisnis & Pengawasan Khusus Toko Retail &copy; 2026
-        </div>
       </div>
     </div>
   );
