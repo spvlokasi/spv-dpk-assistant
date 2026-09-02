@@ -2,30 +2,73 @@ import { Branch } from '../../types';
 
 export const INITIAL_BRANCHES: Branch[] = [
   {
-    id: 'br-01', code: 'T-102', name: 'Cabang Basmalah Veteran Raya',
-    address: 'Jl. Veteran No. 45, Sentra Kota', phone: '0812-3456-7890',
-    kepalaToko: 'Ahmad Fauzi', spvArea: 'Budi Santoso', manajerBisnis: 'H. Bambang Irawan',
-    entryDate: '2026-06-01', targetGraduationDate: '2026-09-01',
-    category: 'sales_drop', status: 'dalam_progres', urgencyLevel: 'tinggi',
-    targetSalesPerDay: 13500000, targetMarginPct: 15.5, targetMaxOpexPerMonth: 22000000,
-    rootCauses: [], diagnosisSummary: '', recommendedStrategy: ''
+    id: 'br-01', code: 'M3017', name: 'TokoBASMALAH Bugih',
+    address: 'Jl. Dirgahayu, Bugih', phone: '085231640032',
+    kepalaToko: "Baida'i", spvArea: '', manajerBisnis: 'Rusli Hitami',
+    entryDate: '2026-01-01', targetGraduationDate: '2026-09-01',
+    category: 'sales_drop', status: 'existing', urgencyLevel: 'tinggi',
+    targetSalesPerDay: 1500000, targetMarginPct: 15.5, targetMaxOpexPerMonth: 22000000,
+    rootCauses: [], diagnosisSummary: '', recommendedStrategy: '',
+    imageUrl: '/stores/bugih.jpg', city: 'Pamekasan', latitude: -7.1595, longitude: 113.4735
   },
   {
-    id: 'br-02', code: 'T-208', name: 'Cabang Basmalah Diponegoro',
-    address: 'Jl. Diponegoro No. 88, Kawasan Pasar', phone: '0813-9876-5432',
-    kepalaToko: 'Siti Rahmawati', spvArea: 'Hendra Setiawan', manajerBisnis: 'H. Bambang Irawan',
-    entryDate: '2026-05-15', targetGraduationDate: '2026-08-30',
-    category: 'margin_minus', status: 'siap_lulus', urgencyLevel: 'sedang',
-    targetSalesPerDay: 16000000, targetMarginPct: 16.0, targetMaxOpexPerMonth: 24000000,
-    rootCauses: [], diagnosisSummary: '', recommendedStrategy: ''
+    id: 'br-1787160879162', code: 'M3019', name: 'TokoBASMALAH Pademawu',
+    address: 'Jl. Raya Pademawu', phone: '082338465308',
+    kepalaToko: 'Surur', spvArea: '', manajerBisnis: 'Rusli Hitami',
+    entryDate: '2026-01-01', targetGraduationDate: '2026-09-01',
+    category: 'sales_drop', status: 'kritis', urgencyLevel: 'tinggi',
+    targetSalesPerDay: 1500000, targetMarginPct: 15.5, targetMaxOpexPerMonth: 22000000,
+    rootCauses: [], diagnosisSummary: '', recommendedStrategy: '',
+    city: 'Pamekasan', latitude: -7.1852, longitude: 113.5187
   },
   {
-    id: 'br-03', code: 'T-315', name: 'Cabang Basmalah Merdeka Barat',
-    address: 'Jl. Merdeka Barat No. 12, Area Perumahan', phone: '0857-1122-3344',
-    kepalaToko: 'Rian Pratama', spvArea: 'Budi Santoso', manajerBisnis: 'H. Bambang Irawan',
-    entryDate: '2026-07-10', targetGraduationDate: '2026-10-10',
-    category: 'opex_bengkak', status: 'kritis', urgencyLevel: 'tinggi',
-    targetSalesPerDay: 11000000, targetMarginPct: 15.0, targetMaxOpexPerMonth: 19000000,
-    rootCauses: [], diagnosisSummary: '', recommendedStrategy: ''
+    id: 'br-1787368386910', code: 'M3021', name: 'TokoBASMALAH Sotabar',
+    address: 'Jl. Raya Sotabar, Pasean', phone: '',
+    kepalaToko: 'Khoirul', spvArea: '', manajerBisnis: 'Rusli Hitami',
+    entryDate: '2026-01-01', targetGraduationDate: '2026-09-01',
+    category: 'sales_drop', status: 'kritis', urgencyLevel: 'tinggi',
+    targetSalesPerDay: 1500000, targetMarginPct: 15.5, targetMaxOpexPerMonth: 22000000,
+    rootCauses: [], diagnosisSummary: '', recommendedStrategy: '',
+    city: 'Pamekasan', latitude: -6.8833, longitude: 113.5500
+  },
+  {
+    id: 'br-1787368904811', code: 'M4016', name: 'TokoBASMALAH Kalianget',
+    address: 'Jl. Raya Kalianget', phone: '',
+    kepalaToko: 'Herman', spvArea: '', manajerBisnis: 'Rusli Hitami',
+    entryDate: '2026-01-01', targetGraduationDate: '2026-09-01',
+    category: 'sales_drop', status: 'kritis', urgencyLevel: 'tinggi',
+    targetSalesPerDay: 1500000, targetMarginPct: 15.5, targetMaxOpexPerMonth: 22000000,
+    rootCauses: [], diagnosisSummary: '', recommendedStrategy: '',
+    city: 'Sumenep', latitude: -7.0514, longitude: 113.8964
+  },
+  {
+    id: 'br-1787368822218', code: 'M1025', name: 'TokoBASMALAH TENGKET',
+    address: 'Jl. Raya Arosbaya', phone: '',
+    kepalaToko: 'Somad', spvArea: '', manajerBisnis: 'Rusli Hitami',
+    entryDate: '2026-01-01', targetGraduationDate: '2026-09-01',
+    category: 'sales_drop', status: 'kritis', urgencyLevel: 'tinggi',
+    targetSalesPerDay: 1500000, targetMarginPct: 15.5, targetMaxOpexPerMonth: 22000000,
+    rootCauses: [], diagnosisSummary: '', recommendedStrategy: '',
+    city: 'Bangkalan', latitude: -6.9500, longitude: 112.8333
+  },
+  {
+    id: 'br-1787368545312', code: 'M1026', name: 'TokoBASMALAH Tlangoh',
+    address: 'Jl. Raya Tanjungbumi', phone: '',
+    kepalaToko: 'KTB Tlangoh', spvArea: '', manajerBisnis: 'Rusli Hitami',
+    entryDate: '2026-01-01', targetGraduationDate: '2026-09-01',
+    category: 'sales_drop', status: 'kritis', urgencyLevel: 'tinggi',
+    targetSalesPerDay: 1500000, targetMarginPct: 15.5, targetMaxOpexPerMonth: 22000000,
+    rootCauses: [], diagnosisSummary: '', recommendedStrategy: '',
+    city: 'Bangkalan', latitude: -6.8833, longitude: 112.9667
+  },
+  {
+    id: 'br-1787336617789', code: 'W1001', name: 'TokoBASMALAH Sidayu',
+    address: 'Jl. Raya Sidayu', phone: '',
+    kepalaToko: 'MUGHNI', spvArea: '', manajerBisnis: 'Rusli Hitami',
+    entryDate: '2026-01-01', targetGraduationDate: '2026-09-01',
+    category: 'sales_drop', status: 'kritis', urgencyLevel: 'tinggi',
+    targetSalesPerDay: 1500000, targetMarginPct: 15.5, targetMaxOpexPerMonth: 22000000,
+    rootCauses: [], diagnosisSummary: '', recommendedStrategy: '',
+    city: 'Gresik', latitude: -6.9833, longitude: 112.5667
   }
 ];
