@@ -35,6 +35,7 @@ export const BranchStorage = {
 
     const client = getSupabaseClient();
     if (client) {
+      try {
         const { error } = await client.from('branches').upsert({
           id: branch.id,
           code: branch.code,
