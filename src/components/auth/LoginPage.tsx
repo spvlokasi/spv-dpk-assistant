@@ -27,28 +27,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row font-sans">
       {/* Sisi Kiri (Desktop) / Header Banner (Mobile): Foto Toko Asli */}
-      <div className="relative w-full h-48 sm:h-64 lg:h-auto lg:w-1/2 xl:w-7/12 overflow-hidden bg-slate-900 flex-shrink-0">
+      <div className="relative w-full h-48 sm:h-64 lg:h-auto lg:w-1/2 xl:w-7/12 overflow-hidden bg-slate-100 flex-shrink-0">
         <img
           src="/login-bg.jpg"
           alt="Interior Toko Basmalah"
           className="w-full h-full object-cover object-center"
         />
-        {/* Subtle overlay agar lebih berpadu */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/30 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-slate-950/40" />
-
-        {/* Info caption di pojok kiri bawah (Desktop) */}
-        <div className="absolute bottom-6 left-6 right-6 text-white hidden lg:block z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-600/90 backdrop-blur-md text-emerald-100 text-xs font-semibold mb-2 border border-emerald-400/30">
-            <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse" />
-            Toko Basmalah
-          </div>
-          <h2 className="text-2xl font-bold tracking-tight text-white drop-shadow-md">
-            Tempat Belanja yang Baik
-          </h2>
-          <p className="text-xs text-slate-200 mt-0.5 drop-shadow">
-            Sistem Digital Toko &bull; Pengawasan & Supervisi
-          </p>
-        </div>
       </div>
 
       {/* Sisi Kanan: Form Login Asli Toko Basmalah (Lebih Terang & Bersih) */}
