@@ -114,7 +114,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
           <div className="text-center">
             <p className="text-[11px] text-slate-400 font-medium">
-              &copy; {new Date().getFullYear()} Toko Basmalah &bull; DPK Assistant
+              &copy; {new Date().getFullYear()} Toko Basmalah &bull; Tempat belanja yang baik
             </p>
           </div>
         </div>
