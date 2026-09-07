@@ -65,9 +65,13 @@ export const BranchStorage = {
           updated_at: new Date().toISOString()
         });
         if (error) {
-          console.warn('Auto-sync branch upsert error:', error);
+          console.error('Auto-sync branch upsert error:', error);
+          throw error;
         }
-      } catch (e) { console.warn('Auto-sync branch failed:', e); }
+      } catch (e) {
+        console.error('Auto-sync branch failed:', e);
+        throw e;
+      }
     }
   },
   async deleteBranch(id: string) {

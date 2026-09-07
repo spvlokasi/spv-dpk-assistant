@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lightbulb, Sparkles, Trash2 } from 'lucide-react';
+import { Lightbulb, Sparkles, Trash2, Save, Loader2 } from 'lucide-react';
 
 interface RcaStrategyPlanProps {
   diagnosisSummary: string;
@@ -8,10 +8,12 @@ interface RcaStrategyPlanProps {
   onChangeStrategy: (val: string) => void;
   onGenerateAnalysis: () => void;
   onClearAnalysis: () => void;
+  onSave?: () => void;
+  isSaving?: boolean;
 }
 
 export const RcaStrategyPlan: React.FC<RcaStrategyPlanProps> = ({
-  diagnosisSummary, recommendedStrategy, onChangeSummary, onChangeStrategy, onGenerateAnalysis, onClearAnalysis
+  diagnosisSummary, recommendedStrategy, onChangeSummary, onChangeStrategy, onGenerateAnalysis, onClearAnalysis, onSave, isSaving
 }) => {
   return (
     <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl space-y-4 shadow-lg">
@@ -27,6 +29,28 @@ export const RcaStrategyPlan: React.FC<RcaStrategyPlanProps> = ({
           </button>
           {(diagnosisSummary || recommendedStrategy) && (
             <button type="button" onClick={onClearAnalysis} className="p-1 rounded-lg bg-slate-800 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 border border-slate-700 transition-colors" title="Kosongkan Teks"><Trash2 className="w-3.5 h-3.5" /></button>
+          )}
+          {onSave && (
+            <button
+              type="button"
+              onClick={onSave}
+              disabled={isSaving}
+              className={`px-3 py-1 rounded-lg text-white text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all ${
+                isSaving ? 'bg-slate-700 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-950'
+              }`}
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Menyimpan...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Simpan</span>
+                </>
+              )}
+            </button>
           )}
         </div>
       </div>

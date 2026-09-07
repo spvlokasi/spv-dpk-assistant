@@ -22,9 +22,9 @@ export const mapBranchFromCloud = (b: any): Branch => ({
   targetSalesPerDay: Number(b.target_sales_per_day) || 1500000,
   targetMarginPct: Number(b.target_margin_pct) || 15.5,
   targetMaxOpexPerMonth: Number(b.target_max_opex_per_month) || 22000000,
-  rootCauses: b.root_causes || [],
-  diagnosisSummary: b.diagnosis_summary || '',
-  recommendedStrategy: b.recommendedStrategy || '',
+  rootCauses: Array.isArray(b.root_causes) ? b.root_causes : (Array.isArray(b.rootCauses) ? b.rootCauses : []),
+  diagnosisSummary: b.diagnosis_summary || b.diagnosisSummary || '',
+  recommendedStrategy: b.recommended_strategy || b.recommendedStrategy || '',
   imageUrl: b.image_url || undefined
 });
 

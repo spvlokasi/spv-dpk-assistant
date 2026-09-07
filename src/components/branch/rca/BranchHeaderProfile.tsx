@@ -1,11 +1,14 @@
 import React from 'react';
-import { CheckCircle2, User, Shield, MapPin } from 'lucide-react';
+import { CheckCircle2, User, Shield, MapPin, Save, Loader2 } from 'lucide-react';
 import { Branch } from '../../../types';
 import { StatusBadge } from '../../common/Badge';
 
 interface BranchHeaderProfileProps {
   data: Branch;
   isSaved: boolean;
+  isSaving?: boolean;
+  isDirty?: boolean;
+  onSave?: () => void;
   startDate: string;
   endDate: string;
   onChangeStartDate: (val: string) => void;
@@ -14,7 +17,7 @@ interface BranchHeaderProfileProps {
 }
 
 export const BranchHeaderProfile: React.FC<BranchHeaderProfileProps> = ({
-  data, isSaved, startDate, endDate, onChangeStartDate, onChangeEndDate, onResetDates
+  data, isSaved, isSaving, isDirty, onSave, startDate, endDate, onChangeStartDate, onChangeEndDate, onResetDates
 }) => {
   const prefixMatch = data.name.match(/^(TokoBASMALAH|Cabang Basmalah|Basmalah)\s+(.+)$/i);
   const prefix = prefixMatch ? prefixMatch[1] : '';
@@ -29,7 +32,16 @@ export const BranchHeaderProfile: React.FC<BranchHeaderProfileProps> = ({
             {prefix && <span className="hidden sm:inline">{prefix} </span>}{branchName}
           </h2>
           <StatusBadge status={data.status} />
-          {isSaved && (<span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] text-emerald-400 font-semibold animate-pulse ml-1 flex-shrink-0"><CheckCircle2 className="w-3.5 h-3.5" /> Tersimpan!</span>)}
+          {isSaved && !isSaving && (
+            <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] text-emerald-400 font-semibold animate-pulse ml-1 flex-shrink-0 bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-500/40">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Tersimpan di Database!
+            </span>
+          )}
+          {isDirty && !isSaving && (
+            <span className="inline-flex items-center gap-1 text-[10px] text-amber-400 font-medium ml-1 flex-shrink-0 bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-500/30">
+              Belum disimpan
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap text-xs flex-shrink-0">
@@ -41,6 +53,38 @@ export const BranchHeaderProfile: React.FC<BranchHeaderProfileProps> = ({
             <input type="date" min={startDate || undefined} value={endDate || ''} onChange={(e) => onChangeEndDate(e.target.value)} className="bg-transparent text-emerald-400 font-semibold focus:outline-none text-xs cursor-pointer" />
           </div>
           {(startDate || endDate) && (<button type="button" onClick={onResetDates} className="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 text-[11px] border border-slate-700" title="Reset Tanggal">✕</button>)}
+          
+          {onSave && (
+            <button
+              type="button"
+              onClick={onSave}
+              disabled={isSaving}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all shadow-md active:scale-95 whitespace-nowrap ml-1 ${
+                isSaving
+                  ? 'bg-slate-700 text-slate-400 cursor-not-allowed border border-slate-600'
+                  : isDirty
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-950 border border-emerald-400 ring-2 ring-emerald-500/30'
+                  : 'bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700'
+              }`}
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-400" />
+                  <span>Menyimpan ke Cloud...</span>
+                </>
+              ) : isSaved ? (
+                <>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Tersimpan!</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Simpan Diagnosa</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
 

@@ -11,10 +11,11 @@ interface RcaFactorSectionProps {
   onDeleteFactor: (id: string) => void;
   onLoadPreset?: () => void;
   onSaveDiagnosa?: () => void;
+  isSaving?: boolean;
 }
 
 export const RcaFactorSection: React.FC<RcaFactorSectionProps> = ({
-  category, factors, onAddFactor, onUpdateFactor, onDeleteFactor, onLoadPreset, onSaveDiagnosa
+  category, factors, onAddFactor, onUpdateFactor, onDeleteFactor, onLoadPreset, onSaveDiagnosa, isSaving
 }) => {
   const isInternal = category === 'internal';
 
@@ -45,8 +46,17 @@ export const RcaFactorSection: React.FC<RcaFactorSectionProps> = ({
             <button onClick={onLoadPreset} className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold border border-emerald-500 transition-colors shadow-sm active:scale-95">Muat Standar</button>
           )}
           <button onClick={onAddFactor} className={`px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold flex items-center gap-1 border border-slate-700 active:scale-95 ${isInternal ? 'text-emerald-400' : 'text-amber-400'}`}><Plus className="w-3.5 h-3.5" /> Faktor</button>
-          {!isInternal && onSaveDiagnosa && (
-            <button onClick={onSaveDiagnosa} className="px-3.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-950 active:scale-95"><Save className="w-3.5 h-3.5" /> Diagnosa</button>
+          {onSaveDiagnosa && (
+            <button
+              onClick={onSaveDiagnosa}
+              disabled={isSaving}
+              className={`px-3 py-1 rounded-lg text-white text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all ${
+                isSaving ? 'bg-slate-700 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-950'
+              }`}
+            >
+              <Save className="w-3.5 h-3.5" />
+              <span>{isSaving ? 'Menyimpan...' : 'Simpan'}</span>
+            </button>
           )}
         </div>
       </div>
