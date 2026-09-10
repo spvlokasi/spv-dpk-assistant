@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Minus, Image as ImageIcon } from 'lucide-react';
 import { CartItem } from '../../../types';
 import { formatRupiah } from '../../../utils/formatters';
@@ -7,6 +7,47 @@ interface CartItemListProps {
   items: CartItem[];
   onUpdateQty: (prodId: string, qty: number) => void;
 }
+
+const QuantityInput: React.FC<{
+  quantity: number;
+  onUpdate: (qty: number) => void;
+}> = ({ quantity, onUpdate }) => {
+  const [val, setVal] = useState(quantity.toString());
+
+  useEffect(() => {
+    setVal(quantity.toString());
+  }, [quantity]);
+
+  const commitValue = () => {
+    const parsed = parseInt(val, 10);
+    if (isNaN(parsed) || parsed <= 0) {
+      setVal('1');
+      onUpdate(1);
+    } else {
+      setVal(parsed.toString());
+      onUpdate(parsed);
+    }
+  };
+
+  return (
+    <input
+      type="text"
+      inputMode="numeric"
+      pattern="[0-9]*"
+      value={val}
+      onFocus={(e) => e.target.select()}
+      onChange={(e) => setVal(e.target.value.replace(/[^0-9]/g, ''))}
+      onBlur={commitValue}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.currentTarget.blur();
+        }
+      }}
+      className="w-10 h-7 text-center font-mono font-bold text-xs text-white bg-slate-900 border border-slate-700 hover:border-slate-500 focus:border-emerald-500 focus:bg-slate-950 focus:ring-1 focus:ring-emerald-500 rounded-lg outline-none transition-all select-all"
+      title="Ketik angka langsung untuk mengubah jumlah"
+    />
+  );
+};
 
 export const CartItemList: React.FC<CartItemListProps> = ({ items, onUpdateQty }) => {
   if (items.length === 0) {
@@ -30,12 +71,23 @@ export const CartItemList: React.FC<CartItemListProps> = ({ items, onUpdateQty }
               <div className="text-[11px] text-emerald-400 font-mono">{formatRupiah(i.product.promoPrice)}</div>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <button onClick={() => onUpdateQty(i.product.id, i.quantity - 1)} className="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white">
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <button
+              onClick={() => onUpdateQty(i.product.id, i.quantity - 1)}
+              className="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white cursor-pointer"
+              title="Kurangi 1"
+            >
               <Minus className="w-3 h-3" />
             </button>
-            <span className="text-xs font-bold text-white font-mono min-w-[14px] text-center">{i.quantity}</span>
-            <button onClick={() => onUpdateQty(i.product.id, i.quantity + 1)} className="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white">
+            <QuantityInput
+              quantity={i.quantity}
+              onUpdate={(qty) => onUpdateQty(i.product.id, qty)}
+            />
+            <button
+              onClick={() => onUpdateQty(i.product.id, i.quantity + 1)}
+              className="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white cursor-pointer"
+              title="Tambah 1"
+            >
               <Plus className="w-3 h-3" />
             </button>
           </div>
