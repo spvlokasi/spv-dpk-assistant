@@ -1,5 +1,5 @@
 import React from 'react';
-import { Printer, ExternalLink, Share2, FileText } from 'lucide-react';
+import { Printer, Share2, FileText } from 'lucide-react';
 import { Branch } from '../../../../types';
 
 interface CatalogAdminActionsProps {
@@ -11,7 +11,7 @@ interface CatalogAdminActionsProps {
 }
 
 export const CatalogAdminActions: React.FC<CatalogAdminActionsProps> = ({
-  isKtb, currentBranch, onOpenProposalModal, onOpenFlyerModal, onOpenPublicCatalog
+  isKtb, currentBranch, onOpenProposalModal, onOpenFlyerModal
 }) => {
   const getOfficialStoreParam = (b?: Branch) => {
     if (!b?.name) return 'TokoBasmalahBugih';
@@ -48,16 +48,6 @@ export const CatalogAdminActions: React.FC<CatalogAdminActionsProps> = ({
       >
         <Printer className="w-3.5 h-3.5" /><span>Brosur Flyer</span>
       </button>
-
-      {onOpenPublicCatalog && (
-        <button
-          type="button"
-          onClick={() => onOpenPublicCatalog(currentBranch?.code || 'M3017')}
-          className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors flex-shrink-0"
-        >
-          <ExternalLink className="w-3.5 h-3.5 text-emerald-400" /><span>Buka Web</span>
-        </button>
-      )}
 
       <button
         type="button"
