@@ -25,7 +25,10 @@ export const ActionPlanPhaseTabs: React.FC<ActionPlanPhaseTabsProps> = ({
     return allMilestones.filter((m) => m.phase === phaseId).length;
   };
 
-  const currentBranch = branches.find((b) => b.id === activeBranchId) || branches[0];
+  const formatShortBranchName = (b: Branch) => {
+    const cleanName = b.name.replace(/^(Toko\s*BASMALAH|Toko\s*Basmalah)\s*/i, '').trim();
+    return `[${b.code}] ${cleanName}`;
+  };
 
   return (
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-1.5 bg-slate-950/60 rounded-2xl border border-slate-800">
@@ -50,21 +53,25 @@ export const ActionPlanPhaseTabs: React.FC<ActionPlanPhaseTabsProps> = ({
         })}
       </div>
 
-      <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-auto">
-        {branches.length > 1 ? (
+      {branches.length > 1 && (
+        <div className="flex items-center gap-1.5 flex-shrink-0 self-end sm:self-auto">
+          <label htmlFor="branch-phase-select" className="text-[11px] text-slate-400 font-medium hidden sm:inline">
+            Cabang:
+          </label>
           <select
+            id="branch-phase-select"
             value={activeBranchId}
             onChange={(e) => onSelectBranch(e.target.value)}
-            className="bg-slate-900 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-3 py-1.5 focus:border-emerald-500 focus:outline-none cursor-pointer max-w-[240px] truncate shadow-sm"
+            className="bg-slate-900 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-2.5 py-1.5 focus:border-emerald-500 focus:outline-none cursor-pointer max-w-[170px] sm:max-w-[210px] truncate shadow-sm"
           >
-            {branches.map((b) => (<option key={b.id} value={b.id}>[{b.code}] {b.name}</option>))}
+            {branches.map((b) => (
+              <option key={b.id} value={b.id}>
+                {formatShortBranchName(b)}
+              </option>
+            ))}
           </select>
-        ) : (
-          <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-emerald-700/60 text-emerald-400 font-bold text-xs shadow-sm">
-            [{currentBranch?.code}] {currentBranch?.name}
-          </span>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
