@@ -7,12 +7,13 @@ import { formatRupiah } from '../../utils/formatters';
 interface ActionPlanLeftSidebarProps {
   branch: Branch;
   milestones: ActionPlanMilestone[];
+  isKtb?: boolean;
   onOpenSmartModal: () => void;
   onAddNewMilestone: () => void;
 }
 
 export const ActionPlanLeftSidebar: React.FC<ActionPlanLeftSidebarProps> = ({
-  branch, milestones, onOpenSmartModal, onAddNewMilestone
+  branch, milestones, isKtb = false, onOpenSmartModal, onAddNewMilestone
 }) => {
   const completedTasks = milestones.flatMap((m) => m.tasks).filter((t) => t.completed).length;
   const totalTasks = milestones.flatMap((m) => m.tasks).length;
@@ -58,10 +59,17 @@ export const ActionPlanLeftSidebar: React.FC<ActionPlanLeftSidebarProps> = ({
           <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden"><div className="h-full bg-emerald-500 rounded-full" style={{ width: `${progressPct}%` }} /></div>
         </div>
 
-        <div className="space-y-2 pt-1">
-          <button type="button" onClick={onOpenSmartModal} className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-950 active:scale-95">Muat Aksi</button>
-          <button type="button" onClick={onAddNewMilestone} className="w-full py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95"><Plus className="w-4 h-4" /><span>+ Tambah Milestone Manual</span></button>
-        </div>
+        {!isKtb ? (
+          <div className="space-y-2 pt-1">
+            <button type="button" onClick={onOpenSmartModal} className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-950 active:scale-95">Muat Aksi</button>
+            <button type="button" onClick={onAddNewMilestone} className="w-full py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95"><Plus className="w-4 h-4" /><span>+ Tambah Milestone Manual</span></button>
+          </div>
+        ) : (
+          <div className="p-3 bg-slate-850/60 rounded-xl border border-slate-800 text-[11px] text-slate-400 space-y-1">
+            <p className="font-semibold text-emerald-400">📌 Mode Eksekusi KTB</p>
+            <p>Pantau & centang tugas harian yang sudah dikerjakan di toko sesuai program kerja dari Supervisor.</p>
+          </div>
+        )}
       </div>
     </div>
   );

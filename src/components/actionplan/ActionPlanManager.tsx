@@ -12,12 +12,13 @@ interface ActionPlanManagerProps {
   milestones: ActionPlanMilestone[];
   performance?: DailyPerformance[];
   selectedBranchId?: string;
+  isKtb?: boolean;
   onSaveMilestone: (milestone: ActionPlanMilestone) => void;
   onDeleteMilestone: (id: string) => void;
 }
 
 export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
-  branches, milestones, performance = [], selectedBranchId, onSaveMilestone, onDeleteMilestone
+  branches, milestones, performance = [], selectedBranchId, isKtb = false, onSaveMilestone, onDeleteMilestone
 }) => {
   const { showToast } = useToast();
   const [activeBranchId, setActiveBranchId] = useState<string>(selectedBranchId || branches[0]?.id || '');
@@ -62,17 +63,27 @@ export const ActionPlanManager: React.FC<ActionPlanManagerProps> = ({
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {currentBranch && (<div className="lg:col-span-4 lg:sticky lg:top-4"><ActionPlanLeftSidebar branch={currentBranch} milestones={allBranchMilestones} onOpenSmartModal={() => setShowSmartModal(true)} onAddNewMilestone={handleAddNewMilestone} /></div>)}
+        {currentBranch && (<div className="lg:col-span-4 lg:sticky lg:top-4"><ActionPlanLeftSidebar branch={currentBranch} milestones={allBranchMilestones} isKtb={isKtb} onOpenSmartModal={() => setShowSmartModal(true)} onAddNewMilestone={handleAddNewMilestone} /></div>)}
         <div className={`space-y-3.5 ${currentBranch ? 'lg:col-span-8' : 'lg:col-span-12'}`}>
           <ActionPlanPhaseTabs branches={branches} activeBranchId={targetBranchId} onSelectBranch={setActiveBranchId} allMilestones={allBranchMilestones} selectedPhase={selectedPhase} onSelectPhase={setSelectedPhase} />
           <div className="space-y-3.5">
             {filteredMilestones.length === 0 ? (
               <div className="bg-slate-900 border border-dashed border-slate-800 rounded-2xl p-8 text-center space-y-3">
-                <div className="text-xl">📋</div><h4 className="text-sm font-bold text-slate-300">Belum Ada Program Aksi</h4>
-                <button type="button" onClick={() => setShowSmartModal(true)} className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md active:scale-95">Muat Aksi</button>
+                <div className="text-xl">📋</div>
+                <h4 className="text-sm font-bold text-slate-300">
+                  {isKtb ? 'Belum Ada Program Aksi dari Supervisor' : 'Belum Ada Program Aksi'}
+                </h4>
+                <p className="text-xs text-slate-400 max-w-md mx-auto">
+                  {isKtb
+                    ? 'Silakan menunggu SPV merilis target dan arahan program kerja perbaikan untuk toko Anda.'
+                    : 'Gunakan tombol di bawah untuk memuat program rekomendasi sistem berbasis analisis performa & akar masalah.'}
+                </p>
+                {!isKtb && (
+                  <button type="button" onClick={() => setShowSmartModal(true)} className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md active:scale-95">Muat Aksi</button>
+                )}
               </div>
             ) : (
-              filteredMilestones.map((m) => (<ActionPlanMilestoneCard key={m.id} milestone={m} isExpanded={Boolean(expandedMilestones[m.id])} onToggleExpand={() => setExpandedMilestones((prev) => ({ ...prev, [m.id]: !prev[m.id] }))} onDeleteMilestone={() => onDeleteMilestone(m.id)} onUpdateMilestone={onSaveMilestone} />))
+              filteredMilestones.map((m) => (<ActionPlanMilestoneCard key={m.id} milestone={m} isKtb={isKtb} isExpanded={Boolean(expandedMilestones[m.id])} onToggleExpand={() => setExpandedMilestones((prev) => ({ ...prev, [m.id]: !prev[m.id] }))} onDeleteMilestone={() => onDeleteMilestone(m.id)} onUpdateMilestone={onSaveMilestone} />))
             )}
           </div>
         </div>
